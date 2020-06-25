@@ -1,4 +1,6 @@
 import math
+import os
+import time
 
 from collections import defaultdict, Counter
 
@@ -16,8 +18,11 @@ from bokeh.palettes import Blues8 as palette
 from bokeh.plotting import figure
 from bokeh.tile_providers import (
     CARTODBPOSITRON_RETINA,
+    STAMEN_TONER,
     get_provider
 )
+from bokeh.resources import CDN
+from bokeh.embed import file_html, components
 
 
 def lat_lon_to_web_mercator(lon, lat):
@@ -89,7 +94,7 @@ def can_be_simplified(val, tol=10.0):
 
 
 def load_geojson(simplify_tol=None):
-    gdf = gpd.read_file('data/gadm28_countries.geojson')
+    gdf = gpd.read_file('data_to_map/data/gadm28_countries.geojson')
     gdf = gdf[gdf['geometry'].notna()]
 
     # For all countries, drop just Antarctica:
@@ -115,7 +120,7 @@ def load_geojson(simplify_tol=None):
 
 
 def load_protests():
-    protests = pandas.read_csv('protests.csv')
+    protests = pandas.read_csv('data_to_map/data/protests.csv')
     protests_wrong_data = protests[
         (protests.LONG == 'checked') | (protests.LONG.apply(safe_lt(-20))) |
         (protests.LONG.isna()) | (protests.LAT.isna())
@@ -185,24 +190,25 @@ def base_map():
 
     # Plot
     p = figure(
-        title="Protests", tools=TOOLS,
+        title="", tools=TOOLS,
         active_scroll='wheel_zoom',
+        plot_width=1000, plot_height=600,
         x_axis_location=None, y_axis_location=None,
-        x_range=(-2300000, 6300000), y_range=(-4300000, 4600000),
+        y_range=(-4300000, 4600000),
         x_axis_type="mercator", y_axis_type="mercator",
         )
     p.toolbar_location = None
-
-    # tile_provider = get_provider(STAMEN_TONER)
-    # tile_provider.url = ('http://tile.stamen.com/toner-lite/'
-    #                      '{Z}/{X}/{Y}@2x.png')
-    tile_provider = get_provider(CARTODBPOSITRON_RETINA)
-    # tile_provider.url = ('https://tiles.basemaps.cartocdn.com/'
-    #                      'light_only_labels/{z}/{x}/{y}@2x.png')
-    p.add_tile(tile_provider)
     p.grid.grid_line_color = None
 
     return p
+
+
+def tiles(plot, provider=CARTODBPOSITRON_RETINA, url=None):
+    tile_provider = get_provider(CARTODBPOSITRON_RETINA)
+    if url is not None:
+        tile_provider.url = url
+    plot.add_tile(tile_provider)
+    return plot
 
 
 def patches(plot, patch_data):
@@ -246,16 +252,54 @@ def points(plot, point_data):
                    line_color="gray", line_alpha=0.5, size=6)
     plot.add_glyph(GeoJSONDataSource(geojson=point_data.to_json()), point)
 
-
-if __name__ == "__main__":
+def main():
     plot = base_map()
 
     protests = load_protests()
     nations = load_geojson()
     sum_protests(protests, nations)
 
+    # tiles(
+    #     plot,
+    #     provider=STAMEN_TONER,
+    #     url='http://tile.stamen.com/toner-lite/{Z}/{X}/{Y}@2x.png',
+    #     # url='http://tile.stamen.com/toner-labels/{Z}/{X}/{Y}@2x.png'
+    # )
+    tiles(
+        plot,
+        provider=CARTODBPOSITRON_RETINA,
+        # url='https://tiles.basemaps.cartocdn.com/'
+        # 'light_only_labels/{z}/{x}/{y}@2x.png'
+    )
     patches(plot, nations)
     points(plot, protests)
+    save_embed(plot)
 
-    output_file("index.html")
-    show(plot)
+
+def save_embed(plot):
+    with open("jekyll/_includes/map.html", 'w', encoding='utf-8') as op:
+        for c in components(plot):
+            op.write(c)
+            op.write('\n')
+
+if __name__ == "__main__":
+    
+    # We set these variables to keep track of changes
+    temp_time = 0
+    recent_time = 0
+    print("Watching input directory for changes every ten seconds.")
+    while True:
+        for data_file in os.listdir("data_to_map/data"):
+            if os.path.getmtime(os.path.join("data_to_map/data", data_file)) > recent_time:
+                recent_time = os.path.getmtime(os.path.join("data_to_map/data", data_file))
+        if recent_time > temp_time:
+            temp_time = recent_time
+            print("Change detected, generating new map...")
+            main()
+            print("Map generation complete.")
+            print("Watching for changes...")
+        time.sleep(10)
+            
+    
+
+
