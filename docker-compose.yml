@@ -20,4 +20,4 @@ services:
         volumes:
             - ./data_to_map:/srv/data_to_map
             - ./jekyll:/srv/jekyll
-        command: python data_to_map/map.py
+        command: python -u data_to_map/map.py

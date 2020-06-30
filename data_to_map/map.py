@@ -173,8 +173,8 @@ def sum_protests(protests, nations):
              for n in protests.Name]
     counts = Counter(names)
 
-    print(set(counts) - set(nations['name']))
-    print(set(nations['name']) - set(counts))
+    # print(set(counts) - set(nations['name']))
+    # print(set(nations['name']) - set(counts))
 
     nations['protestcount'] = [counts[n] for n in nations['name']]
 
