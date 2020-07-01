@@ -4,3 +4,6 @@
 
 layout: home
 ---
+
+{% include bokeh_heading.html %}
+{% include map.html %}

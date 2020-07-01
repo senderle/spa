@@ -7,7 +7,7 @@ services:
             - ./jekyll:/srv/jekyll
         command: >
             bash -c "jekyll build
-            && jekyll serve"
+            && jekyll serve --watch --force_polling --incremental"
         ports: 
             - "4000:4000"
         depends_on:
