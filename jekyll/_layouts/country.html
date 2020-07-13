@@ -1,0 +1,10 @@
+---
+layout: page
+---
+{% assign row = site.data.countries[page.row_index] %}
+<dl>
+    {% for pair in row %}
+        <dt>{{ pair[0] }}</dt>
+        <dd>{{ pair[1] }}</dd>
+    {% endfor %}
+</dl>
