@@ -12,13 +12,16 @@ from bokeh.io import show, output_file
 from bokeh.models import (
     LinearColorMapper, Circle, MultiPolygons,
     ColumnDataSource, GeoJSONDataSource,
-    HoverTool, TapTool, OpenURL
+    HoverTool, TapTool, OpenURL, Panel, Tabs
 )
 from bokeh.palettes import Blues8 as palette
 from bokeh.plotting import figure
 from bokeh.tile_providers import (
     CARTODBPOSITRON_RETINA,
     STAMEN_TONER,
+    STAMEN_TERRAIN_RETINA,
+    ESRI_IMAGERY,
+    OSM,
     get_provider
 )
 from bokeh.resources import CDN
@@ -204,7 +207,7 @@ def base_map():
 
 
 def tiles(plot, provider=CARTODBPOSITRON_RETINA, url=None):
-    tile_provider = get_provider(CARTODBPOSITRON_RETINA)
+    tile_provider = get_provider(provider)
     if url is not None:
         tile_provider.url = url
     plot.add_tile(tile_provider)
@@ -252,7 +255,7 @@ def points(plot, point_data):
                    line_color="gray", line_alpha=0.5, size=6)
     plot.add_glyph(GeoJSONDataSource(geojson=point_data.to_json()), point)
 
-def main():
+def plot(provider, title):
     plot = base_map()
 
     protests = load_protests()
@@ -267,13 +270,16 @@ def main():
     # )
     tiles(
         plot,
-        provider=CARTODBPOSITRON_RETINA,
+        provider=provider,
         # url='https://tiles.basemaps.cartocdn.com/'
         # 'light_only_labels/{z}/{x}/{y}@2x.png'
     )
     patches(plot, nations)
     points(plot, protests)
-    save_embed(plot)
+    return Panel(child=plot, title=title)
+
+def main():
+    save_embed(Tabs(tabs=[plot(CARTODBPOSITRON_RETINA, "CARTODBPOSITRON_RETURN"),plot(STAMEN_TERRAIN_RETINA, "STAMEN_TERRAIN_RETINA"), plot(ESRI_IMAGERY, "ESRI_IMAGERY"), plot(OSM, "OSM")]))
 
 
 def save_embed(plot):
