@@ -12,7 +12,7 @@ from bokeh.io import show, output_file
 from bokeh.models import (
     LinearColorMapper, Circle, MultiPolygons,
     ColumnDataSource, GeoJSONDataSource,
-    HoverTool, TapTool, OpenURL, Panel, Tabs
+    HoverTool, TapTool, OpenURL, Panel, Tabs, WMTSTileSource
 )
 from bokeh.palettes import Blues8 as palette
 from bokeh.plotting import figure
@@ -278,8 +278,22 @@ def plot(provider, title):
     points(plot, protests)
     return Panel(child=plot, title=title)
 
+def maptiler_plot():
+    plot = base_map()
+    protests = load_protests()
+    nations = load_geojson()
+    sum_protests(protests, nations)
+    tile_options = {}
+    tile_options['url'] = 'https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=xEyWbUmfIFzRcu729a2M'
+    tile_options['attribution'] = 'MapTiler'
+    maptiler = WMTSTileSource(**tile_options)
+    plot.add_tile(maptiler)
+    patches(plot, nations)
+    points(plot, protests)
+    return Panel(child=plot, title="MAPTILER")
+
 def main():
-    save_embed(Tabs(tabs=[plot(CARTODBPOSITRON_RETINA, "CARTODBPOSITRON_RETURN"),plot(STAMEN_TERRAIN_RETINA, "STAMEN_TERRAIN_RETINA"), plot(ESRI_IMAGERY, "ESRI_IMAGERY"), plot(OSM, "OSM")]))
+    save_embed(Tabs(tabs=[plot(CARTODBPOSITRON_RETINA, "CARTODBPOSITRON_RETURN"),plot(STAMEN_TERRAIN_RETINA, "STAMEN_TERRAIN_RETINA"), plot(ESRI_IMAGERY, "ESRI_IMAGERY"), plot(OSM, "OSM"), maptiler_plot()]))
 
 
 def save_embed(plot):
