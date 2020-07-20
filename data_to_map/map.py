@@ -290,10 +290,10 @@ def maptiler_plot():
     plot.add_tile(maptiler)
     patches(plot, nations)
     points(plot, protests)
-    return Panel(child=plot, title="MAPTILER")
+    return Panel(child=plot, title="Maptiler Street View")
 
 def main():
-    save_embed(Tabs(tabs=[plot(CARTODBPOSITRON_RETINA, "CARTODBPOSITRON_RETURN"),plot(STAMEN_TERRAIN_RETINA, "STAMEN_TERRAIN_RETINA"), plot(ESRI_IMAGERY, "ESRI_IMAGERY"), plot(OSM, "OSM"), maptiler_plot()]))
+    save_embed(Tabs(tabs=[plot(CARTODBPOSITRON_RETINA, "Grey"),plot(STAMEN_TERRAIN_RETINA, "Terrain"), plot(ESRI_IMAGERY, "Satellite"), plot(OSM, "Open Street Maps"), maptiler_plot()]))
 
 
 def save_embed(plot):
