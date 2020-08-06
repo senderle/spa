@@ -421,30 +421,30 @@ def plot(provider, title):
 
     return Panel(child=layout, title=title)
 
-def maptiler_plot():
-    plot_point = base_map()
-    plot_patch = base_map()
+def maptiler_plot(key, title, map_type):
+    plot = base_map()
     protests = load_protests()
     nations = load_geojson()
     sum_protests(protests, nations)
     tile_options = {}
-    tile_options['url'] = 'https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=xEyWbUmfIFzRcu729a2M'
+    tile_options['url'] = key
     tile_options['attribution'] = 'MapTiler'
     maptiler = WMTSTileSource(**tile_options)
-    plot_point.add_tile(maptiler)
-    plot_patch.add_tile(maptiler)
-    div = Div(width=400, height=plot_patch.plot_height, height_policy="fixed")
-    patches(plot_patch, div, nations)  
-    points(plot_point, div, protests)    
-    layout = row(plot_patch, plot_point, div)
-    return Panel(child=layout, title="Maptiler Street View")
+    plot.add_tile(maptiler)
+    div = Div(width=400, height=plot.plot_height, height_policy="fixed")
+    if map_type == "patch":
+        patches(plot, div, nations)  
+    elif map_type == "point":
+        points(plot, div, protests)    
+    layout = row(plot, div)
+    return Panel(child=layout, title=title)
+
+
 
 def main():
-    save_embed(Tabs(tabs=[plot(CARTODBPOSITRON_RETINA, "Grey-map"), 
-    plot(STAMEN_TERRAIN_RETINA, "Terrain-map"),
-    plot(ESRI_IMAGERY, "Satellite-map"),
-    plot(OSM, "Open Street Maps-map"),
-    maptiler_plot()]))
+    patch_key = 'https://api.maptiler.com/maps/voyager/{z}/{x}/{y}.png?key=k3o6yW6gLuLZpwLM3ecn'
+    point_key = 'https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=xEyWbUmfIFzRcu729a2M'
+    save_embed(Tabs(tabs=[maptiler_plot(patch_key, "Country", "patch"), maptiler_plot(point_key, "Protest", "point")]))
 
 def save_embed(plot):
     with open("jekyll/_includes/map.html", 'w', encoding='utf-8') as op:
