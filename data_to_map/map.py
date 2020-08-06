@@ -1,9 +1,8 @@
 import math
 import os
 import time
-
+import json
 from collections import defaultdict, Counter
-
 # from shapely.geometry import Point, Polygon
 import pandas
 import geopandas as gpd
@@ -12,8 +11,11 @@ from bokeh.io import show, output_file
 from bokeh.models import (
     LinearColorMapper, Circle, MultiPolygons,
     ColumnDataSource, GeoJSONDataSource,
-    HoverTool, TapTool, OpenURL, Panel, Tabs, WMTSTileSource
+    HoverTool, TapTool, OpenURL, Panel, Tabs,
+    WMTSTileSource, CustomJS, Div,
+    CustomJSHover
 )
+from bokeh.layouts import column, row
 from bokeh.palettes import Blues8 as palette
 from bokeh.plotting import figure
 from bokeh.tile_providers import (
@@ -189,13 +191,13 @@ def sum_protests(protests, nations):
 
 
 def base_map():
-    TOOLS = "pan,wheel_zoom,tap,reset,save"
+    TOOLS = "pan,wheel_zoom,reset,save"
 
     # Plot
     p = figure(
         title="", tools=TOOLS,
         active_scroll='wheel_zoom',
-        plot_width=1000, plot_height=600,
+        plot_width=600, plot_height=600,
         x_axis_location=None, y_axis_location=None,
         y_range=(-4300000, 4600000),
         x_axis_type="mercator", y_axis_type="mercator",
@@ -213,8 +215,7 @@ def tiles(plot, provider=CARTODBPOSITRON_RETINA, url=None):
     plot.add_tile(tile_provider)
     return plot
 
-
-def patches(plot, patch_data):
+def patches(plot, div, patch_data):
     color_mapper = LinearColorMapper(palette=palette)
     patches = MultiPolygons(
         xs='xs', ys='ys',
@@ -228,11 +229,29 @@ def patches(plot, patch_data):
         fill_alpha=0.5, line_color="purple", line_alpha=0.8,
         line_width=3.0
     )
-    render = plot.add_glyph(geodf_patches_to_geods(patch_data),
+    patch_source = geodf_patches_to_geods(patch_data)   
+    render = plot.add_glyph(patch_source,
                             patches,
                             hover_glyph=hover_patches,
                             selection_glyph=patches,
                             nonselection_glyph=patches)
+
+    parsed_geojson = json.loads(patch_source.geojson)
+    #str.source.selected.indices gives you a list of things that you immediately clicked on
+    code = """
+        var features = json_source['features'];
+        var properties = features[cb_data.index.indices[0]];   
+        if (properties != undefined){
+            console.log(properties);
+            var rank = properties['properties']['rank'] + 1;
+            var name = properties['properties']['name'];
+            var protestcount = properties['properties']['protestcount'];
+            div.text = 'Rank: ' +  rank + '<br>' + 'Name: ' + name + '<br>' + 'Protest Count: ' + protestcount
+            }
+    """
+    #tap = plot.select_one(TapTool)
+    #tap.renderers = [render]
+    callback = CustomJS(args=dict(json_source=parsed_geojson, div=div), code=code)
     plot.add_tools(HoverTool(
         # tooltips=[
         #     ("Country", "@name"),
@@ -240,23 +259,124 @@ def patches(plot, patch_data):
         # ],
         tooltips=None,
         renderers=[render],
-        point_policy="follow_mouse"
+        point_policy="follow_mouse",
+        callback=callback
     ))
-    tap = plot.select_one(TapTool)
-    tap.renderers = [render]
-    tap.callback = OpenURL(
+    '''tap.callback = OpenURL(
         url='https://wikipedia.com/wiki/@name{safe}'
-    )
+    )'''
     return plot
 
 
-def points(plot, point_data):
+def points_html_div(plot, point_data):
+    # point = Circle(x='x', y='y', fill_color="purple", fill_alpha=0.5,
+    #                line_color="gray", line_alpha=0.5, size=6, name="points")
+    
+    point_source = GeoJSONDataSource(geojson=point_data.to_json())
+    cr = plot.circle(x='x',y='y', color='purple', size=6, alpha=0.4, hover_color='olive', hover_alpha=1.0, source=point_source, name='points')
+    # g1 = plot.add_glyph(point_source,
+    #                     point,
+    #                     hover_glyph=point,
+    #                     selection_glyph=point,
+    #                     name="points")
+    parsed_geojson = json.loads(point_source.geojson)
+    callback = CustomJS(args=dict(json_source=parsed_geojson), code="""
+        var features = json_source['features'];
+        var indices = cb_data.index.indices;
+        
+        if (indices.length > 0) {
+            var hover = document.getElementById('map-hover-context');
+            hover.innerHTML = "";
+            if (indices.length > 5) {
+                const div = document.createElement('div');
+                const text = document.createTextNode('There are ' + indices.length + ' protests in this point but we only show 5')
+            }
+            var counter = 1;
+            for (var i = 0; i < indices.length; i++) {
+                if (counter == 5) {
+                    break;
+                } else {
+                    counter++;
+                }
+                var protest = features[indices[i]];
+                const div = document.createElement('div');
+                var desc = protest['properties']['DESCRIPTION OF PROTEST'];
+                var uni = protest['properties']['Geo Shape'];
+                var type = protest['properties']['Event Type'];
+                var info = 'Description: ' + desc + ' Location: ' + uni + ' Type of Protest: ' + type
+                const text = document.createTextNode(info);
+                div.appendChild(text);
+                hover.appendChild(div);
+                }
+            }
+    """)
+    plot.add_tools(HoverTool(tooltips=None, point_policy="follow_mouse", renderers=[cr], callback=callback))
+    with open("hover.html", 'w', encoding='utf-8') as op:
+        op.write("""
+        <!DOCTYPE html>
+        <html lang="en">
+        <link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-2.1.1.min.css" type="text/css" />
+        <link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-widgets-2.1.1.min.css" type="text/css" />
+        <script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-2.1.1.min.js"></script>
+        <script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-widgets-2.1.1.min.js"></script>
+        <script type="text/javascript">
+            Bokeh.set_log_level("info");
+        </script>
+        """)
+        for c in components(plot):
+            op.write(c)
+            op.write('\n')
+        op.write("""
+        <div id="map-hover-context">
+        </div>
+        </html>
+        """)
+
+def points(plot, div, point_data):
     point = Circle(x='x', y='y', fill_color="purple", fill_alpha=0.5,
-                   line_color="gray", line_alpha=0.5, size=6)
-    plot.add_glyph(GeoJSONDataSource(geojson=point_data.to_json()), point)
+                   line_color="gray", line_alpha=0.5, size=6, name="points")
+    point_source = GeoJSONDataSource(geojson=point_data.to_json())
+    cr = plot.add_glyph(point_source,
+                        point,
+                        hover_glyph=point,
+                        selection_glyph=point,
+                        name="points")
+    parsed_geojson = json.loads(point_source.geojson)
+    callback = CustomJS(args=dict(json_source=parsed_geojson, div=div), code="""
+        var features = json_source['features'];
+        var indices = cb_data.index.indices;
+        
+        if (indices.length != 0) {
+            div.text = "Number of protests: " + indices.length + "<br>"
+            var counter = 0;
+            for (var i = 0; i < indices.length; i++) {
+                if (counter == 5) {
+                    if (indices.length == 6) {
+                        div.text = div.text + "<br>" + "<em>" + "Additional protest not shown" + "</em>" +  "<br>";
+                    } else {
+                        div.text = div.text + "<br>" + "<em>" + "Additional " + (indices.length -5) + " protests not shown" + "</em>" +  "<br>";
+                    }
+                    break;
+                } else {
+                    counter++;
+                }
+                var protest = features[indices[i]];
+                console.log(protest)
+                var desc = protest['properties']['DESCRIPTION OF PROTEST'];
+                var uni = protest['properties']['School Name'];
+                var type = protest['properties']['Event Type'];
+                div.text = div.text + counter + '.' + '<br>' + 'Description: ' + desc + '<br>' + ' Location: ' + uni + '<br>' + ' Type of Protest: ' + type + '<br>';
+                }
+        }
+    """)
+    plot.add_tools(HoverTool(tooltips=None, point_policy="follow_mouse", renderers=[cr], callback=callback))
 
 def plot(provider, title):
-    plot = base_map()
+        # tap = plot.select_one(TapTool)
+    # tap.renderers = [g1]
+    # tap.callback = callback
+    plot_point = base_map()
+    plot_patch = base_map()
 
     protests = load_protests()
     nations = load_geojson()
@@ -269,17 +389,41 @@ def plot(provider, title):
     #     # url='http://tile.stamen.com/toner-labels/{Z}/{X}/{Y}@2x.png'
     # )
     tiles(
-        plot,
+        plot_point,
         provider=provider,
         # url='https://tiles.basemaps.cartocdn.com/'
         # 'light_only_labels/{z}/{x}/{y}@2x.png'
     )
-    patches(plot, nations)
-    points(plot, protests)
-    return Panel(child=plot, title=title)
+    tiles(
+        plot_patch,
+        provider=provider,
+        # url='https://tiles.basemaps.cartocdn.com/'
+        # 'light_only_labels/{z}/{x}/{y}@2x.png'
+    )
+
+
+    div = Div(width=400, height=plot_patch.plot_height, height_policy="fixed")
+    patches(plot_patch, div, nations)  
+    points(plot_point, div, protests)    
+    layout = row(plot_patch, plot_point, div)
+    #     div = Div(width=400, height=plot.plot_height, height_policy="fixed")
+        
+    #     layout = row(plot, div)
+    # elif map_type == "dot":
+    #     div = Div(width=400, height=plot.plot_height, height_policy="fixed")
+        
+    #     layout = row(plot, div)
+        
+    # else: 
+    #     print(map_type)
+    #     print(title)
+    #     print("invalid input, must be 'dot' or 'map'")
+
+    return Panel(child=layout, title=title)
 
 def maptiler_plot():
-    plot = base_map()
+    plot_point = base_map()
+    plot_patch = base_map()
     protests = load_protests()
     nations = load_geojson()
     sum_protests(protests, nations)
@@ -287,14 +431,20 @@ def maptiler_plot():
     tile_options['url'] = 'https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=xEyWbUmfIFzRcu729a2M'
     tile_options['attribution'] = 'MapTiler'
     maptiler = WMTSTileSource(**tile_options)
-    plot.add_tile(maptiler)
-    patches(plot, nations)
-    points(plot, protests)
-    return Panel(child=plot, title="Maptiler Street View")
+    plot_point.add_tile(maptiler)
+    plot_patch.add_tile(maptiler)
+    div = Div(width=400, height=plot_patch.plot_height, height_policy="fixed")
+    patches(plot_patch, div, nations)  
+    points(plot_point, div, protests)    
+    layout = row(plot_patch, plot_point, div)
+    return Panel(child=layout, title="Maptiler Street View")
 
 def main():
-    save_embed(Tabs(tabs=[plot(CARTODBPOSITRON_RETINA, "Grey"),plot(STAMEN_TERRAIN_RETINA, "Terrain"), plot(ESRI_IMAGERY, "Satellite"), plot(OSM, "Open Street Maps"), maptiler_plot()]))
-
+    save_embed(Tabs(tabs=[plot(CARTODBPOSITRON_RETINA, "Grey-map"), 
+    plot(STAMEN_TERRAIN_RETINA, "Terrain-map"),
+    plot(ESRI_IMAGERY, "Satellite-map"),
+    plot(OSM, "Open Street Maps-map"),
+    maptiler_plot()]))
 
 def save_embed(plot):
     with open("jekyll/_includes/map.html", 'w', encoding='utf-8') as op:
@@ -303,7 +453,6 @@ def save_embed(plot):
             op.write('\n')
 
 if __name__ == "__main__":
-    
     # We set these variables to keep track of changes
     temp_time = 0
     recent_time = 0
@@ -319,7 +468,3 @@ if __name__ == "__main__":
             print("Map generation complete.")
             print("Watching for changes...")
         time.sleep(10)
-            
-    
-
-
