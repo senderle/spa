@@ -7,13 +7,14 @@ from collections import defaultdict, Counter
 import pandas
 import geopandas as gpd
 import shapely
+import copy
 from bokeh.io import show, output_file
 from bokeh.models import (
     LinearColorMapper, Circle, MultiPolygons,
     ColumnDataSource, GeoJSONDataSource,
     HoverTool, TapTool, OpenURL, Panel, Tabs,
     WMTSTileSource, CustomJS, Div,
-    CustomJSHover
+    CustomJSHover, MultiSelect
 )
 from bokeh.layouts import column, row
 from bokeh.palettes import Blues8 as palette
@@ -192,14 +193,15 @@ def sum_protests(protests, nations):
 
 def base_map():
     TOOLS = "pan,wheel_zoom,reset,save"
-
+    TOOLS_2 = "lasso_select, wheel_zoom"
     # Plot
     p = figure(
-        title="", tools=TOOLS,
+        title="", tools=TOOLS_2,
         active_scroll='wheel_zoom',
         plot_width=600, plot_height=600,
         x_axis_location=None, y_axis_location=None,
         y_range=(-4300000, 4600000),
+        x_range=(-2450000, 6450000),
         x_axis_type="mercator", y_axis_type="mercator",
         )
     p.toolbar_location = None
@@ -332,10 +334,10 @@ def points_html_div(plot, point_data):
         </html>
         """)
 
-def points(plot, div, point_data):
+def points(plot, div, point_source):
     point = Circle(x='x', y='y', fill_color="purple", fill_alpha=0.5,
                    line_color="gray", line_alpha=0.5, size=6, name="points")
-    point_source = GeoJSONDataSource(geojson=point_data.to_json())
+    # point_source = GeoJSONDataSource(geojson=point_data.to_json())
     cr = plot.add_glyph(point_source,
                         point,
                         hover_glyph=point,
@@ -370,6 +372,47 @@ def points(plot, div, point_data):
         }
     """)
     plot.add_tools(HoverTool(tooltips=None, point_policy="follow_mouse", renderers=[cr], callback=callback))
+
+def one_filter(plot, point_source):                                             
+    full_source = GeoJSONDataSource(geojson=point_source.geojson)               
+    multi_select = MultiSelect(title="Protest Location Characteristics", width=plot.plot_width, options=[
+    ("Nationwide","Nationwide"), ("Capital City", "Capital City"),              
+    ("Major Urban Area", "Major Urban Area"), ("Town", "Town"), ("Village", "Village"),
+    ("Primary School", "Primary School"), ("Secondary School", "Secondary School"),
+    ("College or University", "College or University"),                         
+    ("Vocational or Technical Schools", "Vocational or Technical Schools"),     
+    ("Public Space", "Public Space"), ("Government Property", "Government Property"),
+    ("Online", "Online")])                                                      
+    callback = CustomJS(args=dict(source=point_source, multi_select=multi_select, full_source=full_source), code="""
+    function filter(select_vals, source, filter, full_source) {             
+        for (const [key, value] of Object.entries(source.data)) {           
+            while (value.length > 0) {                                      
+                value.pop();                                                
+            }                                                               
+        }                                                                   
+        for (const [key, value] of Object.entries(full_source.data)) {      
+            for (let i = 0; i < value.length; i++) {                        
+                if (isIncluded(filter, select_vals, i, full_source)) {      
+                    source.data[key].push(value[i]);                        
+                }                                                           
+            }                                                               
+        }                                                                   
+    }                                                                       
+    function isIncluded(filter, select_vals, index, full_source) {          
+        for (var i = 0; i < select_vals.length; i++) {                      
+            if (full_source.data[filter][index] == select_vals[i]) {        
+                return true;                                                
+            }                                                               
+        }                                                                   
+        return false;                                                       
+    }                                                                       
+    var select_vals = cb_obj.value;                                         
+    filter(select_vals, source, "Protest Location", full_source);           
+    source.change.emit();                                                   
+    """)                                                                        
+    multi_select.js_on_change('value', callback)                                
+    return multi_select  
+    
 
 def plot(provider, title):
         # tap = plot.select_one(TapTool)
@@ -432,12 +475,17 @@ def maptiler_plot(key, title, map_type):
     maptiler = WMTSTileSource(**tile_options)
     plot.add_tile(maptiler)
     div = Div(width=400, height=plot.plot_height, height_policy="fixed")
+    point_source = GeoJSONDataSource(geojson=protests.to_json())
     if map_type == "patch":
-        patches(plot, div, nations)  
+        patches(plot, div, nations)
+        layout = row(plot, div)  
+        return Panel(child=layout, title=title)
     elif map_type == "point":
-        points(plot, div, protests)    
-    layout = row(plot, div)
-    return Panel(child=layout, title=title)
+        points(plot, div, point_source)
+        multi_select = one_filter(plot, point_source) 
+        layout = column(multi_select, row(plot, div))  
+        return Panel(child=layout, title=title)
+    
 
 
 
@@ -451,7 +499,6 @@ def save_embed(plot):
         for c in components(plot):
             op.write(c)
             op.write('\n')
-
 if __name__ == "__main__":
     # We set these variables to keep track of changes
     temp_time = 0
