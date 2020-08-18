@@ -15,7 +15,7 @@ services:
     data_to_map:
         build:
             context: .
-            dockerfile: ./local/data_to_map/Dockerfile
+            dockerfile: ./compose/local/data_to_map/Dockerfile
         image: data_to_map_image
         volumes:
             - ./data_to_map:/srv/data_to_map
