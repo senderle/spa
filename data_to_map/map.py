@@ -1,8 +1,11 @@
 import math
 import os
+import re
 import time
 import json
 import sys
+import signal
+from pathlib import Path
 from collections import defaultdict, Counter
 
 # from shapely.geometry import Point, Polygon
@@ -23,7 +26,8 @@ from bokeh.models import (
     WMTSTileSource,
     CustomJS,
     Div,
-    MultiSelect,
+    # MultiSelect,
+    MultiChoice,
     # ColumnDataSource,
     # TapTool,
     # OpenURL,
@@ -32,14 +36,6 @@ from bokeh.models import (
 from bokeh.layouts import column, row
 from bokeh.palettes import Blues8 as palette
 from bokeh.plotting import figure
-from bokeh.tile_providers import (
-    CARTODBPOSITRON_RETINA,
-    # STAMEN_TONER,
-    # STAMEN_TERRAIN_RETINA,
-    # ESRI_IMAGERY,
-    # OSM,
-    get_provider
-)
 from bokeh.resources import JSResources
 from bokeh.embed import (
     # file_html,
@@ -47,6 +43,7 @@ from bokeh.embed import (
 )
 
 
+# Currently unused, but preserved here for reference.
 def lat_lon_to_web_mercator(lon, lat):
     x = lon * 20037508.34 / 180
     y = math.log(math.tan((90 + lat) * math.pi / 360)) / (math.pi / 180)
@@ -161,20 +158,6 @@ def load_protests():
     return protests
 
 
-def load_protest_reverse():
-    try:
-        return pandas.read_csv('protest-reverse-cache.csv')
-    except FileNotFoundError:
-        pass
-
-
-def save_protest_reverse(data):
-    keys = list(set(k for row in data for k in row.keys()))
-    rows = [{k: row.get(k, None) for k in keys} for row in data]
-    df = pandas.DataFrame({k: [r[k] for r in rows] for k in keys})
-    df.to_csv('protest-reverse-cache.csv')
-
-
 _name_errors = {
     'Madagascar ': 'Madagascar',
     "Cote d'lvoire": "Côte d'Ivoire",
@@ -192,7 +175,7 @@ def sum_protests(protests, nations):
     counts = defaultdict(int)
 
     names = [_name_errors[n] if n in _name_errors else n
-             for n in protests.Name]
+             for n in protests['Country Name']]
     counts = Counter(names)
 
     # print(set(counts) - set(nations['name']))
@@ -207,11 +190,11 @@ def sum_protests(protests, nations):
     nations['rank'] = [nation_rank[n] for n in nations['name']]
 
 
-def base_map():
+def base_map(tile_url, tile_attribution='MapTiler'):
     # Plot
     p = figure(
         title="",
-        plot_width=600, plot_height=600,
+        plot_width=600, plot_height=700,
         x_axis_location=None, y_axis_location=None,
         y_range=(-4300000, 4600000),
         x_range=(-2450000, 6450000),
@@ -229,15 +212,12 @@ def base_map():
     p.toolbar_location = None
     p.grid.grid_line_color = None
 
+    p.add_tile(WMTSTileSource(
+        url=tile_url,
+        attribution=tile_attribution
+    ))
+
     return p
-
-
-def tiles(plot, provider=CARTODBPOSITRON_RETINA, url=None):
-    tile_provider = get_provider(provider)
-    if url is not None:
-        tile_provider.url = url
-    plot.add_tile(tile_provider)
-    return plot
 
 
 def patches(plot, div, patch_data):
@@ -298,16 +278,14 @@ def patches(plot, div, patch_data):
 def points(plot, div, point_source):
     point = Circle(x='x', y='y', fill_color="purple", fill_alpha=0.5,
                    line_color="gray", line_alpha=0.5, size=6, name="points")
-    # point_source = GeoJSONDataSource(geojson=point_data.to_json())
     cr = plot.add_glyph(point_source,
                         point,
                         hover_glyph=point,
                         selection_glyph=point,
                         name="points")
-    parsed_geojson = json.loads(point_source.geojson)
-    callback = CustomJS(args=dict(json_source=parsed_geojson, div=div),
+    callback = CustomJS(args=dict(source=point_source, div=div),
                         code="""
-        var features = json_source['features'];
+        var features = source['data'];
         var indices = cb_data.index.indices;
 
         if (indices.length != 0) {
@@ -328,10 +306,10 @@ def points(plot, div, point_source):
                 } else {
                     counter++;
                 }
-                var protest = features[indices[i]];
-                var desc = protest['properties']['DESCRIPTION OF PROTEST'];
-                var uni = protest['properties']['School Name'];
-                var type = protest['properties']['Event Type'];
+                var protest = indices[i];
+                var desc = features['Description of Protest'][protest];
+                var uni = features['School Name'][protest];
+                var type = features['Event Type (F3)'][protest];
                 div.text = div.text + counter + '.' + '<br>' +
                            'Description: ' + desc + '<br>' + ' Location: ' +
                            uni + '<br>' + ' Type of Protest: ' + type +
@@ -349,30 +327,36 @@ def points(plot, div, point_source):
     plot.toolbar.active_inspect = hover
 
 
-def one_filter(plot, point_source):
+def one_filter(plot, point_source, filter_col):
+    # Remove (FX) from column name; probaby temporary
+    title = re.sub(r'\s*[(]F[0-9]+[)]\s*', '', filter_col)
+
     full_source = GeoJSONDataSource(geojson=point_source.geojson)
-    multi_select = MultiSelect(
-        title="Protest Location Characteristics",
-        width=plot.plot_width,
-        options=[
-            ("Nationwide", "Nationwide"), ("Capital City", "Capital City"),
-            ("Major Urban Area", "Major Urban Area"), ("Town", "Town"),
-            ("Village", "Village"),
-            ("Primary School", "Primary School"),
-            ("Secondary School", "Secondary School"),
-            ("College or University", "College or University"),
-            ("Vocational or Technical Schools",
-             "Vocational or Technical Schools"),
-            ("Public Space", "Public Space"),
-            ("Government Property", "Government Property"),
-            ("Online", "Online")]
+
+    # Extract options from values in the data:
+    options = [f['properties'][filter_col]
+               for f in json.loads(point_source.geojson)['features']]
+    # Some values are comma-separated lists; split and unpack, dropping None.
+    options = [opt.strip()
+               for opt_list in options if opt_list is not None
+               for opt in opt_list.split(',')]
+    # Deduplicate and turn into name-value pairs, as required by MultiSelect.
+    options = [(opt,) * 2 for opt in sorted(set(options))]
+    multi_select = MultiChoice(
+        title=title,
+        width=int(plot.plot_width / 1.5),
+        height=int(plot.plot_height / 8),
+        max_items=4,
+        options=options
     )
 
     callback = CustomJS(
         args=dict(source=point_source,
                   multi_select=multi_select,
-                  full_source=full_source),
+                  full_source=full_source,
+                  filter_col=filter_col),
         code="""
+
         function filter(select_vals, source, filter, full_source) {
             for (const [key, value] of Object.entries(source.data)) {
                 while (value.length > 0) {
@@ -387,48 +371,106 @@ def one_filter(plot, point_source):
                 }
             }
         }
+
         function isIncluded(filter, select_vals, index, full_source) {
+            // Slow -- O(i * j) -- but i and j never get much larger than 10
             for (var i = 0; i < select_vals.length; i++) {
-                if (full_source.data[filter][index] == select_vals[i]) {
-                    return true;
+                let vals = full_source.data[filter][index];
+                vals = vals ? vals.split(',').map(s => s.trim()) : [];
+                for (let j = 0; j < vals.length; j++) {
+                    if (vals[j] == select_vals[i]) {
+                        return true;
+                    }
                 }
             }
             return false;
         }
+
         var select_vals = cb_obj.value;
-        filter(select_vals, source, "Protest Location", full_source);
+        filter(select_vals, source, filter_col, full_source);
         source.change.emit();
         """)
     multi_select.js_on_change('value', callback)
     return multi_select
 
 
-def maptiler_plot(key, title, map_type):
-    plot = base_map()
-    protests = load_protests()
-    nations = load_geojson()
-    sum_protests(protests, nations)
-    tile_options = {}
-    tile_options['url'] = key
-    tile_options['attribution'] = 'MapTiler'
-    maptiler = WMTSTileSource(**tile_options)
-    plot.add_tile(maptiler)
-    div = Div(width=400, height=plot.plot_height, height_policy="fixed")
-    point_source = GeoJSONDataSource(geojson=protests.to_json())
-    if map_type == "patch":
-        patches(plot, div, nations)
+class Map:
+    def __init__(self):
+        self.protests = load_protests()
+        self.nations = load_geojson()
+        self.filters = self.collect_filters()
+        sum_protests(self.protests, self.nations)
+
+    def collect_filters(self):
+        cols = self.protests.columns
+        filters = [f for f in cols if re.search(r'\s*[(]F[0-9]+[)]\s*', f)]
+        digits = [int(re.search(r'\s*[(]F(?P<n>[0-9]+)[)]\s*', f)['n'])
+                  for f in filters]
+        filters = [f for d, f in sorted(zip(digits, filters))]
+        return filters
+
+    def patch_plot(self, title, tile_url, tile_attribution='MapTiler'):
+        plot = base_map(tile_url, tile_attribution)
+
+        div = Div(width=plot.plot_width // 2,
+                  height=plot.plot_height,
+                  height_policy="fixed")
+
+        patches(plot, div, self.nations)
         layout = row(plot, div)
         return Panel(child=layout, title=title)
-    elif map_type == "point":
+
+    def point_plot(self, title, tile_url, tile_attribution='MapTiler'):
+        plot = base_map(tile_url, tile_attribution)
+
+        div = Div(width=plot.plot_width // 2,
+                  height=plot.plot_height,
+                  height_policy="fixed")
+
+        point_source = GeoJSONDataSource(geojson=self.protests.to_json())
         points(plot, div, point_source)
-        multi_select = one_filter(plot, point_source)
-        layout = column(multi_select, row(plot, div))
+        select_col = [one_filter(plot, point_source, filter_name)
+                      for filter_name in self.filters]
+        select_col = column(*select_col)
+        map_select = row(plot, select_col)
+        layout = column(map_select, div)
         return Panel(child=layout, title=title)
+
+    def nation_pages(self, path):
+        for i, name in enumerate(self.nations.index.values):
+            perma = name.lower().replace(' ', '-').replace('\'', '-')
+            filename = (Path(path) / Path(perma)).with_suffix('.md')
+            title = name
+            with open(filename, 'w', encoding='utf-8') as op:
+                op.write(f'---\n'
+                         f'layout: country\n'
+                         f'row_index: {i}\n'
+                         f'permalink: {perma}\n'
+                         f'title: {title}\n'
+                         f'hidden: true\n'
+                         f'---\n')
+
+    def protest_pages(self, path):
+        for i, name in enumerate(self.protests.index.values):
+            perma = name.lower().replace(' ', '-').replace('\'', '-')
+            filename = (Path(path) / Path(perma)).with_suffix('.md')
+            title = name
+            with open(filename, 'w', encoding='utf-8') as op:
+                op.write(f'---\n'
+                         f'layout: country\n'
+                         f'row_index: {i}\n'
+                         f'permalink: {perma}\n'
+                         f'title: {title}\n'
+                         f'hidden: true\n'
+                         f'---\n')
 
 
 def save_embed(plot):
     with open("jekyll/_includes/map.html", 'w', encoding='utf-8') as op:
         save_components(plot, op)
+
+    # This ensures that the right version of BokehJS is always in use
+    # on the jekyll site.
     with open('jekyll/_includes/bokeh_heading.html',
               'w', encoding='utf-8') as op:
         save_script_tags(op)
@@ -481,8 +523,10 @@ def main(embed=True):
     point_key = ('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?'
                  'key=xEyWbUmfIFzRcu729a2M')
 
-    vis = Tabs(tabs=[maptiler_plot(patch_key, "Country", "patch"),
-                     maptiler_plot(point_key, "Protest", "point")])
+    map = Map()
+    map.nation_pages('jekyll/_nations')
+    vis = Tabs(tabs=[map.patch_plot("Country", patch_key),
+                     map.point_plot("Protest", point_key)])
     if embed:
         save_embed(vis)
     else:
@@ -490,13 +534,15 @@ def main(embed=True):
 
 
 if __name__ == "__main__":
-    # We set these variables to keep track of changes
 
     if '--standalone' in sys.argv[1:]:
         print("Generating standalone map...")
         main(embed=False)
     else:
+        # Get the default signal handler for SIGTERM (see below)
+        default_sigterm = signal.getsignal(signal.SIGTERM)
 
+        # We set these variables to keep track of changes
         temp_time = 0
         recent_time = 0
         print("Watching input directory for changes every ten seconds.")
@@ -512,4 +558,10 @@ if __name__ == "__main__":
                 main()
                 print("Map generation complete.")
                 print("Watching for changes...")
+
+            # Listen for SIGTERM from docker while sleeping.
+            signal.signal(signal.SIGTERM, lambda sig, frame: sys.exit(0))
             time.sleep(10)
+            # Ignore SIGTERM while working.
+            signal.signal(signal.SIGTERM, default_sigterm)
+
