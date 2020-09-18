@@ -28,7 +28,7 @@ from bokeh.models import (
     Div,
     # MultiSelect,
     MultiChoice,
-    # ColumnDataSource,
+    ColumnDataSource,
     # TapTool,
     # OpenURL,
     # CustomJSHover,
@@ -327,70 +327,45 @@ def points(plot, div, point_source):
     plot.toolbar.active_inspect = hover
 
 
-def one_filter(plot, point_source, filter_col):
+def filter_values(protest_col):
+    # Some values are comma-separated lists. Drop null values, split lists,
+    # flatten them out, and deduplicate.
+    return set(val.strip()
+               for val_list in protest_col if not pandas.isnull(val_list)
+               for val in val_list.split(','))
+
+
+def one_filter(plot, filter_col, filter_vals, filters_state, max_items):
     # Remove (FX) from column name; probaby temporary
     title = re.sub(r'\s*[(]F[0-9]+[)]\s*', '', filter_col)
 
-    full_source = GeoJSONDataSource(geojson=point_source.geojson)
-
-    # Extract options from values in the data:
-    options = [f['properties'][filter_col]
-               for f in json.loads(point_source.geojson)['features']]
-    # Some values are comma-separated lists; split and unpack, dropping None.
-    options = [opt.strip()
-               for opt_list in options if opt_list is not None
-               for opt in opt_list.split(',')]
     # Deduplicate and turn into name-value pairs, as required by MultiSelect.
-    options = [(opt,) * 2 for opt in sorted(set(options))]
+    options = [(opt,) * 2 for opt in sorted(filter_vals)]
+
     multi_select = MultiChoice(
         title=title,
         width=int(plot.plot_width / 1.5),
         height=int(plot.plot_height / 8),
-        max_items=4,
+        max_items=max_items,
         options=options
     )
 
-    callback = CustomJS(
-        args=dict(source=point_source,
-                  multi_select=multi_select,
-                  full_source=full_source,
-                  filter_col=filter_col),
+    multi_select.js_on_change('value', CustomJS(
+        args=dict(filter_col=filter_col,
+                  filters_state=filters_state),
         code="""
-
-        function filter(select_vals, source, filter, full_source) {
-            for (const [key, value] of Object.entries(source.data)) {
-                while (value.length > 0) {
-                    value.pop();
-                }
-            }
-            for (const [key, value] of Object.entries(full_source.data)) {
-                for (let i = 0; i < value.length; i++) {
-                    if (isIncluded(filter, select_vals, i, full_source)) {
-                        source.data[key].push(value[i]);
-                    }
-                }
+        let select_vals = cb_obj.value;
+        let state_col = filters_state.data[filter_col];
+        for (let i = 0; i < state_col.length; i++) {
+            if (i < select_vals.length) {
+                state_col[i] = select_vals[i];
+            } else {
+                state_col[i] = '';
             }
         }
-
-        function isIncluded(filter, select_vals, index, full_source) {
-            // Slow -- O(i * j) -- but i and j never get much larger than 10
-            for (var i = 0; i < select_vals.length; i++) {
-                let vals = full_source.data[filter][index];
-                vals = vals ? vals.split(',').map(s => s.trim()) : [];
-                for (let j = 0; j < vals.length; j++) {
-                    if (vals[j] == select_vals[i]) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        var select_vals = cb_obj.value;
-        filter(select_vals, source, filter_col, full_source);
-        source.change.emit();
+        filters_state.properties.data.change.emit();
         """)
-    multi_select.js_on_change('value', callback)
+    )
     return multi_select
 
 
@@ -402,12 +377,19 @@ class Map:
         sum_protests(self.protests, self.nations)
 
     def collect_filters(self):
+        """
+        Go through the protest CSV columns, identify the ones with an
+        (F[n]) annotation at the end, and return a list of just those column
+        names, sorted by the number n.
+        """
+
         cols = self.protests.columns
         filters = [f for f in cols if re.search(r'\s*[(]F[0-9]+[)]\s*', f)]
         digits = [int(re.search(r'\s*[(]F(?P<n>[0-9]+)[)]\s*', f)['n'])
                   for f in filters]
         filters = [f for d, f in sorted(zip(digits, filters))]
-        return filters
+
+        return {f: filter_values(self.protests[f]) for f in filters}
 
     def patch_plot(self, title, tile_url, tile_attribution='MapTiler'):
         plot = base_map(tile_url, tile_attribution)
@@ -427,12 +409,106 @@ class Map:
                   height=plot.plot_height,
                   height_policy="fixed")
 
-        point_source = GeoJSONDataSource(geojson=self.protests.to_json())
+        # Create two copies of the protest data. One will be the data to be
+        # displayed, and will be mutable. The other will be an unchanging
+        # collection of all the data. Upon a filter change, the data to
+        # be displayed is emptied and filled with a subset of the full data.
+        protests_json = self.protests.to_json()
+        full_source = GeoJSONDataSource(geojson=protests_json)
+        point_source = GeoJSONDataSource(geojson=protests_json)
         points(plot, div, point_source)
-        select_col = [one_filter(plot, point_source, filter_name)
-                      for filter_name in self.filters]
-        select_col = column(*select_col)
-        map_select = row(plot, select_col)
+
+        # To allow any number of filter tags do this:
+        # max_items = max(len(v) for v in self.filters.values())
+        max_items = 4
+
+        # The filters will modify the points displayed on the map, but
+        # they will do so indirectly. They will modify the content of
+        # filters_state via their callbacks. *Then*, whenever filters_state
+        # is changed, it will modify the point_source based on its knowledge
+        # of the current state of all the filters at once. This way,
+        # the filters don't have to pay any attention to each other.
+        filters_state = ColumnDataSource(pandas.DataFrame({
+            col: [''] * max_items for col in self.filters
+        }))
+        filters_state.js_on_change('data', CustomJS(
+            args=dict(point_source=point_source,
+                      full_source=full_source),
+            code="""
+            let filters_state = cb_obj.data;
+
+            let unpackVals = function(vals) {
+                vals = vals ? vals.split(',').map(s => s.trim()) : [];
+                return new Set(vals);
+            };
+
+            let selectionMatch = function(selections, vals) {
+                vals = unpackVals(vals);
+                selections = new Set(selections);
+                selections.delete('');
+
+                // If no selections have been made, it's a match.
+                if (selections.size === 0) {
+                    return true;
+                }
+
+                // If there is any intersection, it's a match.
+                for (const sel of selections) {
+                    if (vals.has(sel)) {
+                        return true;
+                    }
+                }
+                return false;
+            };
+
+            let filterIndices = function(filters_state, full_source) {
+                let cols = Object.keys(filters_state);
+                let nrows = full_source.data[cols[0]].length;
+                let indices = [];
+
+                for (let i = 0; i < nrows; i++) {
+                    let accept = true;
+                    for (const col of cols) {
+                        if (col === 'index') { continue; }
+                        let selections = filters_state[col];
+                        let vals = full_source.data[col][i];
+                        if (!selectionMatch(selections, vals)) {
+                            accept = false;
+                            break;
+                        }
+                    }
+                    if (accept) {
+                        indices.push(i);
+                    }
+                }
+                return indices;
+            };
+
+            // Empty out the point_source data.
+            for (const [column, values] of Object.entries(point_source.data)) {
+                while (values.length > 0) {
+                    values.pop();
+                }
+            }
+
+            // Refill the point_source data based on the current filter state.
+            let indices = filterIndices(filters_state, full_source);
+            for (const [column, values] of Object.entries(full_source.data)) {
+                for (const i of indices) {
+                    point_source.data[column].push(values[i]);
+                }
+            }
+
+            point_source.change.emit();
+            """))
+
+        filter_stack = [
+            one_filter(plot, filter_name,
+                       filter_vals, filters_state, max_items)
+            for filter_name, filter_vals in self.filters.items()
+        ]
+        filter_stack = column(*filter_stack)
+        map_select = row(plot, filter_stack)
         layout = column(map_select, div)
         return Panel(child=layout, title=title)
 
@@ -564,4 +640,3 @@ if __name__ == "__main__":
             time.sleep(10)
             # Ignore SIGTERM while working.
             signal.signal(signal.SIGTERM, default_sigterm)
-
