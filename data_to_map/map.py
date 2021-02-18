@@ -515,6 +515,7 @@ class Map:
     def nation_pages(self, path):
         for i, name in enumerate(self.nations.index.values):
             perma = name.lower().replace(' ', '-').replace('\'', '-')
+            perma = perma.replace('ô', 'o')  # Côte d'Ivoire causes trouble.
             filename = (Path(path) / Path(perma)).with_suffix('.md')
             title = name
             with open(filename, 'w', encoding='utf-8') as op:
