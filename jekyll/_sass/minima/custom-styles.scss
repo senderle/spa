@@ -1,2 +1,41 @@
 // Placeholder to allow defining custom styles that override everything else.
 // (Use `_sass/minima/custom-variables.scss` to override variable defaults)
+section {
+    display: flex;
+    flex-flow: row;
+  }
+  
+  section.spa-cite {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+  }
+  
+  article.spa-cite {
+    width: 30%;
+    min-width: 100px;
+  }
+  
+  article.spa-cite > h5 {
+    margin: 2px 0px 2px 0px;
+  }
+  
+  section > div {
+    flex-flow: row wrap;
+  }
+  
+  button {
+    flex: 1 auto;
+    margin: 5px;
+  }
+  
+  footer {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+  }
+  
+  footer > article {
+    flex: 1 auto;
+  }
+  
