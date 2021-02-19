@@ -321,4 +321,20 @@ table td { border: 1px solid #e8e8e8; }
 /** Grid helpers */
 @media screen and (min-width: 1200px) { .one-half { width: calc(50% - (30px / 2)); } }
 
+section { display: flex; flex-flow: row; }
+
+section.spa-cite { display: flex; align-items: flex-end; justify-content: flex-end; }
+
+article.spa-cite { width: 30%; min-width: 100px; }
+
+article.spa-cite > h5 { margin: 2px 0px 2px 0px; }
+
+section > div { flex-flow: row wrap; }
+
+button { flex: 1 auto; margin: 5px; }
+
+footer { display: flex; flex-flow: row; justify-content: space-between; }
+
+footer > article { flex: 1 auto; }
+
 /*# sourceMappingURL=style.css.map */

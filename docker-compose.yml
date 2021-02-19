@@ -5,6 +5,7 @@ services:
         image: jekyll/jekyll:latest
         volumes:
             - ./jekyll:/srv/jekyll
+            - ./docs:/srv/jekyll/_site
         command: >
             bash -c "jekyll build
             && jekyll serve --watch --force_polling"
