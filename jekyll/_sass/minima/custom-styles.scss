@@ -4,7 +4,7 @@
 article {
   padding: 5px;
   margin: 5px;
-  border: 1px;
+  border: 0px;
   border-radius: 4px;
   border-style: dashed;
 }
@@ -12,7 +12,7 @@ article {
 section {
   padding: 5px;
   margin: 5px;
-  border: 1px;
+  border: 0px;
   border-radius: 4px;
   border-style: solid;
 }
@@ -25,11 +25,20 @@ div {
 section {
   display: flex;
   flex-flow: row;
+  flex-wrap: wrap;
 }
 
-.spa-country-map img {
-  flex-shrink: 0;
-  min-width: 400px;
+section.spa-country-intro {
+  flex-wrap: wrap-reverse;
+}
+
+article.spa-country-description {
+  min-width: 250px;
+  max-width: 500px;
+}
+
+article.spa-country-map {
+  width: 450px;
 }
 
 section.spa-cite {
@@ -39,8 +48,7 @@ section.spa-cite {
 }
 
 article.spa-cite {
-  width: 30%;
-  min-width: 100px;
+  min-width: 50px;
 }
 
 article.spa-cite > h5 {
