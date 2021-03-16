@@ -321,7 +321,15 @@ table td { border: 1px solid #e8e8e8; }
 /** Grid helpers */
 @media screen and (min-width: 1200px) { .one-half { width: calc(50% - (30px / 2)); } }
 
+article { padding: 5px; margin: 5px; border: 1px; border-radius: 4px; border-style: dashed; }
+
+section { padding: 5px; margin: 5px; border: 1px; border-radius: 4px; border-style: solid; }
+
+div { padding: 5px; margin: 5px; }
+
 section { display: flex; flex-flow: row; }
+
+.spa-country-map img { flex-shrink: 0; min-width: 400px; }
 
 section.spa-cite { display: flex; align-items: flex-end; justify-content: flex-end; }
 

@@ -29,8 +29,8 @@ from bokeh.models import (
     # MultiSelect,
     MultiChoice,
     ColumnDataSource,
-    # TapTool,
-    # OpenURL,
+    TapTool,
+    OpenURL,
     # CustomJSHover,
 )
 from bokeh.layouts import column, row
@@ -112,6 +112,12 @@ def can_be_simplified(val, tol=10.0):
         return False
 
 
+def country_name_perma(name):
+    perma = name.lower().replace(' ', '-').replace('\'', '-')
+    perma = perma.replace('ô', 'o')  # Côte d'Ivoire causes trouble.
+    return perma
+
+
 def load_geojson(simplify_tol=None):
     gdf = gpd.read_file('data_to_map/data/gadm28_countries.geojson')
     gdf = gdf[gdf['geometry'].notna()]
@@ -123,6 +129,7 @@ def load_geojson(simplify_tol=None):
     gdf = gdf[gdf['unregion2'] == 'Africa']
 
     gdf['name'] = gdf['name_engli']
+    gdf['perma'] = gdf['name'].apply(country_name_perma)
     gdf = gdf.set_index('name_engli')
 
     # Project from lat, lon data to web mercator.
@@ -251,7 +258,7 @@ def patches(plot, div, patch_data):
             var rank = properties['properties']['rank'] + 1;
             var name = properties['properties']['name'];
             var protestcount = properties['properties']['protestcount'];
-            div.text = 'Rank: ' +  rank + '<br>' + 'Name: ' + name +
+            div.text = 'Name: ' + name +
                        '<br>' + 'Protest Count: ' + protestcount
             }
     """
@@ -260,6 +267,7 @@ def patches(plot, div, patch_data):
         args=dict(json_source=parsed_geojson, div=div),
         code=code
     )
+
     hover = HoverTool(
         tooltips=None,
         renderers=[render],
@@ -269,9 +277,14 @@ def patches(plot, div, patch_data):
     plot.add_tools(hover)
     plot.toolbar.active_inspect = hover
 
-    '''tap.callback = OpenURL(
-        url='https://wikipedia.com/wiki/@name{safe}'
-    )'''
+    tap = TapTool(
+        renderers=[render],
+        callback=OpenURL(
+            url='/spa/@perma{safe}'
+        )
+    )
+    plot.add_tools(tap)
+
     return plot
 
 
@@ -514,8 +527,7 @@ class Map:
 
     def nation_pages(self, path):
         for i, name in enumerate(self.nations.index.values):
-            perma = name.lower().replace(' ', '-').replace('\'', '-')
-            perma = perma.replace('ô', 'o')  # Côte d'Ivoire causes trouble.
+            perma = country_name_perma(name)
             filename = (Path(path) / Path(perma)).with_suffix('.md')
             title = name
             with open(filename, 'w', encoding='utf-8') as op:
@@ -602,8 +614,8 @@ def main(embed=True):
 
     map = Map()
     map.nation_pages('jekyll/_nations')
-    vis = Tabs(tabs=[map.patch_plot("Country", patch_key),
-                     map.point_plot("Protest", point_key)])
+    vis = Tabs(tabs=[map.patch_plot("Country View", patch_key),
+                     map.point_plot("Protest View", point_key)])
     if embed:
         save_embed(vis)
     else:
