@@ -2,27 +2,37 @@
 // (Use `_sass/minima/custom-variables.scss` to override variable defaults)
 
 article {
-  padding: 5px;
-  margin: 5px;
+  padding: 2px 5px 2px 5px;
+  margin: 2px 5px 2px 5px;
   border: 0px;
   border-radius: 4px;
   border-style: dashed;
 }
 
 section {
-  padding: 5px;
-  margin: 5px;
+  padding: 2px 5px 2px 5px;
+  margin: 2px 5px 2px 5px;
   border: 0px;
   border-radius: 4px;
   border-style: solid;
 }
 
 div {
-  padding: 5px;
+  padding: 2px 5px 2px 5px;
+  margin: 2px 5px 2px 5px;
   margin: 5px;
 }
 
-section {
+header.post-header {
+  margin-left: 35px;
+  margin-bottom: 0px;
+}
+
+h1.post-title {
+  margin-bottom: 0px;
+}
+
+.spa-country section {
   display: flex;
   flex-flow: row;
   flex-wrap: wrap;
@@ -41,14 +51,23 @@ article.spa-country-map {
   width: 450px;
 }
 
+.spa-country img {
+  border: 1px solid;
+}
+
 section.spa-cite {
   display: flex;
   align-items: flex-end;
   justify-content: flex-end;
+  margin: 5px;
+  padding: 5px;
+  max-width: 975px;
 }
 
 article.spa-cite {
   min-width: 50px;
+  margin: 0px;
+  padding: 0px;
 }
 
 article.spa-cite > h5 {

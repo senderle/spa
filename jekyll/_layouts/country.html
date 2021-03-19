@@ -4,13 +4,15 @@ layout: page
 <!-- The way we are accessing the elements in _data/countries.csv is a linear search on an array.
 There is probably a better way to do this, involving hash tables -->
 
+
+
 {% for row in site.data.countries %}
   {% if row.country == page.title %}
     {% assign country_row = row %}
   {% endif %}
 {% endfor %}
 
-    <article>
+    <article class="spa-country">
       <section class="spa-cite">
         <article class="spa-cite">
           <h5>Export Data</h5>
@@ -25,16 +27,30 @@ There is probably a better way to do this, involving hash tables -->
         <article class="spa-country-map">
           <section>
             <img src="{{site.baseurl}}/assets/img/country-images/{{country_row.image_file}}">
-            <!-- <p>Tacos actually microdosing, pour-over semiotics banjo chicharrones retro fanny pack portland everyday carry vinyl typewriter. Tacos PBR&B pork belly, everyday carry ennui pickled sriracha normcore hashtag polaroid single-origin coffee cold-pressed. PBR&B tattooed trust fund twee, leggings salvia iPhone photo booth health goth gastropub hammock.</p> -->
           </section>
         </article>
       </section>
       <section>
         <article>
           <h3>DATA VISUALIZATIONS</h3>
+          {% if country_row.viz_1 != '' %}
           <section>
-            <p>Tacos actually microdosing, pour-over semiotics banjo chicharrones retro fanny pack portland everyday carry vinyl typewriter. Tacos PBR&B pork belly, everyday carry ennui pickled sriracha normcore hashtag polaroid single-origin coffee cold-pressed. PBR&B tattooed trust fund twee, leggings salvia iPhone photo booth health goth gastropub hammock.</p>
+            <article>
+              <section>
+                <img src="{{site.baseurl}}/assets/img/country-line-graphs/{{country_row.viz_1}}">
+              </section>
+            </article>
           </section>
+          {% endif %}
+          {% if country_row.timelapse %}
+          <section>
+            <article>
+              <section>
+                <img src="{{site.baseurl}}/assets/img/country-heatmaps/{{country_row.timelapse}}">
+              </section>
+            </article>
+          </section>
+          {% endif %}
         </article>
       </section>
       <section>
