@@ -28,11 +28,13 @@ from bokeh.models import (
     Div,
     # MultiSelect,
     MultiChoice,
+    Button,
     ColumnDataSource,
     TapTool,
     OpenURL,
     # CustomJSHover,
 )
+from bokeh import events
 from bokeh.layouts import column, row
 from bokeh.palettes import Blues8 as palette
 from bokeh.plotting import figure
@@ -419,8 +421,25 @@ class Map:
                   height_policy="fixed")
 
         patches(plot, div, self.nations)
-        layout = row(plot, div)
-        return Panel(child=layout, title=title)
+
+        callback = CustomJS(
+            name="callback-load-hash-coordinates",
+            args=dict(x=plot.x_range, y=plot.y_range),
+            code="""
+                console.log([x.start, x.end, y.start, y.end].join(','))
+                let data = window.location.hash.slice(1)
+                                 .split(',').map(x => +x);
+                if (data.length == 4 && data.every(x => !isNaN(x))) {
+                    [x.start, x.end, y.start, y.end] = data;
+                }
+            """
+        )
+        button = Button(label="Reset Zoom", button_type="success")
+        button.js_on_event(events.ButtonClick, callback)
+
+        patches_layout = row(plot, div)
+        button_layout = column(button, patches_layout)
+        return Panel(child=button_layout, title=title)
 
     def point_plot(self, title, tile_url, tile_attribution='MapTiler'):
         plot = base_map(tile_url, tile_attribution)
@@ -576,6 +595,7 @@ class Map:
 def save_embed(plot):
     with open("jekyll/_includes/map.html", 'w', encoding='utf-8') as op:
         save_components(plot, op)
+        save_onload_callback(op)
 
     # This ensures that the right version of BokehJS is always in use
     # on the jekyll site.
@@ -623,6 +643,23 @@ def save_components(plot, open_file):
     for c in components(plot):
         open_file.write(c)
         open_file.write('\n')
+
+
+# '  window.addEventListener(\'load\', function(event) { \n'
+def save_onload_callback(open_file):
+    open_file.write("""<script type="text/javascript">
+        window.addEventListener(\'DOMContentLoaded\', function(event) {
+            let checkfunc = window.setInterval(function() {
+                if (window.Bokeh && window.Bokeh.documents) {
+                    let load_hash_coordinates = window.Bokeh.documents[0]
+                        .get_model_by_name(\'callback-load-hash-coordinates\');
+                    load_hash_coordinates.execute();
+                    window.clearInterval(checkfunc);
+                }
+            }, 100);
+        });
+    </script>
+    """)
 
 
 def main(embed=True):
