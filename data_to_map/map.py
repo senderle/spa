@@ -258,7 +258,7 @@ def patches(plot, div, patch_data):
             var rank = properties['properties']['rank'] + 1;
             var name = properties['properties']['name'];
             var protestcount = properties['properties']['protestcount'];
-            div.text = 'Name: ' + name +
+            div.text = name +
                        '<br>' + 'Protest Count: ' + protestcount
             }
     """
@@ -363,6 +363,13 @@ def one_filter(plot, filter_col, filter_vals, filters_state, max_items):
         options=options
     )
 
+    # The state of each multi-select is stored in an intermediate
+    # table; when a given multi-select is changed, the table is updated.
+    # The change to the table triggers a second update, defined below
+    # in `point_plot`. That second update modifies the map based on
+    # the state of all multi-selects simultaneously. This way, individual
+    # multi-select widgets can operate independently without knowing
+    # anything about one another.
     multi_select.js_on_change('value', CustomJS(
         args=dict(filter_col=filter_col,
                   filters_state=filters_state),
@@ -440,7 +447,9 @@ class Map:
         # filters_state via their callbacks. *Then*, whenever filters_state
         # is changed, it will modify the point_source based on its knowledge
         # of the current state of all the filters at once. This way,
-        # the filters don't have to pay any attention to each other.
+        # the filters don't have to pay any attention to each other; their
+        # interaction is managed entirely by the filters_state object, via
+        # this callback.
         filters_state = ColumnDataSource(pandas.DataFrame({
             col: [''] * max_items for col in self.filters
         }))
@@ -450,11 +459,13 @@ class Map:
             code="""
             let filters_state = cb_obj.data;
 
+            // A given protest can have multiple tags separated by commas.
             let unpackVals = function(vals) {
                 vals = vals ? vals.split(',').map(s => s.trim()) : [];
                 return new Set(vals);
             };
 
+            // Do any of the selected tags match any of the protest tags?
             let selectionMatch = function(selections, vals) {
                 vals = unpackVals(vals);
                 selections = new Set(selections);
@@ -474,6 +485,7 @@ class Map:
                 return false;
             };
 
+            // Get the indices of the protests accepted by all filters.
             let filterIndices = function(filters_state, full_source) {
                 let cols = Object.keys(filters_state);
                 let nrows = full_source.data[cols[0]].length;
@@ -525,6 +537,13 @@ class Map:
         layout = column(map_select, div)
         return Panel(child=layout, title=title)
 
+    # Plan for protest incorporation: pick six random protests associated
+    # with the country (using some stable method that always picks the
+    # same protests). Add them to the nation table and write it out to
+    # the jekyll/_data folder. Should be possible to represent them as
+    # protest indices, and then access them via `site.data.protests[ix]`.
+    # Should be possible to use just one column, joining indices together
+    # with some reasonable separator.
     def nation_pages(self, path):
         for i, name in enumerate(self.nations.index.values):
             perma = country_name_perma(name)
