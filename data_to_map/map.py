@@ -26,7 +26,8 @@ from bokeh.models import (
     WMTSTileSource,
     CustomJS,
     Div,
-    # MultiSelect,
+    CheckboxGroup,
+    CheckboxButtonGroup,
     MultiChoice,
     Button,
     ColumnDataSource,
@@ -355,14 +356,12 @@ def one_filter(plot, filter_col, filter_vals, filters_state, max_items):
     title = re.sub(r'\s*[(]F[0-9]+[)]\s*', '', filter_col)
 
     # Deduplicate and turn into name-value pairs, as required by MultiSelect.
-    options = [(opt,) * 2 for opt in sorted(filter_vals)]
-
-    multi_select = MultiChoice(
-        title=title,
-        width=int(plot.plot_width / 1.5),
-        height=int(plot.plot_height / 8),
-        max_items=max_items,
-        options=options
+    #options = [(opt,) * 2 for opt in sorted(filter_vals)]
+    options = list(filter_vals)
+    multi_select = CheckboxGroup(
+        name=title,
+        labels=options,
+        active=[0, 1]
     )
 
     # The state of each multi-select is stored in an intermediate
@@ -372,11 +371,12 @@ def one_filter(plot, filter_col, filter_vals, filters_state, max_items):
     # the state of all multi-selects simultaneously. This way, individual
     # multi-select widgets can operate independently without knowing
     # anything about one another.
-    multi_select.js_on_change('value', CustomJS(
+    multi_select.js_on_click(CustomJS(
         args=dict(filter_col=filter_col,
                   filters_state=filters_state),
         code="""
-        let select_vals = cb_obj.value;
+        console.log(this.active);
+        let select_vals = this.active;
         let state_col = filters_state.data[filter_col];
         for (let i = 0; i < state_col.length; i++) {
             if (i < select_vals.length) {
