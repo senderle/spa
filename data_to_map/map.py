@@ -375,9 +375,16 @@ def one_filter(plot, filter_col, filter_vals, filters_state, max_items):
         args=dict(filter_col=filter_col,
                   filters_state=filters_state),
         code="""
-        console.log(this.active);
-        let select_vals = this.active;
+        let select_vals = [];
+
+        for(let i=0;i<this.labels.length;i++){
+            select_vals[i]=this.labels[this.active[i]];
+        }
+
+        console.log(this.labels, this.active, select_vals);
+
         let state_col = filters_state.data[filter_col];
+
         for (let i = 0; i < state_col.length; i++) {
             if (i < select_vals.length) {
                 state_col[i] = select_vals[i];
@@ -389,7 +396,6 @@ def one_filter(plot, filter_col, filter_vals, filters_state, max_items):
         """)
     )
     return multi_select
-
 
 class Map:
     def __init__(self):
