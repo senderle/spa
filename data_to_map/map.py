@@ -361,7 +361,6 @@ def one_filter(plot, filter_col, filter_vals, filters_state, max_items):
     multi_select = CheckboxGroup(
         name=title,
         labels=options,
-        active=[0, 1]
     )
 
     # The state of each multi-select is stored in an intermediate
