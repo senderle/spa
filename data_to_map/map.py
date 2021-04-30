@@ -352,11 +352,9 @@ def filter_values(protest_col):
                for val_list in protest_col if not pandas.isnull(val_list)
                for val in val_list.split(','))
 
-def toggle(filter_col):
 
-    # title = re.sub(r'\s*[(]F[0-9]+[)]\s*', '', filter_col)
-    # title = filter_col[0];
-    title = re.sub(r'\s*[(]F[0-9]+[)]\s*', '', filter_col[0])
+def toggle(filter_col, filter):
+    title = re.sub(r'\s*[(]F[0-9]+[)]\s*', '', filter_col)
     class_select = title.replace(" ", "")
     title = title.upper()
     select_toggle = Toggle(
@@ -366,41 +364,21 @@ def toggle(filter_col):
         active=True
         )
 
-    select_toggle.js_on_click(CustomJS(
-        code="""
-        if (this.active==false){
-            console.log("hello", this.label, this.name);
-            console.log(document.getElementsByClassName(this.name));
-            let select = document.getElementsByClassName(this.name);
-            select[0].style["display"] = "none !important";
-            select[0].style["visibility"] = "hidden";
-            select[0].style["overflow"] = "hidden";
+    select_toggle.js_link('active', filter, 'visible')
 
-        }else{
-            let select = document.getElementsByClassName(this.name);
-            select[0].style["display"] = "block";
-            select[0].style["visibility"] = "visible";
-
-        }
-
-         """
-        ))
     return select_toggle
+
 
 def one_filter(plot, filter_col, filter_vals, filters_state, max_items):
     # Remove (FX) from column name; probaby temporary
     title = re.sub(r'\s*[(]F[0-9]+[)]\s*', '', filter_col)
     title = title.replace(" ", "")
-    #title = str(title2)
-    #title = list(title);
-    #title = title[0]
-    # Deduplicate and turn into name-value pairs, as required by MultiSelect.
-    #options = [(opt,) * 2 for opt in sorted(filter_vals)]
+
     options = list(filter_vals)
     multi_select = CheckboxGroup(
-        name = title,
+        name=title,
         labels=options,
-        css_classes= [title],
+        css_classes=[title],
         default_size=150,
         height_policy='min',
         visible=True
@@ -417,13 +395,9 @@ def one_filter(plot, filter_col, filter_vals, filters_state, max_items):
         args=dict(filter_col=filter_col,
                   filters_state=filters_state),
         code="""
-        let select_vals = [];
 
-        for(let i=0;i<this.labels.length;i++){
-            select_vals[i]=this.labels[this.active[i]];
-        }
-
-        console.log(this.name, filter_col, this.labels, this.active, select_vals);
+        // Turn the list of active indices into a list of labels.
+        let select_vals = this.active.map((act) => this.labels[act]);
 
         let state_col = filters_state.data[filter_col];
 
@@ -438,6 +412,7 @@ def one_filter(plot, filter_col, filter_vals, filters_state, max_items):
         """)
     )
     return multi_select
+
 
 class Map:
     def __init__(self):
@@ -505,9 +480,10 @@ class Map:
         point_source = GeoJSONDataSource(geojson=protests_json)
         points(plot, div, point_source)
 
-        # To allow any number of filter tags do this:
-        # max_items = max(len(v) for v in self.filters.values())
-        max_items = 4
+        # The number of items is different for different filters, but
+        # they are stored in a table that must have the same number of
+        # items in each column, so we pad the columns with empty strings.
+        max_items = max(len(v) for v in self.filters.values())
 
         # The filters will modify the points displayed on the map, but
         # they will do so indirectly. They will modify the content of
@@ -594,23 +570,15 @@ class Map:
             point_source.change.emit();
             """))
 
-        filter_stack = [
-            
-            one_filter(plot, filter_name,
-                       filter_vals, filters_state, max_items)
-            for filter_name, filter_vals in self.filters.items()
-        ]
-        button_stack = [
-            toggle(filter_name)
-            for filter_name in self.filters.items()
-        ]
         duo_stack = []
-        for i in range(len(button_stack)):
-            duo_stack.append(column(button_stack[i],filter_stack[i]))
-        # button_stack = row(button_stack)
-        # filter_stack = row(filter_stack)
-        duo_col = column(duo_stack)
-        duo_row = row(duo_stack)
+        for filter_name, filter_vals in self.filters.items():
+            filter = one_filter(plot, filter_name, filter_vals,
+                                filters_state, max_items)
+            tog = toggle(filter_name, filter)
+            duo_stack.append(tog)
+            duo_stack.append(filter)
+
+        duo_col = column(*duo_stack)
         map_select = row(duo_col, plot, div)
         layout = column(map_select)
         return Panel(child=layout, title=title)
