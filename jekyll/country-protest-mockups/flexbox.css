@@ -1,0 +1,81 @@
+html {
+  font-family: sans-serif;
+}
+
+body {
+  margin: 0;
+}
+
+header {
+  background: black;
+  height: 100px;
+}
+
+h1 {
+  text-align: center;
+  color: white;
+  line-height: 100px;
+  margin: 0;
+}
+
+article {
+  padding: 10px;
+  margin: 10px;
+  border: 1px;
+  border-radius: 4px;
+  border-style: dashed;
+}
+
+section {
+  padding: 10px;
+  margin: 10px;
+  border: 1px;
+  border-radius: 4px;
+  border-style: solid;
+}
+
+div {
+  padding: 5px;
+  margin: 5px;
+}
+
+/* Add your flexbox CSS below here */
+
+section {
+  display: flex;
+  flex-flow: row;
+}
+
+section.spa-cite {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+article.spa-cite {
+  width: 30%;
+  min-width: 100px;
+}
+
+article.spa-cite > h5 {
+  margin: 2px 0px 2px 0px;
+}
+
+section > div {
+  flex-flow: row wrap;
+}
+
+button {
+  flex: 1 auto;
+  margin: 5px;
+}
+
+footer {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+}
+
+footer > article {
+  flex: 1 auto;
+}

@@ -33,6 +33,7 @@ from bokeh.models import (
     ColumnDataSource,
     TapTool,
     OpenURL,
+    Toggle,
     # CustomJSHover,
 )
 from bokeh import events
@@ -305,7 +306,8 @@ def points(plot, div, point_source):
         var indices = cb_data.index.indices;
 
         if (indices.length != 0) {
-            div.text = "Number of protests: " + indices.length + "<br>"
+            div.text = "<div style='background-color:lightgray; height:800px; padding:10px;'>"
+            +"<h3 style='color:gray'>"+"NUMBER OF PROTESTS: " + indices.length + "</h3>"+"<br>"
             var counter = 0;
             for (var i = 0; i < indices.length; i++) {
                 if (counter == 5) {
@@ -326,10 +328,10 @@ def points(plot, div, point_source):
                 var desc = features['Description of Protest'][protest];
                 var uni = features['School Name'][protest];
                 var type = features['Event Type (F3)'][protest];
-                div.text = div.text + counter + '.' + '<br>' +
-                           'Description: ' + desc + '<br>' + ' Location: ' +
+                div.text = div.text + '<section style="background-color:white; margin:10px; padding:5px">'
+                + counter + '.' + '<br>' + desc + '<br>' + ' Location: ' + '<i class="fas fa-globe-africa">'+'</i>'+
                            uni + '<br>' + ' Type of Protest: ' + type +
-                           '<br>';
+                           '<br>' + '</section>';
                 }
         }
     """)
@@ -350,17 +352,58 @@ def filter_values(protest_col):
                for val_list in protest_col if not pandas.isnull(val_list)
                for val in val_list.split(','))
 
+def toggle(filter_col):
+
+    # title = re.sub(r'\s*[(]F[0-9]+[)]\s*', '', filter_col)
+    # title = filter_col[0];
+    title = re.sub(r'\s*[(]F[0-9]+[)]\s*', '', filter_col[0])
+    class_select = title.replace(" ", "")
+    title = title.upper()
+    select_toggle = Toggle(
+        label=title,
+        width=175,
+        name=class_select,
+        active=True
+        )
+
+    select_toggle.js_on_click(CustomJS(
+        code="""
+        if (this.active==false){
+            console.log("hello", this.label, this.name);
+            console.log(document.getElementsByClassName(this.name));
+            let select = document.getElementsByClassName(this.name);
+            select[0].style["display"] = "none !important";
+            select[0].style["visibility"] = "hidden";
+            select[0].style["overflow"] = "hidden";
+
+        }else{
+            let select = document.getElementsByClassName(this.name);
+            select[0].style["display"] = "block";
+            select[0].style["visibility"] = "visible";
+
+        }
+
+         """
+        ))
+    return select_toggle
 
 def one_filter(plot, filter_col, filter_vals, filters_state, max_items):
     # Remove (FX) from column name; probaby temporary
     title = re.sub(r'\s*[(]F[0-9]+[)]\s*', '', filter_col)
-
+    title = title.replace(" ", "")
+    #title = str(title2)
+    #title = list(title);
+    #title = title[0]
     # Deduplicate and turn into name-value pairs, as required by MultiSelect.
     #options = [(opt,) * 2 for opt in sorted(filter_vals)]
     options = list(filter_vals)
     multi_select = CheckboxGroup(
-        name=title,
+        name = title,
         labels=options,
+        css_classes= [title],
+        default_size=150,
+        height_policy='min',
+        visible=True
     )
 
     # The state of each multi-select is stored in an intermediate
@@ -380,7 +423,7 @@ def one_filter(plot, filter_col, filter_vals, filters_state, max_items):
             select_vals[i]=this.labels[this.active[i]];
         }
 
-        console.log(this.labels, this.active, select_vals);
+        console.log(this.name, filter_col, this.labels, this.active, select_vals);
 
         let state_col = filters_state.data[filter_col];
 
@@ -552,13 +595,24 @@ class Map:
             """))
 
         filter_stack = [
+            
             one_filter(plot, filter_name,
                        filter_vals, filters_state, max_items)
             for filter_name, filter_vals in self.filters.items()
         ]
-        filter_stack = column(*filter_stack)
-        map_select = row(plot, filter_stack)
-        layout = column(map_select, div)
+        button_stack = [
+            toggle(filter_name)
+            for filter_name in self.filters.items()
+        ]
+        duo_stack = []
+        for i in range(len(button_stack)):
+            duo_stack.append(column(button_stack[i],filter_stack[i]))
+        # button_stack = row(button_stack)
+        # filter_stack = row(filter_stack)
+        duo_col = column(duo_stack)
+        duo_row = row(duo_stack)
+        map_select = row(duo_col, plot, div)
+        layout = column(map_select)
         return Panel(child=layout, title=title)
 
     # Plan for protest incorporation: pick six random protests associated
