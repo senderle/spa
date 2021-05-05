@@ -35,7 +35,7 @@ plugins:
   # Render everything in _pages
 include:
   - _pages
-  - _nations
+  - _countries
   - _protests
 
 sass:

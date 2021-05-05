@@ -6,4 +6,4 @@ layout: home
 ---
 
 {% include bokeh_heading.html %}
-{% include protest-map.html %}
+{% include map.html %}

@@ -117,9 +117,14 @@ def can_be_simplified(val, tol=10.0):
 
 
 def country_name_perma(name):
-    perma = name.lower().replace(' ', '-').replace('\'', '-')
-    perma = perma.replace('ô', 'o')  # Côte d'Ivoire causes trouble.
-    return perma
+    urlsafe = country_name_urlsafe(name)
+    return f'countries/{urlsafe}'
+
+
+def country_name_urlsafe(name):
+    urlsafe = name.lower().replace(' ', '-').replace('\'', '-')
+    urlsafe = urlsafe.replace('ô', 'o')  # Côte d'Ivoire causes trouble.
+    return urlsafe
 
 
 def load_geojson(simplify_tol=None):
@@ -284,7 +289,8 @@ def patches(plot, div, patch_data):
     tap = TapTool(
         renderers=[render],
         callback=OpenURL(
-            url='/spa/@perma{safe}'
+            url='/spa/@perma'
+            # url='/spa/countries/mali'
         )
     )
     plot.add_tools(tap)
@@ -611,8 +617,9 @@ class Map:
     # with some reasonable separator.
     def nation_pages(self, path):
         for i, name in enumerate(self.nations.index.values):
+            urlsafe = country_name_urlsafe(name)
             perma = country_name_perma(name)
-            filename = (Path(path) / Path(perma)).with_suffix('.md')
+            filename = (Path(path) / Path(urlsafe)).with_suffix('.md')
             title = name
             with open(filename, 'w', encoding='utf-8') as op:
                 op.write(f'---\n'
@@ -815,7 +822,7 @@ def main(embed=True):
                  'key=xEyWbUmfIFzRcu729a2M')
 
     map = Map()
-    map.nation_pages('jekyll/_nations')
+    map.nation_pages('jekyll/_countries')
 
     patch_vis = map.patch_plot(patch_key)
     point_vis = map.point_plot(point_key)
