@@ -436,7 +436,7 @@ class Map:
 
         return {f: filter_values(self.protests[f]) for f in filters}
 
-    def patch_plot(self, title, tile_url, tile_attribution='MapTiler'):
+    def patch_plot(self, tile_url, tile_attribution='MapTiler'):
         plot = base_map(tile_url, tile_attribution)
 
         div = Div(width=plot.plot_width // 2,
@@ -445,8 +445,8 @@ class Map:
 
         patches(plot, div, self.nations)
 
-        callback = CustomJS(
-            name="callback-load-hash-coordinates",
+        hash_callback = CustomJS(
+            name="callback-load-hash-coordinates-country",
             args=dict(x=plot.x_range, y=plot.y_range),
             code="""
                 console.log([x.start, x.end, y.start, y.end].join(','))
@@ -457,14 +457,16 @@ class Map:
                 }
             """
         )
-        button = Button(label="Reset Zoom", button_type="success")
-        button.js_on_event(events.ButtonClick, callback)
+        hidden_button = Button(label="Reset Zoom",
+                               button_type="success",
+                               visible=False)
+        hidden_button.js_on_event(events.ButtonClick, hash_callback)
 
         patches_layout = row(plot, div)
-        button_layout = column(button, patches_layout)
-        return Panel(child=button_layout, title=title)
+        button_layout = column(hidden_button, patches_layout)
+        return button_layout
 
-    def point_plot(self, title, tile_url, tile_attribution='MapTiler'):
+    def point_plot(self, tile_url, tile_attribution='MapTiler'):
         plot = base_map(tile_url, tile_attribution)
 
         div = Div(width=plot.plot_width // 2,
@@ -479,6 +481,23 @@ class Map:
         full_source = GeoJSONDataSource(geojson=protests_json)
         point_source = GeoJSONDataSource(geojson=protests_json)
         points(plot, div, point_source)
+
+        hash_callback = CustomJS(
+            name="callback-load-hash-coordinates-protests",
+            args=dict(x=plot.x_range, y=plot.y_range),
+            code="""
+                console.log([x.start, x.end, y.start, y.end].join(','))
+                let data = window.location.hash.slice(1)
+                                 .split(',').map(x => +x);
+                if (data.length == 4 && data.every(x => !isNaN(x))) {
+                    [x.start, x.end, y.start, y.end] = data;
+                }
+            """
+        )
+        hidden_button = Button(label="Reset Zoom",
+                               button_type="success",
+                               visible=False)
+        hidden_button.js_on_event(events.ButtonClick, hash_callback)
 
         # The number of items is different for different filters, but
         # they are stored in a table that must have the same number of
@@ -580,8 +599,8 @@ class Map:
 
         duo_col = column(*duo_stack)
         map_select = row(duo_col, plot, div)
-        layout = column(map_select)
-        return Panel(child=layout, title=title)
+        layout = column(hidden_button, map_select)
+        return layout
 
     # Plan for protest incorporation: pick six random protests associated
     # with the country (using some stable method that always picks the
@@ -619,10 +638,20 @@ class Map:
                          f'---\n')
 
 
-def save_embed(plot):
+def save_embeds(tab_plot, patch_plot, point_plot):
     with open("jekyll/_includes/map.html", 'w', encoding='utf-8') as op:
-        save_components(plot, op)
-        save_onload_callback(op)
+        save_components(tab_plot, op)
+        save_onload_callback(op, 'callback-load-hash-coordinates-country')
+
+    with open("jekyll/_includes/country-map.html",
+              'w', encoding='utf-8') as op:
+        save_components(patch_plot, op)
+        save_onload_callback(op, 'callback-load-hash-coordinates-country')
+
+    with open("jekyll/_includes/protest-map.html",
+              'w', encoding='utf-8') as op:
+        save_components(point_plot, op)
+        save_onload_callback(op, 'callback-load-hash-coordinates-protests')
 
     # This ensures that the right version of BokehJS is always in use
     # on the jekyll site.
@@ -631,15 +660,49 @@ def save_embed(plot):
         save_script_tags(op)
 
 
-def save_html(plot):
-    with open("map-standalone.html", 'w', encoding='utf-8') as op:
+def save_html(tab_plot, patch_plot, point_plot):
+    with open("map-tab-standalone.html", 'w', encoding='utf-8') as op:
         op.write("""
         <!DOCTYPE html>
         <html lang="en">
         """)
 
         save_script_tags(op)
-        save_components(plot, op)
+        save_components(tab_plot, op)
+        save_onload_callback(op, 'callback-load-hash-coordinates-country')
+        save_onload_callback(op, 'callback-load-hash-coordinates-protests')
+
+        op.write("""
+        <div id="map-hover-context">
+        </div>
+        </html>
+        """)
+
+    with open("map-country-standalone.html", 'w', encoding='utf-8') as op:
+        op.write("""
+        <!DOCTYPE html>
+        <html lang="en">
+        """)
+
+        save_script_tags(op)
+        save_components(patch_plot, op)
+        save_onload_callback(op, 'callback-load-hash-coordinates-country')
+
+        op.write("""
+        <div id="map-hover-context">
+        </div>
+        </html>
+        """)
+
+    with open("map-protest-standalone.html", 'w', encoding='utf-8') as op:
+        op.write("""
+        <!DOCTYPE html>
+        <html lang="en">
+        """)
+
+        save_script_tags(op)
+        save_components(point_plot, op)
+        save_onload_callback(op, 'callback-load-hash-coordinates-protests')
 
         op.write("""
         <div id="map-hover-context">
@@ -673,18 +736,74 @@ def save_components(plot, open_file):
 
 
 # '  window.addEventListener(\'load\', function(event) { \n'
-def save_onload_callback(open_file):
+def save_onload_callback(open_file, callback_name):
+    """
+    Create a callback that sets an interval to call a function
+    after some delay. The function causes the Bokeh map to zoom
+    to a particular set of coordinates. The delay starts at 16
+    milliseconds, so that if the Boekh document loads quicky,
+    we snappily zoom to the correct location. Otherwise, the
+    interval is reset. But we don't want to bog the browser down
+    with busy-waiting for the document to load, especially if
+    it is broken and will never load! So we double the delay each
+    time -- this is called exponential backoff, and it's closely
+    related to exponential search. I think if anyone learns any
+    computer-science-related thing, it should be this! It's a
+    useful stratgey in all kinds of situations, big and small.
+
+    It has the very nice property that the total time spent waiting
+    is never more than twice what it absolutely must be, while
+    guaranteeing that the amount of time we spend uselessly
+    checking for an update is proportional to the logarithm
+    of the total time spent waiting -- which is, relatively
+    speaking, a very, very small number.
+
+    For example, if we wind up waiting 2 ** 14 milliseconds,
+    or about sixteen seconds, we only check to see what's with
+    the Bokeh document fourteen times! (Actually, it winds up
+    being ten times, since we start at 2 ** 4 = 16 milliseconds.)
+    If we just kept on checking every 16 milliseconds, we'd wind
+    up checking more than a thousand times! So we really cut down
+    on the amount of spammy work we make the browser do without
+    sacrificing all that much usability.
+
+    We could adjust that balance by using a floating point number
+    less than 2 and greater than 1. 1.25 would lead us to check
+    about thirty times in 16 seconds. In 16 minutes, it would
+    lead us to check only about fifty times.
+
+    To see how this translates to a useful strategy in real life,
+    think about nagging. Nagging is really annoying -- for you,
+    for the person you're nagging, for the people who have to
+    listen to you nag, and so on. So imagine you are waiting for
+    someone to do something, and you want to decide how often to
+    nag them. This gives a great answer! Double your wait time
+    each nag. This way, relatively speaking, you barely nag at
+    all, but you only wait, at worst, twice as long as you would
+    if you were nagging the person every thirty goddamn minutes.
+
+    Pretty great, right?
+    """
     open_file.write("""<script type="text/javascript">
-        window.addEventListener(\'DOMContentLoaded\', function(event) {
-            let checkfunc = window.setInterval(function() {
-                if (window.Bokeh && window.Bokeh.documents) {
-                    let load_hash_coordinates = window.Bokeh.documents[0]
-                        .get_model_by_name(\'callback-load-hash-coordinates\');
-                    load_hash_coordinates.execute();
-                    window.clearInterval(checkfunc);
-                }
-            }, 100);
-        });
+      window.addEventListener('DOMContentLoaded', function(event) {
+        let delay = 16;
+        console.log('delay ', delay);
+        let intervalfunc = function() {
+          window.clearInterval(checkfunc);
+          console.log('delay ', delay);
+          if (window.Bokeh && window.Bokeh.documents) {
+            let load_hash_coordinates = window.Bokeh.documents[0]
+              .get_model_by_name('""" + callback_name + """');
+            load_hash_coordinates.execute();
+            console.log('swonderful, smarvelous');
+          } else if (delay < 2 ** 20) {
+            delay = delay * 2;
+            checkfunc = window.setInterval(intervalfunc, delay);
+            console.log('resetting interval with delay ', delay);
+          }
+        };
+        let checkfunc = window.setInterval(intervalfunc, delay);
+      });
     </script>
     """)
 
@@ -697,12 +816,19 @@ def main(embed=True):
 
     map = Map()
     map.nation_pages('jekyll/_nations')
-    vis = Tabs(tabs=[map.patch_plot("Country View", patch_key),
-                     map.point_plot("Protest View", point_key)])
+
+    patch_vis = map.patch_plot(patch_key)
+    point_vis = map.point_plot(point_key)
+    tab_vis = Tabs(tabs=[Panel(child=patch_vis, title="Country View"),
+                         Panel(child=point_vis, title="Protest View")])
+    # patch_vis = Tabs(tabs=[map.patch_plot("Country View", patch_key),
+    #                        map.patch_plot("Country View Wtf", patch_key)])
+    # point_vis = Tabs(tabs=[map.point_plot("Protest View", point_key),
+    #                        map.point_plot("Protest View Wtf", point_key)])
     if embed:
-        save_embed(vis)
+        save_embeds(tab_vis, patch_vis, point_vis)
     else:
-        save_html(vis)
+        save_html(tab_vis, patch_vis, point_vis)
 
 
 if __name__ == "__main__":
