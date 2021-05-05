@@ -821,10 +821,7 @@ def main(embed=True):
     point_vis = map.point_plot(point_key)
     tab_vis = Tabs(tabs=[Panel(child=patch_vis, title="Country View"),
                          Panel(child=point_vis, title="Protest View")])
-    # patch_vis = Tabs(tabs=[map.patch_plot("Country View", patch_key),
-    #                        map.patch_plot("Country View Wtf", patch_key)])
-    # point_vis = Tabs(tabs=[map.point_plot("Protest View", point_key),
-    #                        map.point_plot("Protest View Wtf", point_key)])
+
     if embed:
         save_embeds(tab_vis, patch_vis, point_vis)
     else:
