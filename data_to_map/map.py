@@ -304,7 +304,6 @@ def points(plot, div, point_source):
                         code="""
         var features = source['data'];
         var indices = cb_data.index.indices;
-
         if (indices.length != 0) {
             div.text = "<div style='background-color:lightgray; height:800px; padding:10px;'>"
             +"<h3 style='color:gray'>"+"NUMBER OF PROTESTS: " + indices.length + "</h3>"+"<br>"
@@ -326,11 +325,11 @@ def points(plot, div, point_source):
                 }
                 var protest = indices[i];
                 var desc = features['Description of Protest'][protest];
-                var uni = features['School Name'][protest];
+                var uni = features['School Name'][protest].toUpperCase();
                 var type = features['Event Type (F3)'][protest];
                 div.text = div.text + '<section style="background-color:white; margin:10px; padding:5px">'
-                + counter + '.' + '<br>' + desc + '<br>' + ' Location: ' + '<i class="fas fa-globe-africa">'+'</i>'+
-                           uni + '<br>' + ' Type of Protest: ' + type +
+                 + desc + '<br>' + '<div style="background-color:#D9F8FA; padding:3px; display:inline-block; border-radius:4px">' +'<i class="fa fa-globe-africa" style="padding:3px">'+'</i>'+
+                          " " + uni + '</div>'+'<br>' + '<div style="background-color:#F7D9FA; padding:3px; display:inline-block; border-radius:4px">' + type +'</div>' +
                            '<br>' + '</section>';
                 }
         }
