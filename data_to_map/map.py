@@ -236,14 +236,14 @@ def patches(plot, div, patch_data):
     patches = MultiPolygons(
         xs='xs', ys='ys',
         fill_color={'field': 'rank', 'transform': color_mapper},
-        fill_alpha=0.5, line_color="lightblue", line_alpha=0.3,
-        line_width=3.0
+        fill_alpha=0.5, line_color="blue", line_alpha=0.2,
+        line_width=2.5
     )
     hover_patches = MultiPolygons(
         xs='xs', ys='ys',
         fill_color={'field': 'rank', 'transform': color_mapper},
-        fill_alpha=0.5, line_color="purple", line_alpha=0.8,
-        line_width=3.0
+        fill_alpha=0.5, line_color="blue", line_alpha=0.5,
+        line_width=3.5
     )
     patch_source = geodf_patches_to_geods(patch_data)
     render = plot.add_glyph(patch_source,
@@ -262,8 +262,8 @@ def patches(plot, div, patch_data):
             var rank = properties['properties']['rank'] + 1;
             var name = properties['properties']['name'];
             var protestcount = properties['properties']['protestcount'];
-            div.text = name +
-                       '<br>' + 'Protest Count: ' + protestcount
+            div.text = '<h2 class="spa-header">' + '<i class="fa fa-globe-africa" style="padding:5px">' +'</i>' + name.toUpperCase() +'</h2>' +
+                       '<br>' + '<h3 class="spa-header">'+ 'Protest Count: ' + protestcount +'</h3>'
             }
     """
 
@@ -294,10 +294,12 @@ def patches(plot, div, patch_data):
 
 def points(plot, div, point_source):
     point = Circle(x='x', y='y', fill_color="purple", fill_alpha=0.5,
-                   line_color="gray", line_alpha=0.5, size=6, name="points")
+                   line_color="purple", line_alpha=0.5, size=6, name="points")
+    hover_point = Circle(x='x', y='y', fill_color="red", fill_alpha=0.5,
+                   line_color="red", line_alpha=0.5, size=12, name="points")
     cr = plot.add_glyph(point_source,
                         point,
-                        hover_glyph=point,
+                        hover_glyph=hover_point,
                         selection_glyph=point,
                         name="points")
     callback = CustomJS(args=dict(source=point_source, div=div),

@@ -355,4 +355,8 @@ footer { display: flex; flex-flow: row; justify-content: space-between; }
 
 footer > article { flex: 1 auto; }
 
+.spa-header { color: gray; }
+
+.bk { cursor: pointer; }
+
 /*# sourceMappingURL=style.css.map */
