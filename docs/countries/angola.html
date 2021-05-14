@@ -13,7 +13,7 @@
 <meta property="og:url" content="http://0.0.0.0:4000/spa/countries/angola" />
 <meta property="og:site_name" content="Student Protests in Africa" />
 <script type="application/ld+json">
-{"url":"http://0.0.0.0:4000/spa/countries/angola","@type":"WebPage","description":"A map showing patterns of student protest in Africa.","headline":"Angola","@context":"https://schema.org"}</script>
+{"url":"http://0.0.0.0:4000/spa/countries/angola","description":"A map showing patterns of student protest in Africa.","@type":"WebPage","headline":"Angola","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/spa/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://0.0.0.0:4000/spa/feed.xml" title="Student Protests in Africa" />
 </head>
@@ -43,33 +43,43 @@
 
   <div class="post-content">
     <!-- The way we are accessing the elements in _data/countries.csv is a linear search on an array.
-There is probably a better way to do this, involving hash tables -->
+     There is surely a better way to do this, involving hash tables, surely, no?? -->
 
-
+<!-- It's also not 100% clear to me why we can't use the simple indexing approach that we use for protests...
+     # assign protest_row = site.data.protests[page.row_index]
+     Like that, why doesn't that work? I mean, it factually doesn't. But why? Why not? Arrrgghhh. -->
 
 
 
     <article class="spa-country">
+
       <section class="spa-cite">
         <article class="spa-cite">
           <h5>Export Data</h5>
         </article>
       </section>
+
       <section class="spa-country-intro">
+
         <article class="spa-country-description">
           <section>
             <p>Angola has a population of 18 million; about 59% of Angolan reside in urban spaces. Angola's government is a republic, but its democracy is held by a single party. Angola's major exports are oil, diamonds, and gas. Its capital city is Luanda has a population of 4.5 million. The country was under Portuguese influence and rule for over 500 years. An anti-colonial struggle began in 1961 for independence, which was achieved in 1975. Angola's new constitution established a one-party state headed by a president, which in 1977 was declared a Marxist-Leninist vanguard party. The country was soon in a civil war that lasted 27 years and ended in 2002. The government amended their 1975 Consitution in 1992, which produced a multiparty system, abolished the death penalty, and prioritized the people's rights. The constitution was amended again in 2010 to eliminate the prime minister post and establish a vice president position. The president is limited to two five-year terms, and the National Assembly holds the legislative power in the country. Angola is divided into 18 provinces.</p>
           </section>
         </article>
+
         <article class="spa-country-map">
           <section>
             <img src="/spa/assets/img/country-images/angola_img.png">
           </section>
         </article>
+
       </section>
+
       <section>
+
         <article>
           <h3>DATA VISUALIZATIONS</h3>
+
           
           <section>
             <article>
@@ -79,6 +89,7 @@ There is probably a better way to do this, involving hash tables -->
             </article>
           </section>
           
+
           
           <section>
             <article>
@@ -88,8 +99,11 @@ There is probably a better way to do this, involving hash tables -->
             </article>
           </section>
           
+
         </article>
+
       </section>
+
       <section>
         <article>
           <h3>PROTESTS</h3>
@@ -123,14 +137,18 @@ There is probably a better way to do this, involving hash tables -->
           </section>
         </article>
       </section>
+
     </article>
+
     <footer>
       <article>
         <h4>SPA FOOTER</h4>
+        <p>This should go away once the footer for the whole site is correctly updated.</p>
       </article>
       <article>
-        <h4>CONTRIBUTE</h4> 
-      </article> 
+        <h4>CONTRIBUTE</h4>
+        <p>This should be part of the footer for the whole site, and then this fake footer should go away; leaving it here as a reminder for now though.</p>
+      </article>
     </footer>
 
   </div>

@@ -1,6 +1,6 @@
 ---
 layout: country
-row_index: 41
+row_index: 19
 permalink: countries/gambia
 title: Gambia
 hidden: true

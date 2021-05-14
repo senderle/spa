@@ -13,7 +13,7 @@
 <meta property="og:url" content="http://0.0.0.0:4000/spa/countries/gabon" />
 <meta property="og:site_name" content="Student Protests in Africa" />
 <script type="application/ld+json">
-{"url":"http://0.0.0.0:4000/spa/countries/gabon","@type":"WebPage","description":"A map showing patterns of student protest in Africa.","headline":"Gabon","@context":"https://schema.org"}</script>
+{"url":"http://0.0.0.0:4000/spa/countries/gabon","description":"A map showing patterns of student protest in Africa.","@type":"WebPage","headline":"Gabon","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/spa/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://0.0.0.0:4000/spa/feed.xml" title="Student Protests in Africa" />
 </head>
@@ -43,33 +43,43 @@
 
   <div class="post-content">
     <!-- The way we are accessing the elements in _data/countries.csv is a linear search on an array.
-There is probably a better way to do this, involving hash tables -->
+     There is surely a better way to do this, involving hash tables, surely, no?? -->
 
-
+<!-- It's also not 100% clear to me why we can't use the simple indexing approach that we use for protests...
+     # assign protest_row = site.data.protests[page.row_index]
+     Like that, why doesn't that work? I mean, it factually doesn't. But why? Why not? Arrrgghhh. -->
 
 
 
     <article class="spa-country">
+
       <section class="spa-cite">
         <article class="spa-cite">
           <h5>Export Data</h5>
         </article>
       </section>
+
       <section class="spa-country-intro">
+
         <article class="spa-country-description">
           <section>
             <p>Gabon is in the Ogooue River basin and its tributaries. It also holds a dense tropical rainforest with more than 250 species of trees and is home to 4/5ths of the world's chimpanzees and gorillas. Gabon has a population of 1.4 million, 86% of whom live in urban spaces. The capital city is Libreville is home to 604,000 people. This city is one of the most expensive to visit in the world. Gabon is one of the continent's most prosperous countries due to its vast oil reserves, much of which is centered in Port GentrThe oil industry has also helped sustain the rainforest as most development has not been agricultural. Gabon is home to more than 40 ethnic groups. Originally colonized by the French, the French language is still spoken in Gabon. The Roman Catholic influence remains as well. Gabon achieved independence in 1960 and was ruled for 42 years under the oppressive rule of Omar Bongo Ondimba, starting in 1967. Ondimba established the Pari democratique gabonaise (PDG) as the only legitimate party. Protests against Bongo were met with violent repression, and the regime maintains close relations with France. In 1991 a financial crisis pushed Bongo to established a multiparty system, though he continues to be elected. He died in power in 2009 with 183 million dollars in his bank account, and his son took control and was re-elected in 2016.</p>
           </section>
         </article>
+
         <article class="spa-country-map">
           <section>
             <img src="/spa/assets/img/country-images/gabon_img.png">
           </section>
         </article>
+
       </section>
+
       <section>
+
         <article>
           <h3>DATA VISUALIZATIONS</h3>
+
           
           <section>
             <article>
@@ -79,9 +89,13 @@ There is probably a better way to do this, involving hash tables -->
             </article>
           </section>
           
+
           
+
         </article>
+
       </section>
+
       <section>
         <article>
           <h3>PROTESTS</h3>
@@ -115,14 +129,18 @@ There is probably a better way to do this, involving hash tables -->
           </section>
         </article>
       </section>
+
     </article>
+
     <footer>
       <article>
         <h4>SPA FOOTER</h4>
+        <p>This should go away once the footer for the whole site is correctly updated.</p>
       </article>
       <article>
-        <h4>CONTRIBUTE</h4> 
-      </article> 
+        <h4>CONTRIBUTE</h4>
+        <p>This should be part of the footer for the whole site, and then this fake footer should go away; leaving it here as a reminder for now though.</p>
+      </article>
     </footer>
 
   </div>

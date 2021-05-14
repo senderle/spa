@@ -13,7 +13,7 @@
 <meta property="og:url" content="http://0.0.0.0:4000/spa/countries/central-african-republic" />
 <meta property="og:site_name" content="Student Protests in Africa" />
 <script type="application/ld+json">
-{"url":"http://0.0.0.0:4000/spa/countries/central-african-republic","@type":"WebPage","description":"A map showing patterns of student protest in Africa.","headline":"Central African Republic","@context":"https://schema.org"}</script>
+{"url":"http://0.0.0.0:4000/spa/countries/central-african-republic","description":"A map showing patterns of student protest in Africa.","@type":"WebPage","headline":"Central African Republic","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/spa/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://0.0.0.0:4000/spa/feed.xml" title="Student Protests in Africa" />
 </head>
@@ -43,33 +43,43 @@
 
   <div class="post-content">
     <!-- The way we are accessing the elements in _data/countries.csv is a linear search on an array.
-There is probably a better way to do this, involving hash tables -->
+     There is surely a better way to do this, involving hash tables, surely, no?? -->
 
-
+<!-- It's also not 100% clear to me why we can't use the simple indexing approach that we use for protests...
+     # assign protest_row = site.data.protests[page.row_index]
+     Like that, why doesn't that work? I mean, it factually doesn't. But why? Why not? Arrrgghhh. -->
 
 
 
     <article class="spa-country">
+
       <section class="spa-cite">
         <article class="spa-cite">
           <h5>Export Data</h5>
         </article>
       </section>
+
       <section class="spa-country-intro">
+
         <article class="spa-country-description">
           <section>
             <p>Central African Republic has a population of 4 million, with 39% of that population living in urban areas. The capital city is Bangui. Colonized by France, the country's national language is Sangho, but the language used in the education system is French. Central African Republic achieved independence in 1960. In 1965 Jean-Bedel Bokassa took control in an authoritarian rule. He crowned himself Emperor Bokassa I. In 1979 France sent troops to remove him, and his successor was ousted in a coup led by General Andre Kolingba, who was lost a presidential election in 1993 to Ange-Félix Patassé. Patasse was removed from power in 2003, after a mutiny by the army in 1996 and a coup attempt in 2000. Since then, there have been two more rebellions in Chad's country and violence, resulting in 300,000 fleeing their homes. In 2011 a disputed election took place and resulting in violence between Christian and Muslim factions. In April 2014, 12,000 UN peacekeepers were deployed, and in 2016 a President and Prime Minister were appointed to restore security and boost the economy.</p>
           </section>
         </article>
+
         <article class="spa-country-map">
           <section>
             <img src="/spa/assets/img/country-images/central-african-republic_img.png">
           </section>
         </article>
+
       </section>
+
       <section>
+
         <article>
           <h3>DATA VISUALIZATIONS</h3>
+
           
           <section>
             <article>
@@ -79,9 +89,13 @@ There is probably a better way to do this, involving hash tables -->
             </article>
           </section>
           
+
           
+
         </article>
+
       </section>
+
       <section>
         <article>
           <h3>PROTESTS</h3>
@@ -115,14 +129,18 @@ There is probably a better way to do this, involving hash tables -->
           </section>
         </article>
       </section>
+
     </article>
+
     <footer>
       <article>
         <h4>SPA FOOTER</h4>
+        <p>This should go away once the footer for the whole site is correctly updated.</p>
       </article>
       <article>
-        <h4>CONTRIBUTE</h4> 
-      </article> 
+        <h4>CONTRIBUTE</h4>
+        <p>This should be part of the footer for the whole site, and then this fake footer should go away; leaving it here as a reminder for now though.</p>
+      </article>
     </footer>
 
   </div>

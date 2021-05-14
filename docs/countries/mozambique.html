@@ -13,7 +13,7 @@
 <meta property="og:url" content="http://0.0.0.0:4000/spa/countries/mozambique" />
 <meta property="og:site_name" content="Student Protests in Africa" />
 <script type="application/ld+json">
-{"url":"http://0.0.0.0:4000/spa/countries/mozambique","@type":"WebPage","description":"A map showing patterns of student protest in Africa.","headline":"Mozambique","@context":"https://schema.org"}</script>
+{"url":"http://0.0.0.0:4000/spa/countries/mozambique","description":"A map showing patterns of student protest in Africa.","@type":"WebPage","headline":"Mozambique","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/spa/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://0.0.0.0:4000/spa/feed.xml" title="Student Protests in Africa" />
 </head>
@@ -43,33 +43,43 @@
 
   <div class="post-content">
     <!-- The way we are accessing the elements in _data/countries.csv is a linear search on an array.
-There is probably a better way to do this, involving hash tables -->
+     There is surely a better way to do this, involving hash tables, surely, no?? -->
 
-
+<!-- It's also not 100% clear to me why we can't use the simple indexing approach that we use for protests...
+     # assign protest_row = site.data.protests[page.row_index]
+     Like that, why doesn't that work? I mean, it factually doesn't. But why? Why not? Arrrgghhh. -->
 
 
 
     <article class="spa-country">
+
       <section class="spa-cite">
         <article class="spa-cite">
           <h5>Export Data</h5>
         </article>
       </section>
+
       <section class="spa-country-intro">
+
         <article class="spa-country-description">
           <section>
             <p>This southern country is home to 22 million people, 1.8 of whom live in Maputo, the capital city. The Zambezi River divides the country along with its various diverse ethnic groups. Portugal colonized Mozambique they achieved independence in 1975. The Frente de Libertacao de Mocambique (Frelimo) party. The white governments of South Africa and Rhodesia funded a guerilla group, Renamo, which became one of the world's most violent guerrilla groups. In 1992 Mozambique suffered through a devastating civil war between Frelimo and Renamo, which destroyed the country's social infrastructure, destroying schools, clinics, and hospitals. The war ended in a peace accord after 900,000 died. In 1994 Frelimo, headed by Joaquim Chissano, won a victory over Renamo. Frelimo stayed in power through elections in 2004 and 2009.</p>
           </section>
         </article>
+
         <article class="spa-country-map">
           <section>
             <img src="/spa/assets/img/country-images/mozambique_img.png">
           </section>
         </article>
+
       </section>
+
       <section>
+
         <article>
           <h3>DATA VISUALIZATIONS</h3>
+
           
           <section>
             <article>
@@ -79,6 +89,7 @@ There is probably a better way to do this, involving hash tables -->
             </article>
           </section>
           
+
           
           <section>
             <article>
@@ -88,8 +99,11 @@ There is probably a better way to do this, involving hash tables -->
             </article>
           </section>
           
+
         </article>
+
       </section>
+
       <section>
         <article>
           <h3>PROTESTS</h3>
@@ -123,14 +137,18 @@ There is probably a better way to do this, involving hash tables -->
           </section>
         </article>
       </section>
+
     </article>
+
     <footer>
       <article>
         <h4>SPA FOOTER</h4>
+        <p>This should go away once the footer for the whole site is correctly updated.</p>
       </article>
       <article>
-        <h4>CONTRIBUTE</h4> 
-      </article> 
+        <h4>CONTRIBUTE</h4>
+        <p>This should be part of the footer for the whole site, and then this fake footer should go away; leaving it here as a reminder for now though.</p>
+      </article>
     </footer>
 
   </div>

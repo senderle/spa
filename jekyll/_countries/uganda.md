@@ -1,6 +1,6 @@
 ---
 layout: country
-row_index: 24
+row_index: 54
 permalink: countries/uganda
 title: Uganda
 hidden: true

@@ -13,7 +13,7 @@
 <meta property="og:url" content="http://0.0.0.0:4000/spa/countries/guinea" />
 <meta property="og:site_name" content="Student Protests in Africa" />
 <script type="application/ld+json">
-{"url":"http://0.0.0.0:4000/spa/countries/guinea","@type":"WebPage","description":"A map showing patterns of student protest in Africa.","headline":"Guinea","@context":"https://schema.org"}</script>
+{"url":"http://0.0.0.0:4000/spa/countries/guinea","description":"A map showing patterns of student protest in Africa.","@type":"WebPage","headline":"Guinea","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/spa/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://0.0.0.0:4000/spa/feed.xml" title="Student Protests in Africa" />
 </head>
@@ -43,33 +43,43 @@
 
   <div class="post-content">
     <!-- The way we are accessing the elements in _data/countries.csv is a linear search on an array.
-There is probably a better way to do this, involving hash tables -->
+     There is surely a better way to do this, involving hash tables, surely, no?? -->
 
-
+<!-- It's also not 100% clear to me why we can't use the simple indexing approach that we use for protests...
+     # assign protest_row = site.data.protests[page.row_index]
+     Like that, why doesn't that work? I mean, it factually doesn't. But why? Why not? Arrrgghhh. -->
 
 
 
     <article class="spa-country">
+
       <section class="spa-cite">
         <article class="spa-cite">
           <h5>Export Data</h5>
         </article>
       </section>
+
       <section class="spa-country-intro">
+
         <article class="spa-country-description">
           <section>
             <p>Guinea is home to 9.6 million people, 35% of whom live in urban areas. The capital city is Conakry, where 2.1 million people live. Colonized by the French, Guinea achieved independence in 1958; led by Sekou Toure, whose Marxist inspired ideals shifted into a repressive regime until he died in 1984. The army took power led by Colonel Lansana Conte, who established new fundamental law and presidential elections, which he won in 1993. Conte withstood a coup attempt in 1996 and won another presidential election in 1998 and again in 2002, with 96% of the vote. Conte's enduring power led to a widespread revolt by 2007, forcing Conte to share power with prime minister Lansana Kouyate. Within a few hours of his death in 2008, a military coup took over until 2010 when civilian rule was established with the narrow victory of Alpha Conde, who was reelected in 2015. Guinea has long struggled with widespread poverty and lack of healthcare. In 2013 the first Ebola cases were thought to have emerged in Guinea; over 2,500 deaths have been reported as of October 2015.</p>
           </section>
         </article>
+
         <article class="spa-country-map">
           <section>
             <img src="/spa/assets/img/country-images/guinea_img.png">
           </section>
         </article>
+
       </section>
+
       <section>
+
         <article>
           <h3>DATA VISUALIZATIONS</h3>
+
           
           <section>
             <article>
@@ -79,6 +89,7 @@ There is probably a better way to do this, involving hash tables -->
             </article>
           </section>
           
+
           
           <section>
             <article>
@@ -88,8 +99,11 @@ There is probably a better way to do this, involving hash tables -->
             </article>
           </section>
           
+
         </article>
+
       </section>
+
       <section>
         <article>
           <h3>PROTESTS</h3>
@@ -123,14 +137,18 @@ There is probably a better way to do this, involving hash tables -->
           </section>
         </article>
       </section>
+
     </article>
+
     <footer>
       <article>
         <h4>SPA FOOTER</h4>
+        <p>This should go away once the footer for the whole site is correctly updated.</p>
       </article>
       <article>
-        <h4>CONTRIBUTE</h4> 
-      </article> 
+        <h4>CONTRIBUTE</h4>
+        <p>This should be part of the footer for the whole site, and then this fake footer should go away; leaving it here as a reminder for now though.</p>
+      </article>
     </footer>
 
   </div>

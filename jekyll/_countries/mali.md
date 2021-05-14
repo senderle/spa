@@ -1,6 +1,6 @@
 ---
 layout: country
-row_index: 46
+row_index: 29
 permalink: countries/mali
 title: Mali
 hidden: true

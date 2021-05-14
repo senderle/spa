@@ -13,7 +13,7 @@
 <meta property="og:url" content="http://0.0.0.0:4000/spa/countries/egypt" />
 <meta property="og:site_name" content="Student Protests in Africa" />
 <script type="application/ld+json">
-{"url":"http://0.0.0.0:4000/spa/countries/egypt","@type":"WebPage","description":"A map showing patterns of student protest in Africa.","headline":"Egypt","@context":"https://schema.org"}</script>
+{"url":"http://0.0.0.0:4000/spa/countries/egypt","description":"A map showing patterns of student protest in Africa.","@type":"WebPage","headline":"Egypt","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/spa/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://0.0.0.0:4000/spa/feed.xml" title="Student Protests in Africa" />
 </head>
@@ -43,33 +43,43 @@
 
   <div class="post-content">
     <!-- The way we are accessing the elements in _data/countries.csv is a linear search on an array.
-There is probably a better way to do this, involving hash tables -->
+     There is surely a better way to do this, involving hash tables, surely, no?? -->
 
-
+<!-- It's also not 100% clear to me why we can't use the simple indexing approach that we use for protests...
+     # assign protest_row = site.data.protests[page.row_index]
+     Like that, why doesn't that work? I mean, it factually doesn't. But why? Why not? Arrrgghhh. -->
 
 
 
     <article class="spa-country">
+
       <section class="spa-cite">
         <article class="spa-cite">
           <h5>Export Data</h5>
         </article>
       </section>
+
       <section class="spa-country-intro">
+
         <article class="spa-country-description">
           <section>
             <p>Egypt is located in the northeastern region of Africa. The Nile River and valley run through the country. With a rich history, this region is home to one of the world's earliest urban societies. Pharotic Egypt flourished for over 3,000 years. In 323 BCE, Egypt was conquered by Alexander the Great, making it a crucial part of the Hellenistic World. It was also part of the Roman Empire for many centuries. Egypt's influence in the Arab and Islamic world is unparalleled, especially in areas of intellectual and cultural development and traditions. In 1517 the Ottoman Empire defeated the Egyptian Mamluks and took control over Egypt until 1788 when Napoleon I led the French army and took control of the country. French occupation ended in 1801 but opened the door for more European colonization. Egypt's location has long made it a strategic location for trade routes between Africa, Europe, and Asia. In 1869, the Suez Canal, which connects the Mediterranean Sea and the Red Sea, sedimented Egypt's strategic position. This only intensified European desire to colonize there, and in 1882 the British occupied Egypt until after World War II. In 1952 a military coup put a revolutionary regime that promoted Pan-Arab nationalism and socialism into power. Egypt has an authoritarian political system that was dominated by a president, ruling party, and security services. This oppressive system, along with mass demonstrations in neighboring countries, led to Arab Spring protests in Egypt in 2011. These protests forced President Hosni Mubarak to leave office, and the government transferred power to a new government in 2012, where the country formed a new constitution. By 2013 another series of mass demonstrations emerged, and this government was overthrown when the military intervened to remove the elected president Mohamed Morsi. He was a member of the Islamist Muslim Brotherhood group.</p>
           </section>
         </article>
+
         <article class="spa-country-map">
           <section>
             <img src="/spa/assets/img/country-images/egypt_img.png">
           </section>
         </article>
+
       </section>
+
       <section>
+
         <article>
           <h3>DATA VISUALIZATIONS</h3>
+
           
           <section>
             <article>
@@ -79,6 +89,7 @@ There is probably a better way to do this, involving hash tables -->
             </article>
           </section>
           
+
           
           <section>
             <article>
@@ -88,8 +99,11 @@ There is probably a better way to do this, involving hash tables -->
             </article>
           </section>
           
+
         </article>
+
       </section>
+
       <section>
         <article>
           <h3>PROTESTS</h3>
@@ -123,14 +137,18 @@ There is probably a better way to do this, involving hash tables -->
           </section>
         </article>
       </section>
+
     </article>
+
     <footer>
       <article>
         <h4>SPA FOOTER</h4>
+        <p>This should go away once the footer for the whole site is correctly updated.</p>
       </article>
       <article>
-        <h4>CONTRIBUTE</h4> 
-      </article> 
+        <h4>CONTRIBUTE</h4>
+        <p>This should be part of the footer for the whole site, and then this fake footer should go away; leaving it here as a reminder for now though.</p>
+      </article>
     </footer>
 
   </div>

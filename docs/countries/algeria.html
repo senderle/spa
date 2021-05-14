@@ -13,7 +13,7 @@
 <meta property="og:url" content="http://0.0.0.0:4000/spa/countries/algeria" />
 <meta property="og:site_name" content="Student Protests in Africa" />
 <script type="application/ld+json">
-{"url":"http://0.0.0.0:4000/spa/countries/algeria","@type":"WebPage","description":"A map showing patterns of student protest in Africa.","headline":"Algeria","@context":"https://schema.org"}</script>
+{"url":"http://0.0.0.0:4000/spa/countries/algeria","description":"A map showing patterns of student protest in Africa.","@type":"WebPage","headline":"Algeria","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/spa/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://0.0.0.0:4000/spa/feed.xml" title="Student Protests in Africa" />
 </head>
@@ -43,33 +43,43 @@
 
   <div class="post-content">
     <!-- The way we are accessing the elements in _data/countries.csv is a linear search on an array.
-There is probably a better way to do this, involving hash tables -->
+     There is surely a better way to do this, involving hash tables, surely, no?? -->
 
-
+<!-- It's also not 100% clear to me why we can't use the simple indexing approach that we use for protests...
+     # assign protest_row = site.data.protests[page.row_index]
+     Like that, why doesn't that work? I mean, it factually doesn't. But why? Why not? Arrrgghhh. -->
 
 
 
     <article class="spa-country">
+
       <section class="spa-cite">
         <article class="spa-cite">
           <h5>Export Data</h5>
         </article>
       </section>
+
       <section class="spa-country-intro">
+
         <article class="spa-country-description">
           <section>
             <p>This Northern country has a narrow coastal plain and a large expanse of the Sahara desert. The hottest temperatures on the Earth's surface have been recorded in Algeria. Algeria was once a central territory of the Roman Empire through the 16th century when it became part of the Ottoman Empire. Following the fall of the Ottoman Empire, the country had a brief period of independence before France launched a war in 1830 to colonize the land. France suppressed Algerian resistance, making it a French colony. While France modernized Algeria's agricultural and commercial economies, they also sewed ethnic resentment through the creation of an elite class with only a few Algerians allowed in; this led to a massive nationalist movement and war for independence that lasted from 1954-1962. Algeria achieved independence in 1962. In the 21st century, Algeria has one of the largest economies in Africa. Algeria has a population of 34 million, 99% of which are Sunni Muslims. The government structure of Algeria is a Republic; it's major exports are oil gas. Since independence, Algeria rebuilt the education system, notably replaced French-language education with Arabic, which is the language of instruction for all children between the ages 6 -15.</p>
           </section>
         </article>
+
         <article class="spa-country-map">
           <section>
             <img src="/spa/assets/img/country-images/algeria_img.png">
           </section>
         </article>
+
       </section>
+
       <section>
+
         <article>
           <h3>DATA VISUALIZATIONS</h3>
+
           
           <section>
             <article>
@@ -79,6 +89,7 @@ There is probably a better way to do this, involving hash tables -->
             </article>
           </section>
           
+
           
           <section>
             <article>
@@ -88,8 +99,11 @@ There is probably a better way to do this, involving hash tables -->
             </article>
           </section>
           
+
         </article>
+
       </section>
+
       <section>
         <article>
           <h3>PROTESTS</h3>
@@ -123,14 +137,18 @@ There is probably a better way to do this, involving hash tables -->
           </section>
         </article>
       </section>
+
     </article>
+
     <footer>
       <article>
         <h4>SPA FOOTER</h4>
+        <p>This should go away once the footer for the whole site is correctly updated.</p>
       </article>
       <article>
-        <h4>CONTRIBUTE</h4> 
-      </article> 
+        <h4>CONTRIBUTE</h4>
+        <p>This should be part of the footer for the whole site, and then this fake footer should go away; leaving it here as a reminder for now though.</p>
+      </article>
     </footer>
 
   </div>

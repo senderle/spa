@@ -1,6 +1,6 @@
 ---
 layout: country
-row_index: 43
+row_index: 34
 permalink: countries/mozambique
 title: Mozambique
 hidden: true

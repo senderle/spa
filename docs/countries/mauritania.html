@@ -13,7 +13,7 @@
 <meta property="og:url" content="http://0.0.0.0:4000/spa/countries/mauritania" />
 <meta property="og:site_name" content="Student Protests in Africa" />
 <script type="application/ld+json">
-{"url":"http://0.0.0.0:4000/spa/countries/mauritania","@type":"WebPage","description":"A map showing patterns of student protest in Africa.","headline":"Mauritania","@context":"https://schema.org"}</script>
+{"url":"http://0.0.0.0:4000/spa/countries/mauritania","description":"A map showing patterns of student protest in Africa.","@type":"WebPage","headline":"Mauritania","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/spa/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://0.0.0.0:4000/spa/feed.xml" title="Student Protests in Africa" />
 </head>
@@ -43,33 +43,43 @@
 
   <div class="post-content">
     <!-- The way we are accessing the elements in _data/countries.csv is a linear search on an array.
-There is probably a better way to do this, involving hash tables -->
+     There is surely a better way to do this, involving hash tables, surely, no?? -->
 
-
+<!-- It's also not 100% clear to me why we can't use the simple indexing approach that we use for protests...
+     # assign protest_row = site.data.protests[page.row_index]
+     Like that, why doesn't that work? I mean, it factually doesn't. But why? Why not? Arrrgghhh. -->
 
 
 
     <article class="spa-country">
+
       <section class="spa-cite">
         <article class="spa-cite">
           <h5>Export Data</h5>
         </article>
       </section>
+
       <section class="spa-country-intro">
+
         <article class="spa-country-description">
           <section>
             <p>Most of Mauritania is encompassed by the Sahara Desert, though it does have a strip of coastal land and some arable land near the Senegal river. More than half of the country is covered in dunes. Three million people live in Mauritania, 760,000 of which call the capital city Nouakchott home. Like many countries in this region, ethnic diversity is distinguished between those of Arab and Berber descent and ethnic groups who are black. Today most of the Mauritania population is mixed. Originally colonized by the french, Mauritania achieved independence in 1960. Despite slavery being abolished in the French colonial period, slavery has persisted in some communities. The Arabic speakers have controlled political life, and a one-party government was established and held power until 1984 when a coup led by Colonel Maaouya Ould Sdi'Ahmen Taya took power. Taya legalized political parties and won elections in 1992, 1997, and 2002. Taya's rule was not democratic, and he banned opposition parties several times. He was overthrown in 2005 by a coup led by Colonel Ely Ould Mohamed Vall. Vall aimed to create a civilian led-government, and in 2007, Sidi Mohamen Ould Cheikh Abdallahi won the presidency. Abdallahi fired the head of the president's guard Aziz who then led a military coup and overthrew him. He was elected in 2009 and took control of the national assembly.</p>
           </section>
         </article>
+
         <article class="spa-country-map">
           <section>
             <img src="/spa/assets/img/country-images/mauritania_img.png">
           </section>
         </article>
+
       </section>
+
       <section>
+
         <article>
           <h3>DATA VISUALIZATIONS</h3>
+
           
           <section>
             <article>
@@ -79,6 +89,7 @@ There is probably a better way to do this, involving hash tables -->
             </article>
           </section>
           
+
           
           <section>
             <article>
@@ -88,8 +99,11 @@ There is probably a better way to do this, involving hash tables -->
             </article>
           </section>
           
+
         </article>
+
       </section>
+
       <section>
         <article>
           <h3>PROTESTS</h3>
@@ -123,14 +137,18 @@ There is probably a better way to do this, involving hash tables -->
           </section>
         </article>
       </section>
+
     </article>
+
     <footer>
       <article>
         <h4>SPA FOOTER</h4>
+        <p>This should go away once the footer for the whole site is correctly updated.</p>
       </article>
       <article>
-        <h4>CONTRIBUTE</h4> 
-      </article> 
+        <h4>CONTRIBUTE</h4>
+        <p>This should be part of the footer for the whole site, and then this fake footer should go away; leaving it here as a reminder for now though.</p>
+      </article>
     </footer>
 
   </div>

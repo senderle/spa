@@ -13,7 +13,7 @@
 <meta property="og:url" content="http://0.0.0.0:4000/spa/countries/equatorial-guinea" />
 <meta property="og:site_name" content="Student Protests in Africa" />
 <script type="application/ld+json">
-{"url":"http://0.0.0.0:4000/spa/countries/equatorial-guinea","@type":"WebPage","description":"A map showing patterns of student protest in Africa.","headline":"Equatorial Guinea","@context":"https://schema.org"}</script>
+{"url":"http://0.0.0.0:4000/spa/countries/equatorial-guinea","description":"A map showing patterns of student protest in Africa.","@type":"WebPage","headline":"Equatorial Guinea","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/spa/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://0.0.0.0:4000/spa/feed.xml" title="Student Protests in Africa" />
 </head>
@@ -43,33 +43,43 @@
 
   <div class="post-content">
     <!-- The way we are accessing the elements in _data/countries.csv is a linear search on an array.
-There is probably a better way to do this, involving hash tables -->
+     There is surely a better way to do this, involving hash tables, surely, no?? -->
 
-
+<!-- It's also not 100% clear to me why we can't use the simple indexing approach that we use for protests...
+     # assign protest_row = site.data.protests[page.row_index]
+     Like that, why doesn't that work? I mean, it factually doesn't. But why? Why not? Arrrgghhh. -->
 
 
 
     <article class="spa-country">
+
       <section class="spa-cite">
         <article class="spa-cite">
           <h5>Export Data</h5>
         </article>
       </section>
+
       <section class="spa-country-intro">
+
         <article class="spa-country-description">
           <section>
             <p>Equatorial Guinea is a country with a coastal plain, forested hills, plateau, and a few islands, the largest being Bioko, 200 km north of the Gulf of Guinea. The island Bioko is also home to the capital city of Malabo, which has a population of 166,000. Originally colonized by the Spanish, Equatorial Guinea thrived off of the cocoa plantations before independence. In 1991 oil was discovered off the coast of Bioko, and by 2009 it amounted to 90% of the country's GDP. Despite independence, Equatorial Guinea has been under Spain's control. In 1979 Spain supported a violent coup putting Teodoro Obiang Nguema Mbasogo in power over his uncle, Francisco Macias Nguema. Both ruled as dictators. Obiang established a multiparty democracy in 1991 but won re-election in 1996, 2002, 2009 using fraud and intimation to do so.</p>
           </section>
         </article>
+
         <article class="spa-country-map">
           <section>
             <img src="/spa/assets/img/country-images/equatorial-guinea_img.png">
           </section>
         </article>
+
       </section>
+
       <section>
+
         <article>
           <h3>DATA VISUALIZATIONS</h3>
+
           
           <section>
             <article>
@@ -79,9 +89,13 @@ There is probably a better way to do this, involving hash tables -->
             </article>
           </section>
           
+
           
+
         </article>
+
       </section>
+
       <section>
         <article>
           <h3>PROTESTS</h3>
@@ -115,14 +129,18 @@ There is probably a better way to do this, involving hash tables -->
           </section>
         </article>
       </section>
+
     </article>
+
     <footer>
       <article>
         <h4>SPA FOOTER</h4>
+        <p>This should go away once the footer for the whole site is correctly updated.</p>
       </article>
       <article>
-        <h4>CONTRIBUTE</h4> 
-      </article> 
+        <h4>CONTRIBUTE</h4>
+        <p>This should be part of the footer for the whole site, and then this fake footer should go away; leaving it here as a reminder for now though.</p>
+      </article>
     </footer>
 
   </div>

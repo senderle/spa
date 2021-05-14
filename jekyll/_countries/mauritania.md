@@ -1,6 +1,6 @@
 ---
 layout: country
-row_index: 49
+row_index: 30
 permalink: countries/mauritania
 title: Mauritania
 hidden: true

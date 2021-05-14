@@ -13,7 +13,7 @@
 <meta property="og:url" content="http://0.0.0.0:4000/spa/countries/mauritius" />
 <meta property="og:site_name" content="Student Protests in Africa" />
 <script type="application/ld+json">
-{"url":"http://0.0.0.0:4000/spa/countries/mauritius","@type":"WebPage","description":"A map showing patterns of student protest in Africa.","headline":"Mauritius","@context":"https://schema.org"}</script>
+{"url":"http://0.0.0.0:4000/spa/countries/mauritius","description":"A map showing patterns of student protest in Africa.","@type":"WebPage","headline":"Mauritius","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/spa/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://0.0.0.0:4000/spa/feed.xml" title="Student Protests in Africa" />
 </head>
@@ -43,33 +43,43 @@
 
   <div class="post-content">
     <!-- The way we are accessing the elements in _data/countries.csv is a linear search on an array.
-There is probably a better way to do this, involving hash tables -->
+     There is surely a better way to do this, involving hash tables, surely, no?? -->
 
-
+<!-- It's also not 100% clear to me why we can't use the simple indexing approach that we use for protests...
+     # assign protest_row = site.data.protests[page.row_index]
+     Like that, why doesn't that work? I mean, it factually doesn't. But why? Why not? Arrrgghhh. -->
 
 
 
     <article class="spa-country">
+
       <section class="spa-cite">
         <article class="spa-cite">
           <h5>Export Data</h5>
         </article>
       </section>
+
       <section class="spa-country-intro">
+
         <article class="spa-country-description">
           <section>
             <p>This island country is in the Indian ocean and is home to an ancient volcano and coral reefs. Mauritius is home to 1.3 million people, and its capital is Port Louis. Two-thirds of the population are descendants of the 500,000 Indians brought to the island as indentured laborers in the sugar plantations. There are also a small number of white descendants of European colonizers and some Chinese immigrants who came as traders. The country has seen little ethnic tension and holds several religious traditions as official; it celebrates Ramadan, All Saints' Day, and the Chinese New Year as official holidays each year. Creole, French, English, Hindi, and Urdu are all spoken on the island. Still, English is the official government language, French is used in the newspapers, and creole is used for informal communication.  Sugar has been the main export for the country. The country has been experienced a rapid modernization of its economy, leading to some of the highest levels of education and health care in Africa. Education is free to the university level. Mauritius invested much of its sugar earnings into creating a manufacturing sector which attracted more than 500 companies in garment production. In 2007 the country also brought about 100 cyber companies such as call centers to the economy. Tourism is the third pillar of the economy and hosts around 900,000 visitors each year, many of whom are from France, and come for the stunning beaches. In 1991 the country achieved independence from the British monarch and became a constitutional republic. In 1995 the National Assembly was won by the Labour Party (LP) led by Navin Rangoolam. The Mouvement militan maurician (MMM) was the opposition, and they won in 2000. The two parties have traded control through elections since.</p>
           </section>
         </article>
+
         <article class="spa-country-map">
           <section>
             <img src="/spa/assets/img/country-images/mauritius_img.png">
           </section>
         </article>
+
       </section>
+
       <section>
+
         <article>
           <h3>DATA VISUALIZATIONS</h3>
+
           
           <section>
             <article>
@@ -79,6 +89,7 @@ There is probably a better way to do this, involving hash tables -->
             </article>
           </section>
           
+
           
           <section>
             <article>
@@ -88,8 +99,11 @@ There is probably a better way to do this, involving hash tables -->
             </article>
           </section>
           
+
         </article>
+
       </section>
+
       <section>
         <article>
           <h3>PROTESTS</h3>
@@ -123,14 +137,18 @@ There is probably a better way to do this, involving hash tables -->
           </section>
         </article>
       </section>
+
     </article>
+
     <footer>
       <article>
         <h4>SPA FOOTER</h4>
+        <p>This should go away once the footer for the whole site is correctly updated.</p>
       </article>
       <article>
-        <h4>CONTRIBUTE</h4> 
-      </article> 
+        <h4>CONTRIBUTE</h4>
+        <p>This should be part of the footer for the whole site, and then this fake footer should go away; leaving it here as a reminder for now though.</p>
+      </article>
     </footer>
 
   </div>

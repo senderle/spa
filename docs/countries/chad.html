@@ -13,7 +13,7 @@
 <meta property="og:url" content="http://0.0.0.0:4000/spa/countries/chad" />
 <meta property="og:site_name" content="Student Protests in Africa" />
 <script type="application/ld+json">
-{"url":"http://0.0.0.0:4000/spa/countries/chad","@type":"WebPage","description":"A map showing patterns of student protest in Africa.","headline":"Chad","@context":"https://schema.org"}</script>
+{"url":"http://0.0.0.0:4000/spa/countries/chad","description":"A map showing patterns of student protest in Africa.","@type":"WebPage","headline":"Chad","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/spa/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://0.0.0.0:4000/spa/feed.xml" title="Student Protests in Africa" />
 </head>
@@ -43,33 +43,43 @@
 
   <div class="post-content">
     <!-- The way we are accessing the elements in _data/countries.csv is a linear search on an array.
-There is probably a better way to do this, involving hash tables -->
+     There is surely a better way to do this, involving hash tables, surely, no?? -->
 
-
+<!-- It's also not 100% clear to me why we can't use the simple indexing approach that we use for protests...
+     # assign protest_row = site.data.protests[page.row_index]
+     Like that, why doesn't that work? I mean, it factually doesn't. But why? Why not? Arrrgghhh. -->
 
 
 
     <article class="spa-country">
+
       <section class="spa-cite">
         <article class="spa-cite">
           <h5>Export Data</h5>
         </article>
       </section>
+
       <section class="spa-country-intro">
+
         <article class="spa-country-description">
           <section>
             <p>Chad is a very ethnically diverse country, with more than 200 distinct groups. Broadly the country has been divided into the Islamic north, speaking Arabic and the Christian or animist south, speaking French as French colonizers were more entrenched in the north. Still, this division is a generalization as each region has its internal divisions. Chad's economy relies on cotton, livestock, and textiles for exports. Still, much of the country is below the poverty line, and over 400,000 people have died as a result of warfare over the past 30 years. In 1975 a military coup established a new regime, and in 1982 Hissene Habre, backed by the United States, Sudan, and Egypt, took power and produced a rebellion that killed 40,000 people. In 2015 Habre went on trial or crimes against humanity. Chad has also hosted 250,000 refugees from its neighbors Sudan and Central African Republic. In 1994 the country's economic situation changed dramatically when oil was discovered. An oil pipeline of 1,100km was built between Chad and neighboring Cameroon. In 1990 Habre was removed from power, and Idriss Deby was installed as President; he then established a new constitution with multiparty politics and was reelected in 2001 and again in 2006 after he removed the two-term limit, also in 2011 and 2016.</p>
           </section>
         </article>
+
         <article class="spa-country-map">
           <section>
             <img src="/spa/assets/img/country-images/chad_img.png">
           </section>
         </article>
+
       </section>
+
       <section>
+
         <article>
           <h3>DATA VISUALIZATIONS</h3>
+
           
           <section>
             <article>
@@ -79,6 +89,7 @@ There is probably a better way to do this, involving hash tables -->
             </article>
           </section>
           
+
           
           <section>
             <article>
@@ -88,8 +99,11 @@ There is probably a better way to do this, involving hash tables -->
             </article>
           </section>
           
+
         </article>
+
       </section>
+
       <section>
         <article>
           <h3>PROTESTS</h3>
@@ -123,14 +137,18 @@ There is probably a better way to do this, involving hash tables -->
           </section>
         </article>
       </section>
+
     </article>
+
     <footer>
       <article>
         <h4>SPA FOOTER</h4>
+        <p>This should go away once the footer for the whole site is correctly updated.</p>
       </article>
       <article>
-        <h4>CONTRIBUTE</h4> 
-      </article> 
+        <h4>CONTRIBUTE</h4>
+        <p>This should be part of the footer for the whole site, and then this fake footer should go away; leaving it here as a reminder for now though.</p>
+      </article>
     </footer>
 
   </div>

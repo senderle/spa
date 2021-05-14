@@ -13,7 +13,7 @@
 <meta property="og:url" content="http://0.0.0.0:4000/spa/countries/tunisia" />
 <meta property="og:site_name" content="Student Protests in Africa" />
 <script type="application/ld+json">
-{"url":"http://0.0.0.0:4000/spa/countries/tunisia","@type":"WebPage","description":"A map showing patterns of student protest in Africa.","headline":"Tunisia","@context":"https://schema.org"}</script>
+{"url":"http://0.0.0.0:4000/spa/countries/tunisia","description":"A map showing patterns of student protest in Africa.","@type":"WebPage","headline":"Tunisia","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/spa/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://0.0.0.0:4000/spa/feed.xml" title="Student Protests in Africa" />
 </head>
@@ -43,33 +43,43 @@
 
   <div class="post-content">
     <!-- The way we are accessing the elements in _data/countries.csv is a linear search on an array.
-There is probably a better way to do this, involving hash tables -->
+     There is surely a better way to do this, involving hash tables, surely, no?? -->
 
-
+<!-- It's also not 100% clear to me why we can't use the simple indexing approach that we use for protests...
+     # assign protest_row = site.data.protests[page.row_index]
+     Like that, why doesn't that work? I mean, it factually doesn't. But why? Why not? Arrrgghhh. -->
 
 
 
     <article class="spa-country">
+
       <section class="spa-cite">
         <article class="spa-cite">
           <h5>Export Data</h5>
         </article>
       </section>
+
       <section class="spa-country-intro">
+
         <article class="spa-country-description">
           <section>
             <p>Tunisia is a North African country with a long sea coastline. This country has a population of 10 million people, and the capital city is Tunis. Tunisians are almost entirely Arab. The country achieved independence in 1956 and until 2011, it was ruled by the same party and only two presidents: Habib Bourgiba and Ben Ali Bourgiba, who took power in 1987. The Arab Spring began in Tunisia in December 2010 when Mohamed Bouazizi, a street vendor, set himself on fire after being persecuted by local officials. Mass demonstrations followed as Tunisians set to the streets to protest the unemployment and high prices sedimented by the repressive regime. By January 2011, Ben Ali fled the country. In October 2011, elections were held and a National Constituent Assembly drafted a new constitution. In 2013 elections for a new president and parliament were held. The Hizb al-Nahda party dominated the elections and Hamadi Jebali became prime minister and Moncef Marzouki presidency. Jabali resigned in 2013, and Mehdi Jomaa was appointed. Mohamed Beji Caid Essebsi won the 2014 presidential election.</p>
           </section>
         </article>
+
         <article class="spa-country-map">
           <section>
             <img src="/spa/assets/img/country-images/tunisia_img.png">
           </section>
         </article>
+
       </section>
+
       <section>
+
         <article>
           <h3>DATA VISUALIZATIONS</h3>
+
           
           <section>
             <article>
@@ -79,9 +89,13 @@ There is probably a better way to do this, involving hash tables -->
             </article>
           </section>
           
+
           
+
         </article>
+
       </section>
+
       <section>
         <article>
           <h3>PROTESTS</h3>
@@ -115,14 +129,18 @@ There is probably a better way to do this, involving hash tables -->
           </section>
         </article>
       </section>
+
     </article>
+
     <footer>
       <article>
         <h4>SPA FOOTER</h4>
+        <p>This should go away once the footer for the whole site is correctly updated.</p>
       </article>
       <article>
-        <h4>CONTRIBUTE</h4> 
-      </article> 
+        <h4>CONTRIBUTE</h4>
+        <p>This should be part of the footer for the whole site, and then this fake footer should go away; leaving it here as a reminder for now though.</p>
+      </article>
     </footer>
 
   </div>

@@ -13,7 +13,7 @@
 <meta property="og:url" content="http://0.0.0.0:4000/spa/countries/togo" />
 <meta property="og:site_name" content="Student Protests in Africa" />
 <script type="application/ld+json">
-{"url":"http://0.0.0.0:4000/spa/countries/togo","@type":"WebPage","description":"A map showing patterns of student protest in Africa.","headline":"Togo","@context":"https://schema.org"}</script>
+{"url":"http://0.0.0.0:4000/spa/countries/togo","description":"A map showing patterns of student protest in Africa.","@type":"WebPage","headline":"Togo","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/spa/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://0.0.0.0:4000/spa/feed.xml" title="Student Protests in Africa" />
 </head>
@@ -43,33 +43,43 @@
 
   <div class="post-content">
     <!-- The way we are accessing the elements in _data/countries.csv is a linear search on an array.
-There is probably a better way to do this, involving hash tables -->
+     There is surely a better way to do this, involving hash tables, surely, no?? -->
 
-
+<!-- It's also not 100% clear to me why we can't use the simple indexing approach that we use for protests...
+     # assign protest_row = site.data.protests[page.row_index]
+     Like that, why doesn't that work? I mean, it factually doesn't. But why? Why not? Arrrgghhh. -->
 
 
 
     <article class="spa-country">
+
       <section class="spa-cite">
         <article class="spa-cite">
           <h5>Export Data</h5>
         </article>
       </section>
+
       <section class="spa-country-intro">
+
         <article class="spa-country-description">
           <section>
             <p>Togo is a West African country. Its capital is Lomé, which is also it is the largest port. In 1884 what is now Togo became apart of the Togoland German protectorate. It was occupied by British and French forces in 1914. In 1946 British and French governments place the territory under the United Nations trusteeship. In 1956 British Togoland was incorporated into the Gold Coast and French Togoland became an autonomous republic under French colonial rule. By 1960 Togo achieved independence. In 1967 a coup abolished the constitution that was established in 1963 as well as the National Assembly. 1992 saw the creation of a new constitution, which established a president to lead the directly elected National Assembly. In 2002 the two-term limit on the presidency was eliminated, but it was reinstated in 2019. After the French, the education system is modeled with primary school beginning at six years old and lasting for six years. The secondary school has two cycles that are four and three years long. School-age children must attend primary and secondary schools, and public and parochial schools provide the schooling. The University of Lomé was founded in 1970.</p>
           </section>
         </article>
+
         <article class="spa-country-map">
           <section>
             <img src="/spa/assets/img/country-images/togo_img.png">
           </section>
         </article>
+
       </section>
+
       <section>
+
         <article>
           <h3>DATA VISUALIZATIONS</h3>
+
           
           <section>
             <article>
@@ -79,6 +89,7 @@ There is probably a better way to do this, involving hash tables -->
             </article>
           </section>
           
+
           
           <section>
             <article>
@@ -88,8 +99,11 @@ There is probably a better way to do this, involving hash tables -->
             </article>
           </section>
           
+
         </article>
+
       </section>
+
       <section>
         <article>
           <h3>PROTESTS</h3>
@@ -123,14 +137,18 @@ There is probably a better way to do this, involving hash tables -->
           </section>
         </article>
       </section>
+
     </article>
+
     <footer>
       <article>
         <h4>SPA FOOTER</h4>
+        <p>This should go away once the footer for the whole site is correctly updated.</p>
       </article>
       <article>
-        <h4>CONTRIBUTE</h4> 
-      </article> 
+        <h4>CONTRIBUTE</h4>
+        <p>This should be part of the footer for the whole site, and then this fake footer should go away; leaving it here as a reminder for now though.</p>
+      </article>
     </footer>
 
   </div>

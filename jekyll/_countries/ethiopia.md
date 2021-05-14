@@ -1,6 +1,6 @@
 ---
 layout: country
-row_index: 44
+row_index: 17
 permalink: countries/ethiopia
 title: Ethiopia
 hidden: true

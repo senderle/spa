@@ -7,8 +7,8 @@ services:
             - ./jekyll:/srv/jekyll
             - ./docs:/srv/jekyll/_site
         command: >
-            bash -c "jekyll build
-            && jekyll serve --watch --force_polling"
+            bash -c "jekyll serve --force_polling --incremental
+                     && touch /srv/jekyll/index.markdown"
         ports: 
             - "4000:4000"
         depends_on:

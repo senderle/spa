@@ -27,8 +27,8 @@ from bokeh.models import (
     CustomJS,
     Div,
     CheckboxGroup,
-    CheckboxButtonGroup,
-    MultiChoice,
+    # CheckboxButtonGroup,
+    # MultiChoice,
     Button,
     ColumnDataSource,
     TapTool,
@@ -127,6 +127,16 @@ def country_name_urlsafe(name):
     return urlsafe
 
 
+def protest_name_perma(name):
+    urlsafe = protest_name_urlsafe(name)
+    return f'protests/{urlsafe}'
+
+
+def protest_name_urlsafe(name):
+    perma = name.lower().replace(' ', '-').replace('\'', '-')
+    return perma
+
+
 def load_geojson(simplify_tol=None):
     gdf = gpd.read_file('data_to_map/data/gadm28_countries.geojson')
     gdf = gdf[gdf['geometry'].notna()]
@@ -165,6 +175,9 @@ def load_protests():
     protests['LONG'] = protests.LONG.apply(float)
     protests = protests[~((protests.LAT == 0) & (protests.LONG == 0))]
 
+    protests['perma'] = protests['Protest Name'].apply(protest_name_perma)
+    protests = protests.set_index('Protest Name')
+
     protests = gpd.GeoDataFrame(
         protests,
         geometry=gpd.points_from_xy(protests.LONG, protests.LAT),
@@ -187,23 +200,23 @@ _name_errors = {
 }
 
 
-def sum_protests(protests, nations):
+def sum_protests(protests, countries):
     counts = defaultdict(int)
 
     names = [_name_errors[n] if n in _name_errors else n
              for n in protests['Country Name']]
     counts = Counter(names)
 
-    # print(set(counts) - set(nations['name']))
-    # print(set(nations['name']) - set(counts))
+    # print(set(counts) - set(countries['name']))
+    # print(set(countries['name']) - set(counts))
 
-    nations['protestcount'] = [counts[n] for n in nations['name']]
+    countries['protestcount'] = [counts[n] for n in countries['name']]
 
-    nation_rank = sorted(set(counts.values()), reverse=True)
-    nation_rank.append(0)
-    nation_rank = {c: i for i, c in enumerate(nation_rank)}
-    nation_rank = {n: nation_rank[counts[n]] for n in nations['name']}
-    nations['rank'] = [nation_rank[n] for n in nations['name']]
+    country_rank = sorted(set(counts.values()), reverse=True)
+    country_rank.append(0)
+    country_rank = {c: i for i, c in enumerate(country_rank)}
+    country_rank = {n: country_rank[counts[n]] for n in countries['name']}
+    countries['rank'] = [country_rank[n] for n in countries['name']]
 
 
 def base_map(tile_url, tile_attribution='MapTiler'):
@@ -290,7 +303,6 @@ def patches(plot, div, patch_data):
         renderers=[render],
         callback=OpenURL(
             url='/spa/@perma'
-            # url='/spa/countries/mali'
         )
     )
     plot.add_tools(tap)
@@ -312,8 +324,10 @@ def points(plot, div, point_source):
         var indices = cb_data.index.indices;
 
         if (indices.length != 0) {
-            div.text = "<div style='background-color:lightgray; height:800px; padding:10px;'>"
-            +"<h3 style='color:gray'>"+"NUMBER OF PROTESTS: " + indices.length + "</h3>"+"<br>"
+            div.text = "<div style='background-color:lightgray; " +
+                       "height:800px; padding:10px;'>" +
+                       "<h3 style='color:gray'>" + "NUMBER OF PROTESTS: " +
+                       indices.length + "</h3>" + "<br>"
             var counter = 0;
             for (var i = 0; i < indices.length; i++) {
                 if (counter == 5) {
@@ -323,7 +337,7 @@ def points(plot, div, point_source):
                                    "</em>" +  "<br>";
                     } else {
                         div.text = div.text + "<br>" + "<em>" +
-                                   "Additional " + (indices.length -5) +
+                                   "Additional " + (indices.length - 5) +
                                    " protests not shown" + "</em>" +  "<br>";
                     }
                     break;
@@ -334,10 +348,13 @@ def points(plot, div, point_source):
                 var desc = features['Description of Protest'][protest];
                 var uni = features['School Name'][protest];
                 var type = features['Event Type (F3)'][protest];
-                div.text = div.text + '<section style="background-color:white; margin:10px; padding:5px">'
-                + counter + '.' + '<br>' + desc + '<br>' + ' Location: ' + '<i class="fas fa-globe-africa">'+'</i>'+
-                           uni + '<br>' + ' Type of Protest: ' + type +
-                           '<br>' + '</section>';
+                div.text = div.text +
+                    '<section style="background-color:white; " ' +
+                    '"margin:10px; padding:5px">' + counter + '.' +
+                    '<br>' + desc + '<br>' + ' Location: ' +
+                    '<i class="fas fa-globe-africa">' + '</i>' +
+                    uni + '<br>' + ' Type of Protest: ' + type +
+                    '<br>' + '</section>';
                 }
         }
     """)
@@ -423,9 +440,9 @@ def one_filter(plot, filter_col, filter_vals, filters_state, max_items):
 class Map:
     def __init__(self):
         self.protests = load_protests()
-        self.nations = load_geojson()
+        self.countries = load_geojson()
         self.filters = self.collect_filters()
-        sum_protests(self.protests, self.nations)
+        sum_protests(self.protests, self.countries)
 
     def collect_filters(self):
         """
@@ -449,7 +466,7 @@ class Map:
                   height=plot.plot_height,
                   height_policy="fixed")
 
-        patches(plot, div, self.nations)
+        patches(plot, div, self.countries)
 
         hash_callback = CustomJS(
             name="callback-load-hash-coordinates-country",
@@ -610,13 +627,13 @@ class Map:
 
     # Plan for protest incorporation: pick six random protests associated
     # with the country (using some stable method that always picks the
-    # same protests). Add them to the nation table and write it out to
+    # same protests). Add them to the country table and write it out to
     # the jekyll/_data folder. Should be possible to represent them as
     # protest indices, and then access them via `site.data.protests[ix]`.
     # Should be possible to use just one column, joining indices together
     # with some reasonable separator.
-    def nation_pages(self, path):
-        for i, name in enumerate(self.nations.index.values):
+    def country_pages(self, path):
+        for i, name in enumerate(sorted(self.countries.index.values)):
             urlsafe = country_name_urlsafe(name)
             perma = country_name_perma(name)
             filename = (Path(path) / Path(urlsafe)).with_suffix('.md')
@@ -632,12 +649,18 @@ class Map:
 
     def protest_pages(self, path):
         for i, name in enumerate(self.protests.index.values):
-            perma = name.lower().replace(' ', '-').replace('\'', '-')
-            filename = (Path(path) / Path(perma)).with_suffix('.md')
-            title = name
+            # For now, just render 10 for testing.
+            if i > 10:
+                break
+
+            urlsafe = protest_name_urlsafe(name)
+            perma = protest_name_perma(name)
+            filename = (Path(path) / Path(urlsafe)).with_suffix('.md')
+            title = name.split('-')
+            title = f'{title[0]}, {title[1]} {title[2]}'
             with open(filename, 'w', encoding='utf-8') as op:
                 op.write(f'---\n'
-                         f'layout: country\n'
+                         f'layout: protest\n'
                          f'row_index: {i}\n'
                          f'permalink: {perma}\n'
                          f'title: {title}\n'
@@ -647,18 +670,19 @@ class Map:
 
 def save_embeds(tab_plot, patch_plot, point_plot):
     with open("jekyll/_includes/map.html", 'w', encoding='utf-8') as op:
-        save_components(tab_plot, op)
         save_onload_callback(op, 'callback-load-hash-coordinates-country')
+        save_onload_callback(op, 'callback-load-hash-coordinates-protests')
+        save_components(tab_plot, op)
 
     with open("jekyll/_includes/country-map.html",
               'w', encoding='utf-8') as op:
-        save_components(patch_plot, op)
         save_onload_callback(op, 'callback-load-hash-coordinates-country')
+        save_components(patch_plot, op)
 
     with open("jekyll/_includes/protest-map.html",
               'w', encoding='utf-8') as op:
-        save_components(point_plot, op)
         save_onload_callback(op, 'callback-load-hash-coordinates-protests')
+        save_components(point_plot, op)
 
     # This ensures that the right version of BokehJS is always in use
     # on the jekyll site.
@@ -791,27 +815,35 @@ def save_onload_callback(open_file, callback_name):
 
     Pretty great, right?
     """
-    open_file.write("""<script type="text/javascript">
-      window.addEventListener('DOMContentLoaded', function(event) {
-        let delay = 16;
+
+    # NOTE: Indented code will be formatted by the markdown engine
+    #       into a preformatted code block for display, instead of
+    #       being inserted as HTML. So don't indent!
+
+    open_file.write("""
+<script type="text/javascript">
+  (function() {
+    window.addEventListener('DOMContentLoaded', function(event) {
+      let delay = 16;
+      console.log('delay ', delay);
+      let intervalfunc = function() {
+        window.clearInterval(checkfunc);
         console.log('delay ', delay);
-        let intervalfunc = function() {
-          window.clearInterval(checkfunc);
-          console.log('delay ', delay);
-          if (window.Bokeh && window.Bokeh.documents) {
-            let load_hash_coordinates = window.Bokeh.documents[0]
-              .get_model_by_name('""" + callback_name + """');
-            load_hash_coordinates.execute();
-            console.log('swonderful, smarvelous');
-          } else if (delay < 2 ** 20) {
-            delay = delay * 2;
-            checkfunc = window.setInterval(intervalfunc, delay);
-            console.log('resetting interval with delay ', delay);
-          }
-        };
-        let checkfunc = window.setInterval(intervalfunc, delay);
-      });
-    </script>
+        if (window.Bokeh && window.Bokeh.documents) {
+          let load_hash_coordinates = window.Bokeh.documents[0]
+            .get_model_by_name('""" + callback_name + """');
+          load_hash_coordinates.execute();
+          console.log('swonderful, smarvelous');
+        } else if (delay < 2 ** 20) {
+          delay = delay * 2;
+          checkfunc = window.setInterval(intervalfunc, delay);
+          console.log('resetting interval with delay ', delay);
+        }
+      };
+      let checkfunc = window.setInterval(intervalfunc, delay);
+    });
+  })();
+</script>
     """)
 
 
@@ -822,7 +854,8 @@ def main(embed=True):
                  'key=xEyWbUmfIFzRcu729a2M')
 
     map = Map()
-    map.nation_pages('jekyll/_countries')
+    map.country_pages('jekyll/_countries')
+    map.protest_pages('jekyll/_protests')
 
     patch_vis = map.patch_plot(patch_key)
     point_vis = map.point_plot(point_key)
