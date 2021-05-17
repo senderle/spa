@@ -254,14 +254,14 @@ def patches(plot, div, patch_data):
     patches = MultiPolygons(
         xs='xs', ys='ys',
         fill_color={'field': 'rank', 'transform': color_mapper},
-        fill_alpha=0.5, line_color="lightblue", line_alpha=0.3,
-        line_width=3.0
+        fill_alpha=0.5, line_color="blue", line_alpha=0.2,
+        line_width=2.5
     )
     hover_patches = MultiPolygons(
         xs='xs', ys='ys',
         fill_color={'field': 'rank', 'transform': color_mapper},
-        fill_alpha=0.5, line_color="purple", line_alpha=0.8,
-        line_width=3.0
+        fill_alpha=0.5, line_color="blue", line_alpha=0.5,
+        line_width=3.5
     )
     patch_source = geodf_patches_to_geods(patch_data)
     render = plot.add_glyph(patch_source,
@@ -274,15 +274,15 @@ def patches(plot, div, patch_data):
     # str.source.selected.indices gives you a list of things that you
     # immediately clicked on
     code = """
+
         var features = json_source['features'];
         var properties = features[cb_data.index.indices[0]];
         if (properties != undefined) {
             var rank = properties['properties']['rank'] + 1;
             var name = properties['properties']['name'];
             var protestcount = properties['properties']['protestcount'];
-            div.text = name +
-                       '<br>' + 'Protest Count: ' + protestcount
             }
+
     """
 
     callback = CustomJS(
@@ -312,17 +312,18 @@ def patches(plot, div, patch_data):
 
 def points(plot, div, point_source):
     point = Circle(x='x', y='y', fill_color="purple", fill_alpha=0.5,
-                   line_color="gray", line_alpha=0.5, size=6, name="points")
+                   line_color="purple", line_alpha=0.5, size=6, name="points")
+    hover_point = Circle(x='x', y='y', fill_color="red", fill_alpha=0.5,
+                   line_color="red", line_alpha=0.5, size=12, name="points")
     cr = plot.add_glyph(point_source,
                         point,
-                        hover_glyph=point,
+                        hover_glyph=hover_point,
                         selection_glyph=point,
                         name="points")
     callback = CustomJS(args=dict(source=point_source, div=div),
                         code="""
         var features = source['data'];
         var indices = cb_data.index.indices;
-
         if (indices.length != 0) {
             div.text = "<div style='background-color:lightgray; " +
                        "height:800px; padding:10px;'>" +
@@ -346,15 +347,12 @@ def points(plot, div, point_source):
                 }
                 var protest = indices[i];
                 var desc = features['Description of Protest'][protest];
-                var uni = features['School Name'][protest];
+                var uni = features['School Name'][protest].toUpperCase();
                 var type = features['Event Type (F3)'][protest];
-                div.text = div.text +
-                    '<section style="background-color:white; " ' +
-                    '"margin:10px; padding:5px">' + counter + '.' +
-                    '<br>' + desc + '<br>' + ' Location: ' +
-                    '<i class="fas fa-globe-africa">' + '</i>' +
-                    uni + '<br>' + ' Type of Protest: ' + type +
-                    '<br>' + '</section>';
+                div.text = div.text + '<section style="background-color:white; margin:10px; padding:5px">'
+                 + desc + '<br>' + '<div style="background-color:#D9F8FA; padding:3px; display:inline-block; border-radius:4px">' +'<i class="fa fa-globe-africa" style="padding:3px">'+'</i>'+
+                          " " + uni + '</div>'+'<br>' + '<div style="background-color:#F7D9FA; padding:3px; display:inline-block; border-radius:4px">' + type +'</div>' +
+                           '<br>' + '</section>';
                 }
         }
     """)
@@ -464,7 +462,11 @@ class Map:
 
         div = Div(width=plot.plot_width // 2,
                   height=plot.plot_height,
-                  height_policy="fixed")
+                  height_policy="fixed",
+                      text='<div class="spa-centered">' + '<h1 class="spa-header">' + 'Mapping Contemporary School Protests' + '</h1>' + '<br>'
+            + '<p class="spa-large-p">' + 'This map highlights identified opportunities around the world offering leadership development for young Africans. Search for a city location or filter by activity type, education level or eligible participants.' + '</p>'
+            + '<br>' +'<p class="spa-large-p" style="font-weight:bold">' + 'Click on a region to begin' + '</p>' + '<br>' + '<br>' + '<p style="font-style:italic">' + 'By Krystal Strong' + '</p>'
+            + '</div>')
 
         patches(plot, div, self.countries)
 
@@ -485,7 +487,7 @@ class Map:
                                visible=False)
         hidden_button.js_on_event(events.ButtonClick, hash_callback)
 
-        patches_layout = row(plot, div)
+        patches_layout = row(div, plot)
         button_layout = column(hidden_button, patches_layout)
         return button_layout
 

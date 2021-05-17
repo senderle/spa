@@ -3,6 +3,9 @@
 # To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
 
 layout: home
+title: Protest Map
+permalink: /protest-map/
 ---
+
 {% include bokeh_heading.html %}
-{% include country-map.html %}
+{% include protest-map.html %}
