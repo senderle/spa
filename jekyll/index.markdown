@@ -4,6 +4,5 @@
 
 layout: home
 ---
-<h1 class="spa-header">{{ "select a country to begin" | upcase }}</h1>
 {% include bokeh_heading.html %}
 {% include country-map.html %}

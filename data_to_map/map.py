@@ -256,15 +256,15 @@ def patches(plot, div, patch_data):
     # str.source.selected.indices gives you a list of things that you
     # immediately clicked on
     code = """
+
         var features = json_source['features'];
         var properties = features[cb_data.index.indices[0]];
         if (properties != undefined) {
             var rank = properties['properties']['rank'] + 1;
             var name = properties['properties']['name'];
             var protestcount = properties['properties']['protestcount'];
-            div.text = '<h2 class="spa-header">' + '<i class="fa fa-globe-africa" style="padding:5px">' +'</i>' + name.toUpperCase() +'</h2>' +
-                       '<br>' + '<h3 class="spa-header">'+ 'Protest Count: ' + protestcount +'</h3>'
             }
+
     """
 
     callback = CustomJS(
@@ -442,7 +442,11 @@ class Map:
 
         div = Div(width=plot.plot_width // 2,
                   height=plot.plot_height,
-                  height_policy="fixed")
+                  height_policy="fixed",
+                  text='<div class="spa-centered">' + '<h1 class="spa-header">' + 'Mapping Contemporary School Protests' + '</h1>' + '<br>' 
+            + '<p class="spa-large-p">' + 'This map highlights identified opportunities around the world offering leadership development for young Africans. Search for a city location or filter by activity type, education level or eligible participants.' + '</p>'
+            + '<br>' +'<p class="spa-large-p" style="font-weight:bold">' + 'Click on a region to begin' + '</p>' + '<br>' + '<br>' + '<p style="font-style:italic">' + 'By Krystal Strong' + '</p>'
+            + '</div>')
 
         patches(plot, div, self.nations)
 
@@ -463,7 +467,7 @@ class Map:
                                visible=False)
         hidden_button.js_on_event(events.ButtonClick, hash_callback)
 
-        patches_layout = row(plot, div)
+        patches_layout = row(div, plot)
         button_layout = column(hidden_button, patches_layout)
         return button_layout
 

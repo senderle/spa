@@ -359,4 +359,8 @@ footer > article { flex: 1 auto; }
 
 .bk { cursor: pointer; }
 
+.spa-centered { margin: 0; position: absolute; top: 50%; -ms-transform: translateY(-50%); transform: translateY(-50%); }
+
+.spa-large-p { font-size: 18px; }
+
 /*# sourceMappingURL=style.css.map */
