@@ -4,8 +4,7 @@ services:
     jekyll:
         image: jekyll/jekyll:latest
         volumes:
-            - ./jekyll:/srv/jekyll
-            - ./docs:/srv/jekyll/_site
+            - ./docs:/srv/jekyll
         command: >
             bash -c "jekyll serve --force_polling --incremental
                      && touch /srv/jekyll/index.markdown"
@@ -20,5 +19,5 @@ services:
         image: data_to_map_image
         volumes:
             - ./data_to_map:/srv/data_to_map
-            - ./jekyll:/srv/jekyll
+            - ./docs:/srv/jekyll
         command: python -u data_to_map/map.py

@@ -880,17 +880,24 @@ if __name__ == "__main__":
         default_sigterm = signal.getsignal(signal.SIGTERM)
 
         # We set these variables to keep track of changes
-        temp_time = 0
-        recent_time = 0
+        last_mod_time = 0
+        new_mod_time = 0
+        init = True
         print("Watching input directory for changes every ten seconds.")
         while True:
-            for data_file in os.listdir("data_to_map/data"):
-                mod_time = os.path.getmtime(os.path.join("data_to_map/data",
-                                                         data_file))
-                if mod_time > recent_time:
-                    recent_time = mod_time
-            if recent_time > temp_time:
-                temp_time = recent_time
+            data_files = list(Path("data_to_map/data").iterdir())
+            data_files.append(Path(__file__).resolve())
+            for data_file in data_files:
+                mod_time = os.path.getmtime(data_file)
+                if mod_time > new_mod_time:
+                    new_mod_time = mod_time
+
+            if init:
+                init = False
+                last_mod_time = new_mod_time
+
+            if new_mod_time > last_mod_time:
+                last_mod_time = new_mod_time
                 print("Change detected, generating new map...")
                 main()
                 print("Map generation complete.")
