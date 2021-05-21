@@ -223,10 +223,10 @@ def base_map(tile_url, tile_attribution='MapTiler'):
     # Plot
     p = figure(
         title="",
-        plot_width=600, plot_height=700,
+        plot_width=700, plot_height=700,
         x_axis_location=None, y_axis_location=None,
-        y_range=(-4300000, 4600000),
-        x_range=(-2450000, 6450000),
+        y_range=(-4246229, 4715858),
+        x_range=(-2054627, 5752956),
         x_axis_type="mercator", y_axis_type="mercator",
         )
 
@@ -326,7 +326,7 @@ def points(plot, div, point_source):
         var indices = cb_data.index.indices;
         if (indices.length != 0) {
             div.text = "<div style='background-color:lightgray; " +
-                       "height:800px; padding:10px;'>" +
+                       "height:1000px; padding:10px;'>" +
                        "<h3 style='color:gray'>" + "NUMBER OF PROTESTS: " +
                        indices.length + "</h3>" + "<br>"
             var counter = 0;
@@ -349,10 +349,15 @@ def points(plot, div, point_source):
                 var desc = features['Description of Protest'][protest];
                 var uni = features['School Name'][protest].toUpperCase();
                 var type = features['Event Type (F3)'][protest];
-                div.text = div.text + '<section style="background-color:white; margin:10px; padding:5px">'
-                 + desc + '<br>' + '<div style="background-color:#D9F8FA; padding:3px; display:inline-block; border-radius:4px">' +'<i class="fa fa-globe-africa" style="padding:3px">'+'</i>'+
-                          " " + uni + '</div>'+'<br>' + '<div style="background-color:#F7D9FA; padding:3px; display:inline-block; border-radius:4px">' + type +'</div>' +
-                           '<br>' + '</section>';
+                var date = features['Date'][protest];
+                var location = features['Protest Location (F20)'][protest];
+                div.text = div.text + '<section style="background-color:white; margin:10px; padding-left:5px">' 
+                + '<p style="padding:3px; display:inline-block; color:gray">' +'<i class="fa fa-globe-africa" style="padding:3px">'+'</i>'+
+                          " " + uni + '</p>'+'<br>' + '<div style="font-weight: bold; padding:3px; display:inline-block; border-radius:4px">' + date +'</div>' + '<br>'
+                 + '<div style="padding-left:5px; padding-right:5px">' + desc + '</div>' + '<div style="background-color:#F7D9FA; padding:3px; display:inline-block; border-radius:4px">' + type +'</div>'
+                 + '<div style="background-color:#F7D9FA; padding:3px; display:inline-block; border-radius:4px">' + location +'</div>'  
+                         + '<br>' + '</section>';
+                         console.log("hi" + location + "blah");
                 }
         }
     """)
