@@ -350,12 +350,12 @@ def points(plot, div, point_source):
                 var uni = features['School Name'][protest].toUpperCase();
                 var type = features['Event Type (F3)'][protest];
                 var date = features['Date'][protest];
-                var location = features['Protest Location (F20)'][protest];
+                var location = features['Protest Location (F2)'][protest];
                 div.text = div.text + '<section style="background-color:white; margin:10px; padding-left:5px">' 
-                + '<p style="padding:3px; display:inline-block; color:gray">' +'<i class="fa fa-globe-africa" style="padding:3px">'+'</i>'+
-                          " " + uni + '</p>'+'<br>' + '<div style="font-weight: bold; padding:3px; display:inline-block; border-radius:4px">' + date +'</div>' + '<br>'
+                + '<p style="padding:3px; display:inline-block; color:gray; font-size:15px">' +'<i class="fa fa-globe-africa" style="padding:3px">'+'</i>'+
+                          " " + uni + '</p>' + '<div style="font-weight: bold; padding:3px; display:inline-block; border-radius:4px">' + date +'</div>' + '<br>'
                  + '<div style="padding-left:5px; padding-right:5px">' + desc + '</div>' + '<div style="background-color:#F7D9FA; padding:3px; display:inline-block; border-radius:4px">' + type +'</div>'
-                 + '<div style="background-color:#F7D9FA; padding:3px; display:inline-block; border-radius:4px">' + location +'</div>'  
+                 + '<div style="background-color:#ccffff; padding:3px; display:inline-block; border-radius:4px">' + location +'</div>'  
                          + '<br>' + '</section>';
                          console.log("hi" + location + "blah");
                 }
