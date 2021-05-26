@@ -8,17 +8,21 @@ layout: page
 
       <section class="spa-cite">
         <article class="spa-cite">
-          <h5>Citation Information</h5>
+          <h5>Cite this page</h5>
           <p>URL of this page and... etc.?</p>
         </article>
       </section>
 
       <section class="spa-country-intro">
-
-        <article class="spa-country-description">
-          <h3>Protest Description</h3>
+        <article class="spa-country-map">
           <section>
-            <p>{{ protest_row['Description of Protest'] }}</p>
+              <img src="{{site.baseurl}}/assets/img/country-images/algeria_img.png">
+            <p>{{ protest_row['MAP WIDGET COLUMN NAME TBD'] }}</p>
+          </section>
+        </article>
+        <article class="spa-country-description">
+          <section>
+            <p class="spa-protest-description spa-large-p">{{ protest_row['Description of Protest'] }}</p>
           </section>
           <section>
             <article>
@@ -28,15 +32,11 @@ layout: page
           </section>
         </article>
 
-        <article class="spa-country-map">
-          <h3>MAP WIDGET -- but -- not dynamic right?</h3>
+      </section>
+
           <section>
-            <p>I'm not 100% sure what belongs here, actually. I suspect it will need to be populated in some way or another from a new column added to the protest csv.</p>
-            <p>{{ protest_row['MAP WIDGET COLUMN NAME TBD'] }}</p>
-          </section>
-          <section>
-            <article>
-              <h4>FILTERS -- ? -- sorry lol.</h4>
+            <article class="spa-more-protests">
+              <h3 class="spa-header">MORE PROTESTS BY TYPE</h4>
               <section>
                 <div>
                   <button>These have something to do</button>
@@ -47,9 +47,6 @@ layout: page
               </section>
             </article>
           </section>
-        </article>
-
-      </section>
 
       {% if protest_row['EMBEDDABLE MEDIA COLUMN NAME TBD'] %}
       <section>
