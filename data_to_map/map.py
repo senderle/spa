@@ -41,7 +41,7 @@ from bokeh.layouts import column, row
 from bokeh.palettes import Blues8 as palette
 from bokeh.plotting import figure
 from bokeh.resources import JSResources
-from bokeh.io import export_svg
+from bokeh.io import export_svg, export_png
 from bokeh.embed import (
     # file_html,
     components,
@@ -922,7 +922,7 @@ def save_onload_callback(open_file, callback_names):
     """)
 
 
-def main(embed=True, svg=False):
+def main(embed=True, png=False):
     patch_key = ('https://api.maptiler.com/maps/voyager/{z}/{x}/{y}.png?'
                  'key=k3o6yW6gLuLZpwLM3ecn')
     point_key = ('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?'
@@ -943,8 +943,8 @@ def main(embed=True, svg=False):
     if embed:
         save_embeds('docs/_includes',
                     tab_vis, patch_vis, point_vis, list(map.filters.keys()))
-    elif svg:
-        export_svg(point_vis, filename='foo.svg')
+    elif png:
+        export_png(point_vis, filename='foo.png')
     else:
         save_html(tab_vis, patch_vis, point_vis, list(map.filters.keys()))
 
@@ -954,9 +954,9 @@ if __name__ == "__main__":
     if '--standalone' in sys.argv[1:]:
         print("Generating standalone map...")
         main(embed=False)
-    elif '--svg' in sys.argv[1:]:
-        print("Generating SVG...")
-        main
+    elif '--png' in sys.argv[1:]:
+        print("Generating PNG...")
+        main(png=True, embed=False)
     else:
         # Get the default signal handler for SIGTERM (see below)
         default_sigterm = signal.getsignal(signal.SIGTERM)
