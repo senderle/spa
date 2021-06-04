@@ -891,9 +891,10 @@ def save_onload_callback(open_file, callback_names):
     // A function that accepts an array of bokeh callback names, and
     // executes all of them.
     let execBokehCallbacks = function(callbackNames) {
+      let get_model_by_name = window.Bokeh.documents[0].get_model_by_name;
       for (const cbn of callbackNames) {
-        const cb = window.Bokeh.documents[0].get_model_by_name(cbn);
-        cb.execute();
+        console.log(cbn);
+        get_model_by_name(cbn).execute();
       }
     };
 
@@ -903,7 +904,7 @@ def save_onload_callback(open_file, callback_names):
       let intervalfunc = function() {
         window.clearInterval(checkfunc);
         console.log('delay ', delay);
-        if (window.Bokeh && window.Bokeh.documents) {
+        if (window.Bokeh && window.Bokeh.documents.length > 0) {
           const callbackNames = ['""" +
                     "', '".join(callback_names) +
                     """'];
@@ -932,8 +933,8 @@ def main(embed=True, png=False):
 
     # The top-level directory for our jekyll site is "docs" so that
     # github pages can build (most of) the site.
-    map.country_pages('docs/_countries')
-    map.protest_pages('docs/_protests')
+    map.country_pages('jekyll/_countries')
+    map.protest_pages('jekyll/_protests')
 
     patch_vis = map.patch_plot(patch_key)
     point_vis = map.point_plot(point_key)
@@ -941,7 +942,7 @@ def main(embed=True, png=False):
                          Panel(child=point_vis, title="Protest View")])
 
     if embed:
-        save_embeds('docs/_includes',
+        save_embeds('jekyll/_includes',
                     tab_vis, patch_vis, point_vis, list(map.filters.keys()))
     elif png:
         # export_png(point_vis, filename='foo.png')
