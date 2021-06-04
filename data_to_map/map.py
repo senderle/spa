@@ -41,7 +41,7 @@ from bokeh.layouts import column, row
 from bokeh.palettes import Blues8 as palette
 from bokeh.plotting import figure
 from bokeh.resources import JSResources
-from bokeh.io import export_svg, export_png
+# from bokeh.io import export_svg, export_png
 from bokeh.embed import (
     # file_html,
     components,
@@ -944,7 +944,8 @@ def main(embed=True, png=False):
         save_embeds('docs/_includes',
                     tab_vis, patch_vis, point_vis, list(map.filters.keys()))
     elif png:
-        export_png(point_vis, filename='foo.png')
+        # export_png(point_vis, filename='foo.png')
+        pass
     else:
         save_html(tab_vis, patch_vis, point_vis, list(map.filters.keys()))
 
