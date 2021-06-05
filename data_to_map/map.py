@@ -16,6 +16,7 @@ import shapely
 from bokeh.models import (
     LinearColorMapper,
     Circle,
+    Scatter,
     MultiPolygons,
     GeoJSONDataSource,
     HoverTool,
@@ -251,6 +252,7 @@ def base_map(tile_url, tile_attribution='MapTiler', zoomable=False):
     return p
 
 
+# ***
 def individual_point_map(tile_url, tile_attribution='MapTiler'):
     # Plot
     p = figure(
@@ -342,18 +344,21 @@ def patches(plot, div, patch_data):
     return plot
 
 
+# ***
 def single_point_zoom(plot, point_source):
     pass
 
 
 def points(plot, div, point_source):
-    point = Circle(
+    point = Scatter(
+        marker="circle",
         x='x', y='y', fill_color="purple", fill_alpha=0.5,
         line_color="purple", line_alpha=0.5, size=6, name="points")
 
-    hover_point = Circle(
-        x='x', y='y', fill_color="red", fill_alpha=0.5,
-        line_color="red", line_alpha=0.5, size=12, name="points")
+    hover_point = Scatter(
+        marker="star",
+        x='x', y='y', fill_color="red", fill_alpha=0.8, line_width=5,
+        line_color="red", line_alpha=0.5, size=6, name="hover_points")
 
     circle_renderer = plot.add_glyph(point_source,
                                      point,
@@ -933,10 +938,8 @@ def save_onload_callback(open_file, callback_names):
     // A function that accepts an array of bokeh callback names, and
     // executes all of them.
     let execBokehCallbacks = function(callbackNames) {
-      let get_model_by_name = window.Bokeh.documents[0].get_model_by_name;
       for (const cbn of callbackNames) {
-        console.log(cbn);
-        get_model_by_name(cbn).execute();
+        window.Bokeh.documents[0].get_model_by_name(cbn).execute();
       }
     };
 
