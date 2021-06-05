@@ -357,7 +357,7 @@ def points(plot, div, point_source):
 
     hover_point = Scatter(
         marker="star",
-        x='x', y='y', fill_color="red", fill_alpha=0.8, line_width=5,
+        x='x', y='y', fill_color="purple", fill_alpha=0.8, line_width=5,
         line_color="red", line_alpha=0.5, size=6, name="hover_points")
 
     circle_renderer = plot.add_glyph(point_source,
