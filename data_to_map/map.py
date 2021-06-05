@@ -220,7 +220,38 @@ def sum_protests(protests, countries):
     countries['rank'] = [country_rank[n] for n in countries['name']]
 
 
-def base_map(tile_url, tile_attribution='MapTiler'):
+def base_map(tile_url, tile_attribution='MapTiler', zoomable=False):
+    # Plot
+    p = figure(
+        title="",
+        plot_width=700, plot_height=700,
+        x_axis_location=None, y_axis_location=None,
+        y_range=(-4246229, 4715858),
+        x_range=(-2054627, 5752956),
+        x_axis_type="mercator", y_axis_type="mercator",
+        )
+
+    if zoomable:
+        zoom = WheelZoomTool()
+        p.add_tools(zoom)
+        p.toolbar.active_scroll = zoom
+
+    drag = PanTool()
+    p.add_tools(drag)
+    p.toolbar.active_drag = drag
+
+    p.toolbar_location = None
+    p.grid.grid_line_color = None
+
+    p.add_tile(WMTSTileSource(
+        url=tile_url,
+        attribution=tile_attribution
+    ))
+
+    return p
+
+
+def individual_point_map(tile_url, tile_attribution='MapTiler'):
     # Plot
     p = figure(
         title="",
@@ -311,18 +342,27 @@ def patches(plot, div, patch_data):
     return plot
 
 
+def single_point_zoom(plot, point_source):
+    pass
+
+
 def points(plot, div, point_source):
-    point = Circle(x='x', y='y', fill_color="purple", fill_alpha=0.5,
-                   line_color="purple", line_alpha=0.5, size=6, name="points")
-    hover_point = Circle(x='x', y='y', fill_color="red", fill_alpha=0.5,
-                   line_color="red", line_alpha=0.5, size=12, name="points")
-    cr = plot.add_glyph(point_source,
-                        point,
-                        hover_glyph=hover_point,
-                        selection_glyph=point,
-                        name="points")
-    callback = CustomJS(args=dict(source=point_source, div=div),
-                        code="""
+    point = Circle(
+        x='x', y='y', fill_color="purple", fill_alpha=0.5,
+        line_color="purple", line_alpha=0.5, size=6, name="points")
+
+    hover_point = Circle(
+        x='x', y='y', fill_color="red", fill_alpha=0.5,
+        line_color="red", line_alpha=0.5, size=12, name="points")
+
+    circle_renderer = plot.add_glyph(point_source,
+                                     point,
+                                     hover_glyph=hover_point,
+                                     selection_glyph=point,
+                                     name="points")
+
+    hover_callback = CustomJS(args=dict(source=point_source, div=div),
+                              code="""
         var features = source['data'];
         var indices = cb_data.index.indices;
         if (indices.length != 0) {
@@ -359,15 +399,17 @@ def points(plot, div, point_source):
                  + '<div style="background-color:#ccffff; padding:3px; display:inline-block; border-radius:4px">' + location +'</div>'
                          + '<br>' + '</section>';
                          console.log("hi" + location + "blah");
-                }
+            }
         }
     """)
+
     hover = HoverTool(
         tooltips=None,
         point_policy="follow_mouse",
-        renderers=[cr],
-        callback=callback
+        renderers=[circle_renderer],
+        callback=hover_callback
     )
+
     plot.add_tools(hover)
     plot.toolbar.active_inspect = hover
 
@@ -931,10 +973,11 @@ def main(embed=True, png=False):
 
     map = Map()
 
-    # The top-level directory for our jekyll site is "docs" so that
-    # github pages can build (most of) the site.
-    map.country_pages('jekyll/_countries')
-    map.protest_pages('jekyll/_protests')
+    if embed:
+        # The top-level directory for our jekyll site is "docs" so that
+        # github pages can build (most of) the site.
+        map.country_pages('docs/_countries')
+        map.protest_pages('docs/_protests')
 
     patch_vis = map.patch_plot(patch_key)
     point_vis = map.point_plot(point_key)
@@ -942,11 +985,8 @@ def main(embed=True, png=False):
                          Panel(child=point_vis, title="Protest View")])
 
     if embed:
-        save_embeds('jekyll/_includes',
+        save_embeds('docs/_includes',
                     tab_vis, patch_vis, point_vis, list(map.filters.keys()))
-    elif png:
-        # export_png(point_vis, filename='foo.png')
-        pass
     else:
         save_html(tab_vis, patch_vis, point_vis, list(map.filters.keys()))
 
@@ -956,9 +996,6 @@ if __name__ == "__main__":
     if '--standalone' in sys.argv[1:]:
         print("Generating standalone map...")
         main(embed=False)
-    elif '--png' in sys.argv[1:]:
-        print("Generating PNG...")
-        main(png=True, embed=False)
     else:
         # Get the default signal handler for SIGTERM (see below)
         default_sigterm = signal.getsignal(signal.SIGTERM)

@@ -19,5 +19,5 @@ services:
         image: data_to_map_image
         volumes:
             - ./data_to_map:/srv/data_to_map
-            - ./docs:/srv/jekyll
+            - ./docs:/srv/docs
         command: python -u data_to_map/map.py
