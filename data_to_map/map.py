@@ -42,7 +42,7 @@ from bokeh.layouts import column, row
 from bokeh.palettes import Blues8 as palette
 from bokeh.plotting import figure
 from bokeh.resources import JSResources
-# from bokeh.io import export_svg, export_png
+from bokeh.io import export_png
 from bokeh.embed import (
     # file_html,
     components,
@@ -221,7 +221,8 @@ def sum_protests(protests, countries):
     countries['rank'] = [country_rank[n] for n in countries['name']]
 
 
-def base_map(tile_url, tile_attribution='MapTiler', zoomable=False):
+def base_map(tile_url, tile_attribution='MapTiler',
+             zoomable=False, draggable=False):
     # Plot
     p = figure(
         title="",
@@ -237,9 +238,10 @@ def base_map(tile_url, tile_attribution='MapTiler', zoomable=False):
         p.add_tools(zoom)
         p.toolbar.active_scroll = zoom
 
-    drag = PanTool()
-    p.add_tools(drag)
-    p.toolbar.active_drag = drag
+    if draggable:
+        drag = PanTool()
+        p.add_tools(drag)
+        p.toolbar.active_drag = drag
 
     p.toolbar_location = None
     p.grid.grid_line_color = None
@@ -253,34 +255,49 @@ def base_map(tile_url, tile_attribution='MapTiler', zoomable=False):
 
 
 # ***
-def individual_point_map(tile_url, tile_attribution='MapTiler'):
-    # Plot
-    p = figure(
+def individual_point_map(
+        point_source, selected_ix,
+        x_range, y_range,
+        tile_url, tile_attribution='MapTiler',
+        ):
+
+    plot = figure(
         title="",
-        plot_width=700, plot_height=700,
+        plot_width=500, plot_height=500,
         x_axis_location=None, y_axis_location=None,
-        y_range=(-4246229, 4715858),
-        x_range=(-2054627, 5752956),
+        y_range=y_range,
+        x_range=x_range,
         x_axis_type="mercator", y_axis_type="mercator",
         )
 
-    zoom = WheelZoomTool()
-    p.add_tools(zoom)
-    p.toolbar.active_scroll = zoom
+    plot.toolbar_location = None
+    plot.grid.grid_line_color = None
 
-    drag = PanTool()
-    p.add_tools(drag)
-    p.toolbar.active_drag = drag
-
-    p.toolbar_location = None
-    p.grid.grid_line_color = None
-
-    p.add_tile(WMTSTileSource(
+    plot.add_tile(WMTSTileSource(
         url=tile_url,
         attribution=tile_attribution
     ))
 
-    return p
+    point = Scatter(
+        marker="circle",
+        x='x', y='y', fill_color="purple", fill_alpha=0.5,
+        line_color="purple", line_alpha=0.5, size=12, name="points_scatter")
+
+    selection_point = Scatter(
+        marker="star",
+        x='x', y='y', fill_color="purple", fill_alpha=0.8, line_width=7,
+        line_color="red", line_alpha=0.5, size=12,
+        name="selection_points_scatter")
+
+    point_source.selected.indices = [selected_ix]
+
+    plot.add_glyph(point_source,
+                   point,
+                   hover_glyph=selection_point,
+                   selection_glyph=selection_point,
+                   name="points_renderer")
+
+    return plot
 
 
 def patches(plot, div, patch_data):
@@ -305,6 +322,7 @@ def patches(plot, div, patch_data):
                             nonselection_glyph=patches)
 
     parsed_geojson = json.loads(patch_source.geojson)
+
     # str.source.selected.indices gives you a list of things that you
     # immediately clicked on
     code = """
@@ -342,11 +360,6 @@ def patches(plot, div, patch_data):
     plot.add_tools(tap)
 
     return plot
-
-
-# ***
-def single_point_zoom(plot, point_source):
-    pass
 
 
 def points(plot, div, point_source):
@@ -719,13 +732,29 @@ class Map:
         layout = column(hidden_button, map_select)
         return layout
 
-    # Plan for protest incorporation: pick six random protests associated
-    # with the country (using some stable method that always picks the
-    # same protests). Add them to the country table and write it out to
-    # the jekyll/_data folder. Should be possible to represent them as
-    # protest indices, and then access them via `site.data.protests[ix]`.
-    # Should be possible to use just one column, joining indices together
-    # with some reasonable separator.
+    def individual_point_plots(
+            self, tile_url, tile_attribution='MapTiler'
+            ):
+
+        protests_json = self.protests.to_json()
+        point_source = GeoJSONDataSource(geojson=protests_json)
+
+        for selected_ix in range(len(self.protests)):
+            geo = self.protests.iloc[selected_ix].geometry.coords[0]
+            point_x, point_y = geo
+
+            width = 5000
+            x_range = (point_x - width, point_x + width)
+            y_range = (point_y - width, point_y + width)
+
+            plot = individual_point_map(
+                point_source, selected_ix,
+                x_range, y_range,
+                tile_url, tile_attribution
+                )
+            path = 'docs/assets/img/protest-points'
+            export_png(plot, filename=f'{path}/protest_{selected_ix}.png')
+
     def country_pages(self, path):
         for i, name in enumerate(sorted(self.countries.index.values)):
             urlsafe = country_name_urlsafe(name)
@@ -944,7 +973,7 @@ def save_onload_callback(open_file, callback_names):
     };
 
     window.addEventListener('DOMContentLoaded', function(event) {
-      let delay = 1;
+      let delay = 16;
       console.log('delay ', delay);
       let intervalfunc = function() {
         window.clearInterval(checkfunc);
@@ -968,7 +997,7 @@ def save_onload_callback(open_file, callback_names):
     """)
 
 
-def main(embed=True, png=False):
+def main(embed=True, export_point_pngs=False):
     patch_key = ('https://api.maptiler.com/maps/voyager/{z}/{x}/{y}.png?'
                  'key=k3o6yW6gLuLZpwLM3ecn')
     point_key = ('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?'
@@ -976,22 +1005,24 @@ def main(embed=True, png=False):
 
     map = Map()
 
-    if embed:
-        # The top-level directory for our jekyll site is "docs" so that
-        # github pages can build (most of) the site.
-        map.country_pages('docs/_countries')
-        map.protest_pages('docs/_protests')
-
-    patch_vis = map.patch_plot(patch_key)
-    point_vis = map.point_plot(point_key)
-    tab_vis = Tabs(tabs=[Panel(child=patch_vis, title="Country View"),
-                         Panel(child=point_vis, title="Protest View")])
-
-    if embed:
-        save_embeds('docs/_includes',
-                    tab_vis, patch_vis, point_vis, list(map.filters.keys()))
+    if export_point_pngs:
+        map.individual_point_plots(point_key)
     else:
-        save_html(tab_vis, patch_vis, point_vis, list(map.filters.keys()))
+        patch_vis = map.patch_plot(patch_key)
+        point_vis = map.point_plot(point_key)
+        tab_vis = Tabs(tabs=[Panel(child=patch_vis, title="Country View"),
+                             Panel(child=point_vis, title="Protest View")])
+
+        if embed:
+            # The top-level directory for our jekyll site is "docs" so that
+            # github pages can build (most of) the site.
+            map.country_pages('docs/_countries')
+            map.protest_pages('docs/_protests')
+            save_embeds('docs/_includes',
+                        tab_vis, patch_vis, point_vis,
+                        list(map.filters.keys()))
+        else:
+            save_html(tab_vis, patch_vis, point_vis, list(map.filters.keys()))
 
 
 if __name__ == "__main__":
@@ -999,6 +1030,9 @@ if __name__ == "__main__":
     if '--standalone' in sys.argv[1:]:
         print("Generating standalone map...")
         main(embed=False)
+    elif '--export-point-pngs' in sys.argv[1:]:
+        print("Generating point pngs")
+        main(export_point_pngs=True)
     else:
         # Get the default signal handler for SIGTERM (see below)
         default_sigterm = signal.getsignal(signal.SIGTERM)
