@@ -6,13 +6,6 @@ layout: page
 
     <article class="spa-country">
 
-      <section class="spa-cite">
-        <article class="spa-cite">
-          <h5 class="spa-header"><b>CITE THIS PAGE</b></h5>
-          <p>URL of this page and... etc.?</p>
-        </article>
-      </section>
-
       <section class="spa-country-intro">
         <article class="spa-country-map">
           <section>
@@ -25,12 +18,16 @@ layout: page
             <p class="spa-protest-description spa-large-p">{{ protest_row['Description of Protest'] }}</p>
           </section><br>
           <section>
-            <article>
-              
-              <p><b>Source:</b>
-                <i>{{ 
+ 
+                  <section class="spa-cite">
+        <article class="spa-cite">
+          <h5 class="spa-header"><b>Source</b></h5>
+          <p><i>{{ 
               protest_row['Primary Source'] }}</i></p>
-            </article>
+          <h5 class="spa-header"><b>Cite this page</b></h5>
+          <p>Strong, Krystal. "Student Protests in Africa." <i>studentprotestsinafrica.com.</i></p>
+        </article>
+      </section>
           </section>
         </article>
 

@@ -281,6 +281,7 @@ def patches(plot, div, patch_data):
             var rank = properties['properties']['rank'] + 1;
             var name = properties['properties']['name'];
             var protestcount = properties['properties']['protestcount'];
+            console.log('hello');
             }
 
     """
@@ -468,9 +469,12 @@ class Map:
         div = Div(width=plot.plot_width // 2,
                   height=plot.plot_height,
                   height_policy="fixed",
-                      text='<div class="spa-centered">' + '<h1 class="spa-header">' + 'Mapping Contemporary School Protests' + '</h1>' + '<br>'
-            + '<p class="spa-large-p">' + 'This map highlights identified opportunities around the world offering leadership development for young Africans. Search for a city location or filter by activity type, education level or eligible participants.' + '</p>'
-            + '<br>' +'<p class="spa-large-p" style="font-weight:bold">' + 'Click on a region to begin' + '</p>' + '<br>' + '<br>' + '<p style="font-style:italic">' + 'By Krystal Strong' + '</p>'
+                      text='<div class="spa-centered">' + 
+                      '<h1 class="header-large">' + '<span class="anim" style="opacity: 0; animation: textanim2 5s">' +
+                      'Documenting'+'</span>'+'<br>'+ '<span class="anim" style="opacity: 0; animation: textanim2 10s">'+'Supporting'+ '</span>'+'<br>'+'<span style="animation: textanim 15s; color:blue">'+'Mapping'+'</span>'+'<br>'+'Contemporary School Protests' + '</h1>' + '<br>'
+            + '<p class="spa-large-p">' + 
+            'Historically, students in African educational institutions have held a progressive role in anti-colonial, anti-imperial, and pro-democracy political struggles. Global Youth Activism has identified the school as a key context for young people’s political activities. In addition to providing scholarship on African political movements, this project will demonstrate the important role of schools in civic participation and processes of political change. This project examines the connections between education, youth, and political processes.' + '</p>'
+            + '<br>' +'<p class="spa-large-p" style="font-weight:bold; text-align:center">' + 'Click on a region to begin.' + '</p>' + '<br>' + '<p class="spa-large-p">'+'<i>' + 'By Krystal Strong' +'</i>' +'</p>'
             + '</div>')
 
         patches(plot, div, self.countries)

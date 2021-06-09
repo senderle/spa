@@ -71,9 +71,8 @@ article.spa-cite {
   min-width: 50px;
   margin: 0px;
   padding: 10px;
-  position:fixed;
   right:0px;
-  background-color:lightgray;
+  background-color:#eaeaea;
 }
 
 article.spa-cite > h5 {
@@ -102,6 +101,10 @@ footer > article {
 .spa-header {
   color:gray;
 }
+.header-large{
+  color:gray;
+  font-size:3em;
+}
 
 .bk { cursor: pointer; }
 
@@ -114,7 +117,7 @@ footer > article {
 }
 
 .spa-large-p{
-  font-size:18px;
+  font-size:16px;
 
 }
 
@@ -123,5 +126,26 @@ footer > article {
   text-align:center;
   background-color:lightgray;
 
+}
+
+.anim {
+  opacity:0;
+  color: blue;
+}
+
+@keyframes textanim {
+    0% {font-size:100%; opacity:0;color:blue}
+    25% {font-size:100%; opacity:0.25; color:blue}
+    50% {font-size:100%; opacity:0.5;content:""}
+    75% {font-size:100%; opacity:0.75; content: ""}
+    100% {font-size:100%;opacity:1; color:gray}
+}
+
+@keyframes textanim2 {
+    0% {font-size:100%; opacity:0;content: ""}
+    25% {font-size:100%; opacity:0.25;content: ""}
+    50% {font-size:100%; opacity:0.75;content:""}
+    75% {font-size:100%; opacity:0.25; content: ""}
+    100% {font-size:100%;opacity:0; content: ""}
 }
 
