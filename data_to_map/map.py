@@ -16,6 +16,7 @@ import shapely
 from bokeh.models import (
     LinearColorMapper,
     Circle,
+    Scatter,
     MultiPolygons,
     GeoJSONDataSource,
     HoverTool,
@@ -41,6 +42,7 @@ from bokeh.layouts import column, row
 from bokeh.palettes import Blues8 as palette
 from bokeh.plotting import figure
 from bokeh.resources import JSResources
+from bokeh.io import export_png
 from bokeh.embed import (
     # file_html,
     components,
@@ -219,7 +221,8 @@ def sum_protests(protests, countries):
     countries['rank'] = [country_rank[n] for n in countries['name']]
 
 
-def base_map(tile_url, tile_attribution='MapTiler'):
+def base_map(tile_url, tile_attribution='MapTiler',
+             zoomable=False, draggable=False):
     # Plot
     p = figure(
         title="",
@@ -230,13 +233,15 @@ def base_map(tile_url, tile_attribution='MapTiler'):
         x_axis_type="mercator", y_axis_type="mercator",
         )
 
-    zoom = WheelZoomTool()
-    p.add_tools(zoom)
-    p.toolbar.active_scroll = zoom
+    if zoomable:
+        zoom = WheelZoomTool()
+        p.add_tools(zoom)
+        p.toolbar.active_scroll = zoom
 
-    drag = PanTool()
-    p.add_tools(drag)
-    p.toolbar.active_drag = drag
+    if draggable:
+        drag = PanTool()
+        p.add_tools(drag)
+        p.toolbar.active_drag = drag
 
     p.toolbar_location = None
     p.grid.grid_line_color = None
@@ -247,6 +252,52 @@ def base_map(tile_url, tile_attribution='MapTiler'):
     ))
 
     return p
+
+
+# ***
+def individual_point_map(
+        point_source, selected_ix,
+        x_range, y_range,
+        tile_url, tile_attribution='MapTiler',
+        ):
+
+    plot = figure(
+        title="",
+        plot_width=500, plot_height=500,
+        x_axis_location=None, y_axis_location=None,
+        y_range=y_range,
+        x_range=x_range,
+        x_axis_type="mercator", y_axis_type="mercator",
+        )
+
+    plot.toolbar_location = None
+    plot.grid.grid_line_color = None
+
+    plot.add_tile(WMTSTileSource(
+        url=tile_url,
+        attribution=tile_attribution
+    ))
+
+    point = Scatter(
+        marker="circle",
+        x='x', y='y', fill_color="purple", fill_alpha=0.5,
+        line_color="purple", line_alpha=0.5, size=12, name="points_scatter")
+
+    selection_point = Scatter(
+        marker="star",
+        x='x', y='y', fill_color="purple", fill_alpha=0.8, line_width=7,
+        line_color="red", line_alpha=0.5, size=12,
+        name="selection_points_scatter")
+
+    point_source.selected.indices = [selected_ix]
+
+    plot.add_glyph(point_source,
+                   point,
+                   hover_glyph=selection_point,
+                   selection_glyph=selection_point,
+                   name="points_renderer")
+
+    return plot
 
 
 def patches(plot, div, patch_data):
@@ -271,6 +322,7 @@ def patches(plot, div, patch_data):
                             nonselection_glyph=patches)
 
     parsed_geojson = json.loads(patch_source.geojson)
+
     # str.source.selected.indices gives you a list of things that you
     # immediately clicked on
     code = """
@@ -312,17 +364,24 @@ def patches(plot, div, patch_data):
 
 
 def points(plot, div, point_source):
-    point = Circle(x='x', y='y', fill_color="purple", fill_alpha=0.5,
-                   line_color="purple", line_alpha=0.5, size=6, name="points")
-    hover_point = Circle(x='x', y='y', fill_color="red", fill_alpha=0.5,
-                   line_color="red", line_alpha=0.5, size=12, name="points")
-    cr = plot.add_glyph(point_source,
-                        point,
-                        hover_glyph=hover_point,
-                        selection_glyph=point,
-                        name="points")
-    callback = CustomJS(args=dict(source=point_source, div=div),
-                        code="""
+    point = Scatter(
+        marker="circle",
+        x='x', y='y', fill_color="purple", fill_alpha=0.5,
+        line_color="purple", line_alpha=0.5, size=6, name="points")
+
+    hover_point = Scatter(
+        marker="star",
+        x='x', y='y', fill_color="purple", fill_alpha=0.8, line_width=5,
+        line_color="red", line_alpha=0.5, size=6, name="hover_points")
+
+    circle_renderer = plot.add_glyph(point_source,
+                                     point,
+                                     hover_glyph=hover_point,
+                                     selection_glyph=point,
+                                     name="points")
+
+    hover_callback = CustomJS(args=dict(source=point_source, div=div),
+                              code="""
         var features = source['data'];
         var indices = cb_data.index.indices;
         if (indices.length != 0) {
@@ -363,12 +422,14 @@ def points(plot, div, point_source):
                 }
         }
     """)
+
     hover = HoverTool(
         tooltips=None,
         point_policy="follow_mouse",
-        renderers=[cr],
-        callback=callback
+        renderers=[circle_renderer],
+        callback=hover_callback
     )
+
     plot.add_tools(hover)
     plot.toolbar.active_inspect = hover
 
@@ -397,14 +458,22 @@ def toggle(filter_col, filter):
     return select_toggle
 
 
-def one_filter(plot, filter_col, filter_vals, filters_state, max_items):
+def filter_name_camel(filter_name):
+    name = filter_name_clean(filter_name)
+    return name.replace(" ", "")
+
+
+def filter_name_clean(filter_name):
+    return re.sub(r'\s*[(]F[0-9]+[)]\s*', '', filter_name)
+
+
+def one_filter(plot, filter_col, filter_vals, filters_state,
+               hidden_button, max_items):
     # Remove (FX) from column name; probaby temporary
-    title = re.sub(r'\s*[(]F[0-9]+[)]\s*', '', filter_col)
-    title = title.replace(" ", "")
+    title = filter_name_camel(filter_col)
 
     options = list(filter_vals)
     multi_select = CheckboxGroup(
-        name=title,
         labels=options,
         css_classes=[title],
         default_size=150,
@@ -419,24 +488,55 @@ def one_filter(plot, filter_col, filter_vals, filters_state, max_items):
     # the state of all multi-selects simultaneously. This way, individual
     # multi-select widgets can operate independently without knowing
     # anything about one another.
-    multi_select.js_on_click(CustomJS(
+
+    multi_select.js_on_change('active', CustomJS(
         args=dict(filter_col=filter_col,
                   filters_state=filters_state),
         code="""
+            // Turn the list of active indices into a list of labels.
+            let select_vals = this.active.map((act) => this.labels[act]);
 
-        // Turn the list of active indices into a list of labels.
-        let select_vals = this.active.map((act) => this.labels[act]);
+            let state_col = filters_state.data[filter_col];
 
-        let state_col = filters_state.data[filter_col];
-
-        for (let i = 0; i < state_col.length; i++) {
-            if (i < select_vals.length) {
-                state_col[i] = select_vals[i];
-            } else {
-                state_col[i] = '';
+            for (let i = 0; i < state_col.length; i++) {
+                if (i < select_vals.length) {
+                    state_col[i] = select_vals[i];
+                } else {
+                    state_col[i] = '';
+                }
             }
-        }
-        filters_state.properties.data.change.emit();
+            filters_state.properties.data.change.emit();
+        """)
+    )
+
+    name = f'callback-load-hash-filter-{title}'
+    print(name)
+    hidden_button.js_on_event(events.ButtonClick, CustomJS(
+        name=name,
+        args=dict(filter=multi_select, filterName=title),
+        code="""
+            let active = window.location.hash.slice(1).split(',')
+                .filter(a => a.startsWith(filterName))
+                .map(a => a.replace(filterName + '-', ''))
+                .map(a => a.replaceAll('-', ' '));
+
+            let activeMap = new Map();
+            for (let i = 0; i < filter.labels.length; i++) {
+                activeMap.set(filter.labels[i], i);
+            }
+
+            filter.active.splice(0);
+            for (const a of active) {
+                filter.active.push(activeMap.get(a));
+            }
+
+            // Force the widget to re-rennder. Otherwise
+            // the checkbox does not update.
+            filter.visible = false;
+            filter.visible = true;
+
+            // Announce that the active filters have changed.
+            filter.properties.active.change.emit();
         """)
     )
     return multi_select
@@ -627,7 +727,7 @@ class Map:
         duo_stack = []
         for filter_name, filter_vals in self.filters.items():
             filter = one_filter(plot, filter_name, filter_vals,
-                                filters_state, max_items)
+                                filters_state, hidden_button, max_items)
             tog = toggle(filter_name, filter)
             duo_stack.append(tog)
             duo_stack.append(filter)
@@ -637,13 +737,29 @@ class Map:
         layout = column(hidden_button, map_select)
         return layout
 
-    # Plan for protest incorporation: pick six random protests associated
-    # with the country (using some stable method that always picks the
-    # same protests). Add them to the country table and write it out to
-    # the jekyll/_data folder. Should be possible to represent them as
-    # protest indices, and then access them via `site.data.protests[ix]`.
-    # Should be possible to use just one column, joining indices together
-    # with some reasonable separator.
+    def individual_point_plots(
+            self, tile_url, tile_attribution='MapTiler'
+            ):
+
+        protests_json = self.protests.to_json()
+        point_source = GeoJSONDataSource(geojson=protests_json)
+
+        for selected_ix in range(len(self.protests)):
+            geo = self.protests.iloc[selected_ix].geometry.coords[0]
+            point_x, point_y = geo
+
+            width = 5000
+            x_range = (point_x - width, point_x + width)
+            y_range = (point_y - width, point_y + width)
+
+            plot = individual_point_map(
+                point_source, selected_ix,
+                x_range, y_range,
+                tile_url, tile_attribution
+                )
+            path = 'docs/assets/img/protest-points'
+            export_png(plot, filename=f'{path}/protest_{selected_ix}.png')
+
     def country_pages(self, path):
         for i, name in enumerate(sorted(self.countries.index.values)):
             urlsafe = country_name_urlsafe(name)
@@ -680,30 +796,41 @@ class Map:
                          f'---\n')
 
 
-def save_embeds(tab_plot, patch_plot, point_plot):
-    with open("jekyll/_includes/map.html", 'w', encoding='utf-8') as op:
-        save_onload_callback(op, 'callback-load-hash-coordinates-country')
-        save_onload_callback(op, 'callback-load-hash-coordinates-protests')
+def save_embeds(include_path, tab_plot, patch_plot, point_plot, filters):
+    country_cb = ['callback-load-hash-coordinates-country']
+    protest_cb = ['callback-load-hash-coordinates-protests']
+
+    filter_cb = ['callback-load-hash-filter-' + filter_name_camel(f)
+                 for f in filters]
+
+    include_path = Path(include_path)
+
+    with open(include_path / "map.html", 'w', encoding='utf-8') as op:
+        save_onload_callback(op, country_cb + protest_cb + filter_cb)
         save_components(tab_plot, op)
 
-    with open("jekyll/_includes/country-map.html",
-              'w', encoding='utf-8') as op:
-        save_onload_callback(op, 'callback-load-hash-coordinates-country')
+    with open(include_path / "country-map.html", 'w', encoding='utf-8') as op:
+        save_onload_callback(op, country_cb + filter_cb)
         save_components(patch_plot, op)
 
-    with open("jekyll/_includes/protest-map.html",
-              'w', encoding='utf-8') as op:
-        save_onload_callback(op, 'callback-load-hash-coordinates-protests')
+    with open(include_path / "protest-map.html", 'w', encoding='utf-8') as op:
+        save_onload_callback(op, protest_cb + filter_cb)
         save_components(point_plot, op)
 
     # This ensures that the right version of BokehJS is always in use
     # on the jekyll site.
-    with open('jekyll/_includes/bokeh_heading.html',
+    with open(include_path / 'bokeh_heading.html',
               'w', encoding='utf-8') as op:
         save_script_tags(op)
 
 
-def save_html(tab_plot, patch_plot, point_plot):
+def save_html(tab_plot, patch_plot, point_plot, filters):
+    country_cb = ['callback-load-hash-coordinates-country']
+    protest_cb = ['callback-load-hash-coordinates-protests']
+
+    filter_cb = ['callback-load-hash-filter-' + filter_name_camel(f)
+                 for f in filters]
+
     with open("map-tab-standalone.html", 'w', encoding='utf-8') as op:
         op.write("""
         <!DOCTYPE html>
@@ -712,8 +839,7 @@ def save_html(tab_plot, patch_plot, point_plot):
 
         save_script_tags(op)
         save_components(tab_plot, op)
-        save_onload_callback(op, 'callback-load-hash-coordinates-country')
-        save_onload_callback(op, 'callback-load-hash-coordinates-protests')
+        save_onload_callback(op, country_cb + protest_cb + filter_cb)
 
         op.write("""
         <div id="map-hover-context">
@@ -729,7 +855,7 @@ def save_html(tab_plot, patch_plot, point_plot):
 
         save_script_tags(op)
         save_components(patch_plot, op)
-        save_onload_callback(op, 'callback-load-hash-coordinates-country')
+        save_onload_callback(op, country_cb + filter_cb)
 
         op.write("""
         <div id="map-hover-context">
@@ -745,7 +871,7 @@ def save_html(tab_plot, patch_plot, point_plot):
 
         save_script_tags(op)
         save_components(point_plot, op)
-        save_onload_callback(op, 'callback-load-hash-coordinates-protests')
+        save_onload_callback(op, protest_cb + filter_cb)
 
         op.write("""
         <div id="map-hover-context">
@@ -778,8 +904,7 @@ def save_components(plot, open_file):
         open_file.write('\n')
 
 
-# '  window.addEventListener(\'load\', function(event) { \n'
-def save_onload_callback(open_file, callback_name):
+def save_onload_callback(open_file, callback_names):
     """
     Create a callback that sets an interval to call a function
     after some delay. The function causes the Bokeh map to zoom
@@ -832,20 +957,37 @@ def save_onload_callback(open_file, callback_name):
     #       into a preformatted code block for display, instead of
     #       being inserted as HTML. So don't indent!
 
+    # ALSO: I have realized that this might be a ridiculous way of doing
+    #       this. This should probably just be in a standalone JS file?
+    #       Or, if not, I should do some work to understand why. Perhaps
+    #       this script needs information that only map.py has when it
+    #       is being run? Even then, though, we could save this to a
+    #       separate js file and load that file via a script tag
+    #       in layouts? But still not 100% sure -- more thought needed.
+
     open_file.write("""
 <script type="text/javascript">
   (function() {
+
+    // A function that accepts an array of bokeh callback names, and
+    // executes all of them.
+    let execBokehCallbacks = function(callbackNames) {
+      for (const cbn of callbackNames) {
+        window.Bokeh.documents[0].get_model_by_name(cbn).execute();
+      }
+    };
+
     window.addEventListener('DOMContentLoaded', function(event) {
       let delay = 16;
       console.log('delay ', delay);
       let intervalfunc = function() {
         window.clearInterval(checkfunc);
         console.log('delay ', delay);
-        if (window.Bokeh && window.Bokeh.documents) {
-          let load_hash_coordinates = window.Bokeh.documents[0]
-            .get_model_by_name('""" + callback_name + """');
-          load_hash_coordinates.execute();
-          console.log('swonderful, smarvelous');
+        if (window.Bokeh && window.Bokeh.documents.length > 0) {
+          const callbackNames = ['""" +
+                    "', '".join(callback_names) +
+                    """'];
+          execBokehCallbacks(callbackNames);
         } else if (delay < 2 ** 20) {
           delay = delay * 2;
           checkfunc = window.setInterval(intervalfunc, delay);
@@ -854,30 +996,38 @@ def save_onload_callback(open_file, callback_name):
       };
       let checkfunc = window.setInterval(intervalfunc, delay);
     });
+
   })();
 </script>
     """)
 
 
-def main(embed=True):
+def main(embed=True, export_point_pngs=False):
     patch_key = ('https://api.maptiler.com/maps/voyager/{z}/{x}/{y}.png?'
                  'key=k3o6yW6gLuLZpwLM3ecn')
     point_key = ('https://api.maptiler.com/maps/outdoor/{z}/{x}/{y}.png?'
                  'key=k3o6yW6gLuLZpwLM3ecn')
 
     map = Map()
-    map.country_pages('jekyll/_countries')
-    map.protest_pages('jekyll/_protests')
 
-    patch_vis = map.patch_plot(patch_key)
-    point_vis = map.point_plot(point_key)
-    tab_vis = Tabs(tabs=[Panel(child=patch_vis, title="Country View"),
-                         Panel(child=point_vis, title="Protest View")])
-
-    if embed:
-        save_embeds(tab_vis, patch_vis, point_vis)
+    if export_point_pngs:
+        map.individual_point_plots(point_key)
     else:
-        save_html(tab_vis, patch_vis, point_vis)
+        patch_vis = map.patch_plot(patch_key)
+        point_vis = map.point_plot(point_key)
+        tab_vis = Tabs(tabs=[Panel(child=patch_vis, title="Country View"),
+                             Panel(child=point_vis, title="Protest View")])
+
+        if embed:
+            # The top-level directory for our jekyll site is "docs" so that
+            # github pages can build (most of) the site.
+            map.country_pages('docs/_countries')
+            map.protest_pages('docs/_protests')
+            save_embeds('docs/_includes',
+                        tab_vis, patch_vis, point_vis,
+                        list(map.filters.keys()))
+        else:
+            save_html(tab_vis, patch_vis, point_vis, list(map.filters.keys()))
 
 
 if __name__ == "__main__":
@@ -885,6 +1035,9 @@ if __name__ == "__main__":
     if '--standalone' in sys.argv[1:]:
         print("Generating standalone map...")
         main(embed=False)
+    elif '--export-point-pngs' in sys.argv[1:]:
+        print("Generating point pngs")
+        main(export_point_pngs=True)
     else:
         # Get the default signal handler for SIGTERM (see below)
         default_sigterm = signal.getsignal(signal.SIGTERM)
