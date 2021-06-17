@@ -1,6 +1,12 @@
 // Placeholder to allow defining custom styles that override everything else.
 // (Use `_sass/minima/custom-variables.scss` to override variable defaults)
 
+a.spa-protest-result, a.spa-protest-result:visited, a.spa-protest-result:hover{
+  color:black;
+  text-decoration:none !important;
+
+}
+
 article {
   padding: 2px 5px 2px 5px;
   margin: 2px 5px 2px 5px;
@@ -131,6 +137,10 @@ footer > article {
 .anim {
   opacity:0;
   color: blue;
+}
+
+.site-nav{
+  z-index:10;
 }
 
 @keyframes textanim {
