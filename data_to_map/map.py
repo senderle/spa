@@ -412,13 +412,13 @@ def points(plot, div, point_source):
                 var date = features['Date'][protest];
                 var protestName = features['Protest Name'][protest];
                 var location = features['Protest Location (F2)'][protest];
-                div.text = div.text + '<a class="spa-protest-result" href="{{site.baseurl}}/protests/{{protestName}}.html">'+'<section style="background-color:white; margin:10px; padding-left:5px">' 
+                div.text = div.text + '<a class="spa-protest-result" href="{{site.baseurl}}/protests/'+'protestName'+'">'+'<section style="background-color:white; margin:10px; padding-left:5px">' 
                 + '<p style="padding:3px; display:inline-block; color:gray; font-size:15px">' +'<i class="fa fa-globe-africa" style="padding:3px">'+'</i>'+
                           " " + uni + '</p>' + '<div style="font-weight: bold; padding:3px; display:inline-block; border-radius:4px">' + date +'</div>' + '<br>'
                  + '<div style="padding-left:5px; padding-right:5px">' + desc + '</div>' + '<div style="background-color:#F7D9FA; padding:3px; display:inline-block; border-radius:4px">' + type +'</div>'
                  + '<div style="background-color:#ccffff; padding:3px; display:inline-block; border-radius:4px">' + location +'</div>'  
                          + '<br>' + '</section>' + '</a>' + '<br>';
-                         console.log('sp sp sp spa sp sp spa spa spa spa' + protestName);
+                         console.log(protestName + "hey");
                 }
         }
     """)
