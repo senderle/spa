@@ -43,7 +43,7 @@ layout: page
                 {% assign fk_camel = fk_clean | replace: " ", "" %}
                 {% assign filter_tags = protest_row[fk] | split: ',' %}
                 {% for ft in filter_tags %}
-                  {% assign ft_hyphen = ft | replace: " ", "-" %}
+                  {% assign ft_hyphen = ft | replace: " ", "+" %}
                   <form style="display: inline" action="{{site.baseurl}}/protest-map/#{{fk_camel}}-{{ft_hyphen}}" method="get">
                     <button class="spa-category-button" style="background-color:#ccffff; padding:10px; display:inline-block; border-radius:4px; border: 2px solid #ccffff; text-decoration: none; cursor:pointer;">{{fk_clean}}: {{ft}}</button>
                   </form>

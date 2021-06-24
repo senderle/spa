@@ -412,11 +412,11 @@ def points(plot, div, point_source):
                 var date = features['Date'][protest];
                 var protestName = features['Protest Name'][protest];
                 var location = features['Protest Location (F2)'][protest];
-                div.text = div.text + '<a class="spa-protest-result" href="{{site.baseurl}}/protests/'+'protestName'+'">'+'<section style="background-color:white; margin:10px; padding-left:5px">' 
+                div.text = div.text + '<a class="spa-protest-result" href="{{site.baseurl}}/protests/'+'protestName'+'">'+'<section style="background-color:white; margin:10px; padding-left:5px">'
                 + '<p style="padding:3px; display:inline-block; color:gray; font-size:15px">' +'<i class="fa fa-globe-africa" style="padding:3px">'+'</i>'+
                           " " + uni + '</p>' + '<div style="font-weight: bold; padding:3px; display:inline-block; border-radius:4px">' + date +'</div>' + '<br>'
                  + '<div style="padding-left:5px; padding-right:5px">' + desc + '</div>' + '<div style="background-color:#F7D9FA; padding:3px; display:inline-block; border-radius:4px">' + type +'</div>'
-                 + '<div style="background-color:#ccffff; padding:3px; display:inline-block; border-radius:4px">' + location +'</div>'  
+                 + '<div style="background-color:#ccffff; padding:3px; display:inline-block; border-radius:4px">' + location +'</div>'
                          + '<br>' + '</section>' + '</a>' + '<br>';
                          console.log(protestName + "hey");
                 }
@@ -518,7 +518,7 @@ def one_filter(plot, filter_col, filter_vals, filters_state,
             let active = window.location.hash.slice(1).split(',')
                 .filter(a => a.startsWith(filterName))
                 .map(a => a.replace(filterName + '-', ''))
-                .map(a => a.replaceAll('-', ' '));
+                .map(a => a.replaceAll('+', ' '));
 
             let activeMap = new Map();
             for (let i = 0; i < filter.labels.length; i++) {
@@ -570,10 +570,10 @@ class Map:
         div = Div(width=plot.plot_width // 2,
                   height=plot.plot_height,
                   height_policy="fixed",
-                      text='<div class="spa-centered">' + 
+                      text='<div class="spa-centered">' +
                       '<h1 class="header-large">' + '<span class="anim" style="opacity: 0; animation: textanim2 5s">' +
                       'Documenting'+'</span>'+'<br>'+ '<span class="anim" style="opacity: 0; animation: textanim2 10s">'+'Supporting'+ '</span>'+'<br>'+'<span style="animation: textanim 15s">'+'Mapping'+'</span>'+'<br>'+'Contemporary School Protests' +'<br>'+'in Africa' + '</h1>' + '<br>'
-            + '<p class="spa-large-p">' + 
+            + '<p class="spa-large-p">' +
             'African schools, and students in particular, have historically played a progressive role in anti-colonial, anti-imperial, and pro-democracy movements. Today, Africa is witnessing a resurgence of educational activism and youth-led popular struggles. The School Protests in Africa digital project documents the incidence and causes of school-based protests in Africa since 2000, demonstrating the continued importance of schools and school actors in political participation and processes of social change in Africa.' + '</p>'
             + '<br>' +'<p class="spa-large-p" style="font-size:18px; font-weight:bold; text-align:center">' + 'Click on a region to begin.' + '</p>' +'</p>'
             + '</div>')
