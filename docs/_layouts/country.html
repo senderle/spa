@@ -6,7 +6,9 @@ layout: page
 
 <!-- It's also not 100% clear to me why we can't use the simple indexing approach that we use for protests...
      # assign protest_row = site.data.protests[page.row_index]
-     Like that, why doesn't that work? I mean, it factually doesn't. But why? Why not? Arrrgghhh. -->
+     Like that, why doesn't that work? I mean, it factually doesn't. But why? Why not? Arrrgghhh.
+     The answer appears to have something to do with a mismatch between country names in different
+     records, but I still haven't pinned it down -->
 
 {% for row in site.data.countries %}
   {% if row.country == page.title %}
@@ -71,32 +73,14 @@ layout: page
         <article>
           <h3>PROTESTS</h3>
           <section>
-            <article>
-              <h5>PROTEST NAME</h5>
-              <p>This will contain</p>
-            </article>
-            <article>
-              <h5>PROTEST NAME</h5>
-              <p>all of the protests</p>
-            </article>
-            <article>
-              <h5>PROTEST NAME</h5>
-              <p>in our dataset</p>
-            </article>
-          </section>
-          <section>
-            <article>
-              <h5>PROTEST NAME</h5>
-              <p>that occurred</p>
-            </article>
-            <article>
-              <h5>PROTEST NAME</h5>
-              <p>in this country</p>
-            </article>
-            <article>
-              <h5>PROTEST NAME</h5>
-              <p>in a scrollable container.</p>
-            </article>
+            {% for protest in site.data.protests %}
+              {% if protest['Country Name'] == page.title %}
+              <article>
+                  {{ protest['Protest Name'] }}, {{ protest['date'] }}, {{ protest['Locality Name'] }}, 
+                  {{ protest['School Name'] }}, {{ protest['Description of Protest'] }} (<a href="{{ protest['Primary Source'] }}">Primary Source</a>)
+              </article>
+              {% endif %}
+            {% endfor %}
           </section>
         </article>
       </section>
