@@ -231,6 +231,7 @@ def base_map(tile_url, tile_attribution='MapTiler',
         y_range=(-4246229, 4715858),
         x_range=(-2054627, 5752956),
         x_axis_type="mercator", y_axis_type="mercator",
+        sizing_mode="scale_both"
         )
 
     if zoomable:
@@ -268,6 +269,7 @@ def individual_point_map(
         y_range=y_range,
         x_range=x_range,
         x_axis_type="mercator", y_axis_type="mercator",
+        sizing_mode="scale_both"
         )
 
     plot.toolbar_location = None
@@ -418,7 +420,7 @@ def points(plot, div, point_source):
                  + '<div style="padding-left:5px; padding-right:5px">' + desc + '</div>' + '<div style="background-color:#F7D9FA; padding:3px; display:inline-block; border-radius:4px">' + type +'</div>'
                  + '<div style="background-color:#ccffff; padding:3px; display:inline-block; border-radius:4px">' + location +'</div>'  
                          + '<br>' + '</section>' + '</a>' + '<br>';
-                         console.log(protestName + "hey");
+                         console.log(protestName + "hey hey");
                 }
         }
     """)
