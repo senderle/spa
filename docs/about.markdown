@@ -55,6 +55,10 @@ permalink: /about/
 <p><b>Fortunate Ekwuruke</b>, Research Assistant</p>
 <p><b>Haisheng Yang</b>, Research Consultant</p>
 <p><b>Andres Recalde</b>, Research Consultant</p>
+<p><b>Jennifer Garcon</b>, Digital Scholarship Librarian</p>
+<p><b>Scott Enderle</b>, Web Developer and Digital Scholarship Specialist</p>
+<p><b>Joel Lee</b>, Web Developer</p>
+<p><b>Cassandra Hradil</b>, Web Designer and Digital Humanities Specialist</p>
 </div>
 	</div>
 

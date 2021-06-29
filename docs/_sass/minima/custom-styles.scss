@@ -60,12 +60,26 @@ article.spa-country-description {
   max-width: 450px;
 }
 
+article.spa-country-intro{
+  background-color:white;
+  padding:10px;
+  margin:10px;
+
+}
+
 article.spa-country-map {
   width: 450px;
 }
 
 .spa-country img {
   border: none;
+  height:auto
+}
+
+.spa-img-container{
+  display:flex;
+  align-items:flex-start;
+
 }
 
 section.spa-cite {

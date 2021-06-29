@@ -33,7 +33,7 @@ layout: page
         </article>
 
         <article class="spa-country-map">
-          <section>
+          <section class="spa-img-container">
             <img src="{{site.baseurl}}/assets/img/country-images/{{country_row.image_file}}">
           </section>
         </article>
@@ -48,7 +48,7 @@ layout: page
           {% if country_row.viz_1 != '' %}
           <section>
             <article>
-              <section>
+              <section class="spa-img-container">
                 <img src="{{site.baseurl}}/assets/img/country-line-graphs/{{country_row.viz_1}}">
               </section>
             </article>
@@ -58,7 +58,7 @@ layout: page
           {% if country_row.timelapse %}
           <section>
             <article>
-              <section>
+              <section class="spa-img-container">
                 <img src="{{site.baseurl}}/assets/img/country-heatmaps/{{country_row.timelapse}}">
               </section>
             </article>
@@ -72,10 +72,10 @@ layout: page
       <section>
         <article>
           <h3>PROTESTS</h3>
-          <section>
+          <section class="spa-country-intro">
             {% for protest in site.data.protests %}
               {% if protest['Country Name'] == page.title %}
-              <article>
+              <article class="spa-country-intro">
                   {{ protest['Protest Name'] }}, {{ protest['date'] }}, {{ protest['Locality Name'] }}, 
                   {{ protest['School Name'] }}, {{ protest['Description of Protest'] }} (<a href="{{ protest['Primary Source'] }}">Primary Source</a>)
               </article>
