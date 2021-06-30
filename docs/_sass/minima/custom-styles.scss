@@ -179,6 +179,12 @@ footer > article {
     max-width: 450px;
   }
 
+  .post, .post-content, .wrapper {
+    padding:0px;
+    margin:0px;
+
+  }
+
 }
 
 @keyframes textanim {
