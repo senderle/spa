@@ -165,6 +165,22 @@ footer > article {
   border:2px solid darkgray !important;
 }
 
+@media screen and (max-width: 700px) {
+  section.spa-country-intro {
+    flex-wrap: wrap-reverse;
+    align-items: center;
+    justify-content: flex-end;
+    background-color:#eaeaea;
+    padding:5px;
+    margin-bottom:30px;
+  }
+  article.spa-country-description {
+    min-width: 100px;
+    max-width: 450px;
+  }
+
+}
+
 @keyframes textanim {
     0% {font-size:100%; opacity:0;color:blue}
     25% {font-size:100%; opacity:0.25; color:blue}
