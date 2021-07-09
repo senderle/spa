@@ -165,6 +165,11 @@ footer > article {
   border:2px solid darkgray !important;
 }
 
+.heatmap-static{
+  display:none;
+  visibility:hidden;
+}
+
 @media screen and (max-width: 700px) {
   section.spa-country-intro {
     flex-wrap: wrap-reverse;
@@ -182,7 +187,15 @@ footer > article {
   .post, .post-content, .wrapper {
     padding:0px;
     margin:0px;
+  }
+  canvas.bk, div.bk-canvas-events, .hidden-on-mobile, .ActorsInvolved, .Causes, .Targets{
+    display:none;
+    visibility:hidden;
 
+  }
+  .heatmap-static{
+    display:inline-block;
+    visibility:visible;
   }
 
 }

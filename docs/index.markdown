@@ -6,3 +6,4 @@ layout: home
 ---
 {% include bokeh_heading.html %}
 {% include country-map.html %}
+<img class="heatmap-static" src="{{site.baseurl}}/assets/img/heatmap-static.png">

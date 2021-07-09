@@ -16,6 +16,18 @@ permalink: /about/
 <p><b>School Protests in Africa</b> intervenes in these conversations, which often erase Africa from analysis of contemporary activism, despite the continent similarly being in the midst of a tremendous upsurge of popular struggle and youth-led activism. This mixed methods project amplifies the importance of Africa to this era of political and educational activism, and documents the incidence and causes of school-based protest in Africa since 2000. With support from the Spencer Foundation, our School Protests in Africa database and map are publicly accessible online.
 </p> 
 <br>
+<h2 style="text-align:center; color:gray">{{ "Using Our Website and Data" | upcase }}</h2>
+<p>This section offers a statement of the School Protests in Africa project’s politics of knowledge production as well as guidelines for the usage and citation of the research site and data. </p>
+
+<p>Our efforts to document, understand, and amplify school protest in Africa  has required multiple phases of data collection and analysis. As an ongoing project, the SPA research team makes no claim that our data is complete or includes all incidents of school protest throughout the continent of Africa. In fact, we know that this dataset is incomplete and invite <a href="{{site.baseurl}}/contribute">contributions of school protests through the linked form.</a></p>
+
+<p>We have attempted to collect the most accurate and complete information about protests events, and share sources for our claims whenever possible. However, the SPA team is not responsible for any factual errors in the reporting of protests or events. Questions or feedback about the site content, project data, or our analysis are welcome, and should be directed to the research team. <a>Click for further terms of usage for the project site and data.</a></p>
+
+<p>Please use the following format to cite this project, which includes the contents of this website, interactive map, any research derived from the dataset, or any ideas derived from the School Protests in Africa Project: </p>
+
+<div style="width:50em"><h3 style="padding:20px; background-color:lightgray"><b>Krystal Strong and Jimil Ataman. (2021) “School Protests in Africa.” www.schoolprotests.com, accessed  [DATE].</b></h3></div>
+<br>
+
 <h2 style="text-align:center; color:gray">{{ "Project Team" | upcase }}</h2>
 <div class="team">
 	<div class="person" style="display:flex; flex-wrap:wrap">

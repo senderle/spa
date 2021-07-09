@@ -226,12 +226,12 @@ def base_map(tile_url, tile_attribution='MapTiler',
     # Plot
     p = figure(
         title="",
-        plot_width=700, plot_height=700,
+        plot_width=700,
         x_axis_location=None, y_axis_location=None,
         y_range=(-4246229, 4715858),
         x_range=(-2054627, 5752956),
         x_axis_type="mercator", y_axis_type="mercator",
-        sizing_mode="scale_both"
+        sizing_mode="scale_height"
         )
 
     if zoomable:
@@ -413,8 +413,7 @@ def points(plot, div, point_source):
                 var type = features['Event Type (F3)'][protest];
                 var date = features['Date'][protest];
                 var protestName = features['Protest Name'][protest];
-                var location = features['Protest Location (F2)'][protest];
-                div.text = div.text + '<a class="spa-protest-result" href="{{site.baseurl}}/protests/'+'protestName'+'">'+'<section style="background-color:white; margin:10px; padding-left:5px">'
+                div.text += '<a class="spa-protest-result" href="{{site.baseurl}}/protests/'+'protestName'+'">'+'<section style="background-color:white; margin:10px; padding-left:5px">'
                 + '<p style="padding:3px; display:inline-block; color:gray; font-size:15px">' +'<i class="fa fa-globe-africa" style="padding:3px">'+'</i>'+
                           " " + uni + '</p>' + '<div style="font-weight: bold; padding:3px; display:inline-block; border-radius:4px">' + date +'</div>' + '<br>'
                  + '<div style="padding-left:5px; padding-right:5px">' + desc + '</div>' + '<div style="background-color:#F7D9FA; padding:3px; display:inline-block; border-radius:4px">' + type +'</div>'
@@ -452,7 +451,8 @@ def toggle(filter_col, filter):
         label=title,
         width=175,
         name=class_select,
-        active=True
+        active=True,
+        css_classes=[title, "bk-checkbox"]
         )
 
     select_toggle.js_link('active', filter, 'visible')
@@ -477,7 +477,7 @@ def one_filter(plot, filter_col, filter_vals, filters_state,
     options = list(filter_vals)
     multi_select = CheckboxGroup(
         labels=options,
-        css_classes=[title],
+        css_classes=[title, "bk-checkbox"],
         default_size=150,
         height_policy='min',
         visible=True
@@ -574,17 +574,17 @@ class Map:
                   height_policy="fixed",
                       text='<div class="spa-centered">' +
                       '<h1 class="header-large">' + '<span class="anim" style="opacity: 0; animation: textanim2 5s">' +
-                      'Documenting'+'</span>'+'<br>'+ '<span class="anim" style="opacity: 0; animation: textanim2 10s">'+'Supporting'+ '</span>'+'<br>'+'<span style="animation: textanim 15s">'+'Mapping'+'</span>'+'<br>'+'Contemporary School Protests' +'<br>'+'in Africa' + '</h1>' + '<br>'
+                      'Documenting'+'</span>'+'<br>'+ '<span class="anim" style="opacity: 0; animation: textanim2 10s">'+'Amplifying'+ '</span>'+'<br>'+'<span style="animation: textanim 15s">'+'Mapping'+'</span>'+'<br>'+'Contemporary School Protests' +'<br>'+'in Africa' + '</h1>' + '<br>'
             + '<p class="spa-large-p">' +
-            'African schools, and students in particular, have historically played a progressive role in anti-colonial, anti-imperial, and pro-democracy movements. Today, Africa is witnessing a resurgence of educational activism and youth-led popular struggles. The School Protests in Africa digital project documents the incidence and causes of school-based protests in Africa since 2000, demonstrating the continued importance of schools and school actors in political participation and processes of social change in Africa.' + '</p>'
-            + '<br>' +'<p class="spa-large-p" style="font-size:18px; font-weight:bold; text-align:center">' + 'Click on a region to begin.' + '</p>' +'</p>'
+            'African schools, and students in particular, have historically played a progressive role in anti-colonial, anti-imperial, and pro-democracy movements. Today, Africa is witnessing a resurgence of educational activism and youth-led popular struggles. The' + ' <b>'+' School Protests in Africa'+' </b>'+'digital project documents the incidence and causes of school-based protests in Africa since 2000, demonstrating the continued importance of schools and school actors in political participation and processes of social change in Afric' + '</p>'
+            + '<br>' +'<p class="spa-large-p hidden-on-mobile" style="font-size:18px; font-weight:bold; text-align:center">' + 'Click on a region to begin.' + '</p>' +'</p>'
             + '</div>')
 
         patches(plot, div, self.countries)
 
         hash_callback = CustomJS(
             name="callback-load-hash-coordinates-country",
-            args=dict(x=plot.x_range, y=plot.y_range),
+            args=dict(x=plot.x_range, y=plot.y_range, countries=self.countries),
             code="""
                 console.log([x.start, x.end, y.start, y.end].join(','))
                 let data = window.location.hash.slice(1)
@@ -592,6 +592,7 @@ class Map:
                 if (data.length == 4 && data.every(x => !isNaN(x))) {
                     [x.start, x.end, y.start, y.end] = data;
                 }
+                console.log(countries)
             """
         )
         hidden_button = Button(label="Reset Zoom",
@@ -724,6 +725,7 @@ class Map:
             }
 
             point_source.change.emit();
+            console.log(point_source.data);
             """))
 
         duo_stack = []

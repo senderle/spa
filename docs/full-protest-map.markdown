@@ -9,3 +9,4 @@ permalink: /protest-map/
 
 {% include bokeh_heading.html %}
 {% include protest-map.html %}
+<img class="heatmap-static" src="{{site.baseurl}}/assets/img/points-static.png">
