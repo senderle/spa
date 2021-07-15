@@ -4,6 +4,10 @@ title: Methodology
 permalink: /methodology/
 ---
 
+<figure style="text-align:right; font-size:12px"><img alt="Image of the Fees Must Fall protest, Pretoria South Africa. Editorial credit: paul saad / Shutterstock.com" src="{{site.baseurl}}/assets/img/team-images/shutterstock_1747054490.jpg" width="100%"><caption><i>Fees Must Fall, Pretoria South Africa.
+    Editorial credit: paul saad / Shutterstock.com
+</i></caption></figure>
+
 <h2 style="text-align:center; color:gray">{{ "Research question and significance" | upcase }}</h2>
 
 <p>This research documents the significant role of educational institutions and school actors in contemporary political activism and struggles for social change in Africa. 
@@ -26,9 +30,18 @@ Specifically, this research asks: (1) What is the incidence of protest in educat
 <p>An incident is considered a school protest event if it involves more than one actor and meets at least one of the following other criteria: (1) it is a social or political disturbance that takes place in a school or (2) it is a social or political disturbance that involves school actors (i.e., students, teachers or academic staff, non-academic staff, school administrators, or youth). We consider the following to be social or political disturbances that qualify as protest events: protests or demonstrations; riots or violence; strikes, boycotts, or industrial action; actions that result in school closure; vandalism or property destruction; roadblocks or other physical obstructions of activity; and online or media campaigns.
 </p>
 
-<h2 style="text-align:center; color:gray">{{ "Note on archived web materials" | upcase }}</h2>
+<figure style="text-align:right; margin-left:auto; margin-right:auto; font-size:12px; display:block; width:80%"><img alt="image of a youth protest in Nigeria. Editorial credit: paul saad / Shutterstock.com" src="{{site.baseurl}}/assets/img/team-images/shutterstock_1835463463.jpg"><caption><i>Youth protest in Nigeria. Editorial credit: paul saad / Shutterstock.com</i></caption></figure>
+
+<h2 style="text-align:center; color:gray">{{ "Material Culture and Sustainability of the Web" | upcase }}</h2>
+
+<p>
+Information regarding school protests in Africa is drawn from personal accounts, references on social media, and important corroborated by journalist accounts in the form of newspaper articles.
+As a means to further document school protests in Africa, glean contextual information on the occurrences and how they are articulated and understood in the broader public sphere, this project systematically seeks to compile newspaper and journalist accounts of protests happening on the continent. There is, however, a particular parcarity of these sources. On the one hand, state censorship introduces instability of the permanent record, particularly in instances where reporting is scrubbed from the internet. On the other, information loss can occur as a result of newspaper outlet closures or, even more innocuously, link degradation which occurs over time. As a strategy to mitigate information loss, our project has employed web-archiving strategies to stabilize the persistent URL associated with these newspaper and journalistic accounts of school-based struggle. Using Archive-it, the project team seeks to use web-archiving to preserve the record of the web pages related to school protests in Africa.
+</p>
 
 <h2 style="text-align:center; color:gray">{{ "Note on the interactive map" | upcase }}</h2>
+
+<p>The interactive protest map is designed to create an intuitive visual user experience for navigating a broad spatial dataset. The series of filters to the left of the map allow the user to think through what kinds of political actions they are interested in seeing, which actors, and additional characteristics. As they click through, the map updates in real time, allowing the user to begin to see geospatial patterns to the data that they are filtering. Hovering over any of the individual protest points provides more information about the protests in that location, and gives the user the option to click out for more detailed information and sources. This structure easily allows the user to hone in on particular details, while also affording the option to return to the bigger picture at any time.</p>
 
 
 

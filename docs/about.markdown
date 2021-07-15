@@ -4,7 +4,7 @@ title: About
 permalink: /about/
 ---
 
-<img alt="image of people marching and carrying signs" src="{{site.baseurl}}/assets/img/team-images/about.png" width="100%">
+<figure style="text-align:right; font-size:12px"><img alt="image of the End SARS protest in Nigeria. Editorial credit: vic josh / Shutterstock.com" src="{{site.baseurl}}/assets/img/team-images/shutterstock_1838648644.jpg" width="100%"><caption><i>End SARS protest in Nigeria. Editorial credit: vic josh / Shutterstock.com</i></caption></figure>
 
 <p>Protests are radically reshaping our world. As a digital scholarship project, <b>School Protests In Africa</b> tracks the important role of schools and school-based actors like students and teachers in galvanizing struggles for social and political change in Africa.
 </p>
@@ -25,7 +25,7 @@ permalink: /about/
 
 <p>Please use the following format to cite this project, which includes the contents of this website, interactive map, any research derived from the dataset, or any ideas derived from the School Protests in Africa Project: </p>
 
-<div style="width:50em"><h3 style="padding:20px; background-color:lightgray"><b>Krystal Strong and Jimil Ataman. (2021) “School Protests in Africa.” www.schoolprotests.com, accessed  [DATE].</b></h3></div>
+<div style="width:50em"><h3 style="padding:20px; background-color:lightgray">Krystal Strong and Jimil Ataman. (2021) “School Protests in Africa.” www.schoolprotests.com, accessed  [DATE].</h3></div>
 <br>
 
 <h2 style="text-align:center; color:gray">{{ "Project Team" | upcase }}</h2>

@@ -3,34 +3,21 @@
   <data class="u-url" href="{{ "/" | relative_url }}"></data>
 
   <div class="wrapper">
-
     <div class="footer-col-wrapper">
       <div class="footer-col">
-        <p class="feed-subscribe">
-          <a href="{{ 'feed.xml' | relative_url }}">
-            <svg class="svg-icon orange">
-              <use xlink:href="{{ 'assets/minima-social-icons.svg#rss' | relative_url }}"></use>
-            </svg><span>hi HELLO</span>
-          </a>
-        </p>
-      {%- if site.author %}
-        <ul class="contact-list">
-          {% if site.author.name -%}
-            <li class="p-name">{{ site.author.name | escape }}</li>
-          {% endif -%}
-          {% if site.author.email -%}
-            <li><a class="u-email" href="mailto:{{ site.author.email }}">{{ site.author.email }}</a></li>
-          {%- endif %}
-        </ul>
-      {%- endif %}
-      </div>
-      <div class="footer-col">
-        <p>{{ site.description | escape }}</p>
+ 
+      <div style="width:50em"><h4 style="color:black"><i> Krystal Strong and Jimil Ataman. (2021) “School Protests in Africa.” www.schoolprotests.com, accessed  [DATE].</i></h4></div>
+
+      <span style="padding:10px; border: 1px solid lightgray"<h4><a class="u-email" href="mailto:{{ site.email }}">{{ site.email }}</a></h4></span>
       </div>
     </div>
 
     <div class="social-links">
+      <img class="spa-footer-logo" src="{{site.baseurl}}/assets/img/team-images/Penn-GSE-logo-RGB-digital.png"/>
+      <img class="spa-footer-logo" src="{{site.baseurl}}/assets/img/team-images/Penn-Libraries-Logo-2020_RGB.png"/>
+      <img class="spa-footer-logo" src="{{site.baseurl}}/assets/img/team-images/PriceLab_19d_Logo_Web-1.png"/>
       {%- include social.html -%}
+
     </div>
 
   </div>

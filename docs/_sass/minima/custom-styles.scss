@@ -1,10 +1,10 @@
 // Placeholder to allow defining custom styles that override everything else.
 // (Use `_sass/minima/custom-variables.scss` to override variable defaults)
 
-a.spa-protest-result, a.spa-protest-result:visited, a.spa-protest-result:hover{
+a.spa-protest-result, a.spa-protest-result:visited, a.spa-protest-result:hover, .spa-protest-result{
   color:black;
   text-decoration:none !important;
-  border:2px solid darkgray !important;
+  width:100%
 
 }
 
@@ -80,6 +80,12 @@ article.spa-country-map {
   display:flex;
   align-items:flex-start;
 
+}
+
+.spa-footer-logo{
+  max-height:40px;
+  display:inline-block;
+  padding:10px;
 }
 
 section.spa-cite {
@@ -170,6 +176,20 @@ footer > article {
   visibility:hidden;
 }
 
+.social-media-list{
+  display:inline-block;
+  padding:10px;
+  vertical-align:middle;
+}
+
+.spa-overflow{
+  overflow:scroll;
+  height:30vw;
+  flex-wrap: wrap-reverse;
+  background-color:#eaeaea;
+  padding:20px;
+}
+
 @media screen and (max-width: 700px) {
   section.spa-country-intro {
     flex-wrap: wrap-reverse;
@@ -199,6 +219,8 @@ footer > article {
   }
 
 }
+
+
 
 @keyframes textanim {
     0% {font-size:100%; opacity:0;color:blue}
