@@ -584,7 +584,7 @@ class Map:
 
         hash_callback = CustomJS(
             name="callback-load-hash-coordinates-country",
-            args=dict(x=plot.x_range, y=plot.y_range, countries=self.countries),
+            args=dict(x=plot.x_range, y=plot.y_range),
             code="""
                 console.log([x.start, x.end, y.start, y.end].join(','))
                 let data = window.location.hash.slice(1)
@@ -592,7 +592,6 @@ class Map:
                 if (data.length == 4 && data.every(x => !isNaN(x))) {
                     [x.start, x.end, y.start, y.end] = data;
                 }
-                console.log(countries)
             """
         )
         hidden_button = Button(label="Reset Zoom",
