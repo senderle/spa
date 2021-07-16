@@ -335,7 +335,7 @@ def patches(plot, div, patch_data):
             var rank = properties['properties']['rank'] + 1;
             var name = properties['properties']['name'];
             var protestcount = properties['properties']['protestcount'];
-            console.log('hello');
+            console.log('hello world :) i am broken');
             }
 
     """
