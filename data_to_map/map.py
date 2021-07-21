@@ -409,17 +409,16 @@ def points(plot, div, point_source):
                 }
                 var protest = indices[i];
                 var desc = features['Description of Protest'][protest];
-                var uni = features['School Name'][protest].toUpperCase();
+                var uni = features['School Name'][protest].toString().toUpperCase();
                 var type = features['Event Type (F3)'][protest];
                 var date = features['Date'][protest];
-                var protestName = features['Protest Name'][protest];
+                var protestName = features[‘perma’][protest];
                 div.text += '<a class="spa-protest-result" href="{{site.baseurl}}/protests/'+'features["Protest Name"][protest]'+'">'+'<section style="background-color:white; margin:10px; padding-left:5px">'
                 + '<p style="padding:3px; display:inline-block; color:gray; font-size:15px">' +'<i class="fa fa-globe-africa" style="padding:3px">'+'</i>'+
                           " " + uni + '</p>' + '<div style="font-weight: bold; padding:3px; display:inline-block; border-radius:4px">' + date +'</div>' + '<br>'
                  + '<div style="padding-left:5px; padding-right:5px">' + desc + '</div>' + '<div style="background-color:#F7D9FA; padding:3px; display:inline-block; border-radius:4px">' + type +'</div>'
                  + '<div style="background-color:#ccffff; padding:3px; display:inline-block; border-radius:4px">' + location +'</div>'
                          + '<br>' + '</section>' + '</a>' + '<br>';
-                         console.log(protestName + "hey hey");
                 }
         }
     """)
@@ -452,7 +451,7 @@ def toggle(filter_col, filter):
         width=175,
         name=class_select,
         active=True,
-        css_classes=[title, "bk-checkbox"]
+        css_classes=[class_select, "bk-checkbox"]
         )
 
     select_toggle.js_link('active', filter, 'visible')
