@@ -976,7 +976,10 @@ def save_onload_callback(open_file, callback_names):
     // executes all of them.
     let execBokehCallbacks = function(callbackNames) {
       for (const cbn of callbackNames) {
-        window.Bokeh.documents[0].get_model_by_name(cbn).execute();
+        let bokehCallback = window.Bokeh.documents[0].get_model_by_name(cbn);
+        if (bokehCallback !== null) {
+          bokehCallback.execute();
+        }
       }
     };
 
@@ -1074,3 +1077,4 @@ if __name__ == "__main__":
             time.sleep(10)
             # Ignore SIGTERM while working.
             signal.signal(signal.SIGTERM, default_sigterm)
+            # foo
