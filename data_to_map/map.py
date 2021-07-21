@@ -407,19 +407,20 @@ def points(plot, div, point_source):
                 } else {
                     counter++;
                 }
+                console.log("frost");
                 var protest = indices[i];
                 var desc = features['Description of Protest'][protest];
                 var uni = features['School Name'][protest].toUpperCase();
                 var type = features['Event Type (F3)'][protest];
                 var date = features['Date'][protest];
-                var protestName = features['Protest Name'][protest];
-                div.text += '<a class="spa-protest-result" href="{{site.baseurl}}/protests/'+'features["Protest Name"][protest]'+'">'+'<section style="background-color:white; margin:10px; padding-left:5px">'
+                var protestName = features['perma'][protest];
+                div.text += '<a>'+'<section style="background-color:white; margin:10px; padding-left:5px">'
                 + '<p style="padding:3px; display:inline-block; color:gray; font-size:15px">' +'<i class="fa fa-globe-africa" style="padding:3px">'+'</i>'+
                           " " + uni + '</p>' + '<div style="font-weight: bold; padding:3px; display:inline-block; border-radius:4px">' + date +'</div>' + '<br>'
                  + '<div style="padding-left:5px; padding-right:5px">' + desc + '</div>' + '<div style="background-color:#F7D9FA; padding:3px; display:inline-block; border-radius:4px">' + type +'</div>'
                  + '<div style="background-color:#ccffff; padding:3px; display:inline-block; border-radius:4px">' + location +'</div>'
                          + '<br>' + '</section>' + '</a>' + '<br>';
-                         console.log(protestName + "hey hey");
+                         console.log(protestName + "frost");
                 }
         }
     """)
@@ -452,7 +453,7 @@ def toggle(filter_col, filter):
         width=175,
         name=class_select,
         active=True,
-        css_classes=[title, "bk-checkbox"]
+        css_classes=[class_select, "bk-checkbox"]
         )
 
     select_toggle.js_link('active', filter, 'visible')
@@ -574,10 +575,10 @@ class Map:
                   height_policy="fixed",
                       text='<div class="spa-centered">' +
                       '<h1 class="header-large">' + '<span class="anim" style="opacity: 0; animation: textanim2 5s">' +
-                      'Documenting'+'</span>'+'<br>'+ '<span class="anim" style="opacity: 0; animation: textanim2 10s">'+'Amplifying'+ '</span>'+'<br>'+'<span style="animation: textanim 15s">'+'Mapping'+'</span>'+'<br>'+'Contemporary School Protests' +'<br>'+'in Africa' + '</h1>' + '<br>'
+                      'Documenting'+'</span>'+'<br>'+ '<span class="anim" style="opacity: 0; animation: textanim2 10s">'+'Amplifying'+ '</span>'+'<br>'+'<span style="animation: textanim 15s">'+'Mapping'+'</span>'+'<br>'+'Contemporary School Protests' +'<br>'+'in Africa' + '</h1>'
             + '<p class="spa-large-p">' +
-            'African schools, and students in particular, have historically played a progressive role in anti-colonial, anti-imperial, and pro-democracy movements. Today, Africa is witnessing a resurgence of educational activism and youth-led popular struggles. The' + ' <b>'+' School Protests in Africa'+' </b>'+'digital project documents the incidence and causes of school-based protests in Africa since 2000, demonstrating the continued importance of schools and school actors in political participation and processes of social change in Afric' + '</p>'
-            + '<br>' +'<p class="spa-large-p hidden-on-mobile" style="font-size:18px; font-weight:bold; text-align:center">' + 'Click on a region to begin.' + '</p>' +'</p>'
+            'African schools, and students in particular, have historically played a progressive role in anti-colonial, anti-imperial, and pro-democracy movements. Today, Africa is witnessing a resurgence of educational activism and youth-led popular struggles. The' + ' <b>'+' School Protests in Africa'+' </b>'+'digital project documents the incidence and causes of school-based protests in Africa since 2000, demonstrating the continued importance of schools and school actors in political participation and processes of social change in Africa.' + '</p>'
+            +'<p class="spa-large-p hidden-on-mobile" style="font-size:18px; font-weight:bold; text-align:center">' + 'Click on a region to begin.' + '</p>' +'</p>'
             + '</div>')
 
         patches(plot, div, self.countries)
