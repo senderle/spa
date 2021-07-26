@@ -79,6 +79,7 @@ article.spa-country-map {
 .spa-img-container{
   display:flex;
   align-items:flex-start;
+  flex-wrap:wrap;
 
 }
 
@@ -86,6 +87,13 @@ article.spa-country-map {
   max-height:40px;
   display:inline-block;
   padding:10px;
+
+}
+
+.social-links{
+  display:flex;
+  justify-content:center;
+
 }
 
 section.spa-cite {

@@ -21,11 +21,11 @@ permalink: /about/
 
 <p>Our efforts to document, understand, and amplify school protest in Africa  has required multiple phases of data collection and analysis. As an ongoing project, the SPA research team makes no claim that our data is complete or includes all incidents of school protest throughout the continent of Africa. In fact, we know that this dataset is incomplete and invite <a href="{{site.baseurl}}/contribute">contributions of school protests through the linked form.</a></p>
 
-<p>We have attempted to collect the most accurate and complete information about protests events, and share sources for our claims whenever possible. However, the SPA team is not responsible for any factual errors in the reporting of protests or events. Questions or feedback about the site content, project data, or our analysis are welcome, and should be directed to the research team. <a>Click for further terms of usage for the project site and data.</a></p>
+<p>We have attempted to collect the most accurate and complete information about protests events, and share sources for our claims whenever possible. However, the SPA team is not responsible for any factual errors in the reporting of protests or events. Questions or feedback about the site content, project data, or our analysis are welcome, and should be directed to the research team at <a href="mailto:{{ site.email }}">{{ site.email }}</a>. Click <a>here for further terms of usage for the project site and data.</a></p>
 
 <p>Please use the following format to cite this project, which includes the contents of this website, interactive map, any research derived from the dataset, or any ideas derived from the School Protests in Africa Project: </p>
 
-<div style="width:50em"><h3 style="padding:20px; background-color:lightgray">Krystal Strong and Jimil Ataman. (2021) “School Protests in Africa.” www.schoolprotests.com, accessed  [DATE].</h3></div>
+<div style="max-width:50em; text-align:center"><h3 style="padding:20px; background-color:lightgray">Krystal Strong and Jimil Ataman. (2021) “School Protests in Africa.” www.schoolprotests.com, accessed  [DATE].</h3></div>
 <br>
 
 <h2 style="text-align:center; color:gray">{{ "Project Team" | upcase }}</h2>
