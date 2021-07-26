@@ -1033,6 +1033,10 @@ def main(embed=True, export_point_pngs=False):
             save_embeds('docs/_includes',
                         tab_vis, patch_vis, point_vis,
                         list(map.filters.keys()))
+
+            # Force index and protest map to re-render.
+            Path('docs/index.markdown').touch()
+            Path('docs/full-protest-map.markdown').touch()
         else:
             save_html(tab_vis, patch_vis, point_vis, list(map.filters.keys()))
 
