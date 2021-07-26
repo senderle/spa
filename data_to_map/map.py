@@ -407,11 +407,13 @@ def points(plot, div, point_source):
                 } else {
                     counter++;
                 }
+                console.log(features);
                 var protest = indices[i];
                 var desc = features['Description of Protest'][protest];
                 var uni = features['School Name'][protest].toString().toUpperCase();
                 var type = features['Event Type (F3)'][protest];
                 var date = features['Date'][protest];
+                var location = features['Protest Location (F2)'][protest]
                 var protestName = features['perma'][protest];
                 div.text += '<a href="' + protestName +'">'+'<section style="background-color:white; margin:10px; padding-left:5px">'
                 + '<p style="padding:3px; display:inline-block; color:gray; font-size:15px">' +'<i class="fa fa-globe-africa" style="padding:3px">'+'</i>'+
@@ -732,8 +734,9 @@ class Map:
             tog = toggle(filter_name, filter)
             duo_stack.append(tog)
             duo_stack.append(filter)
-
         duo_col = column(*duo_stack)
+        duo_col.css_classes = ["spa-filters-column"]
+
         map_select = row(duo_col, plot, div)
         layout = column(hidden_button, map_select)
         return layout

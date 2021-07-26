@@ -198,6 +198,12 @@ footer > article {
   padding:20px;
 }
 
+.spa-filters-column{
+  overflow:scroll;
+  height:650px;
+
+}
+
 @media screen and (max-width: 700px) {
   section.spa-country-intro {
     flex-wrap: wrap-reverse;
