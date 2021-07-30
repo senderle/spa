@@ -413,7 +413,7 @@ def points(plot, div, point_source):
                 var type = features['Event Type (F3)'][protest];
                 var date = features['Date'][protest];
                 var protestName = features['perma'][protest];
-                div.text += '<a href="' + protestName +'">'+'<section style="background-color:white; margin:10px; padding-left:5px">'
+                div.text += '<a href="/spa/' + protestName +'">'+'<section style="background-color:white; margin:10px; padding-left:5px">'
                 + '<p style="padding:3px; display:inline-block; color:gray; font-size:15px">' +'<i class="fa fa-globe-africa" style="padding:3px">'+'</i>'+
                           " " + uni + '</p>' + '<div style="font-weight: bold; padding:3px; display:inline-block; border-radius:4px">' + date +'</div>' + '<br>'
                  + '<div style="padding-left:5px; padding-right:5px">' + desc + '</div>' + '<div style="background-color:#F7D9FA; padding:3px; display:inline-block; border-radius:4px">' + type +'</div>'
@@ -1034,6 +1034,9 @@ def main(embed=True, export_point_pngs=False):
             # Force index and protest map to re-render.
             Path('docs/index.markdown').touch()
             Path('docs/full-protest-map.markdown').touch()
+            Path('docs/_includes/bokeh_heading.html').touch()
+            Path('docs/_includes/country-map.html').touch()
+            Path('docs/_includes/protest-map.html').touch()
         else:
             save_html(tab_vis, patch_vis, point_vis, list(map.filters.keys()))
 
