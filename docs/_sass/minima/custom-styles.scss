@@ -79,13 +79,12 @@ article.spa-country-map {
 .spa-img-container{
   display:flex;
   align-items:flex-start;
-  flex-wrap:wrap;
 
 }
 
 .spa-footer-logo{
   max-height:40px;
-  display:inline-block;
+  display:block;
   padding:10px;
 
 }
@@ -175,6 +174,10 @@ footer > article {
   z-index:10;
 }
 
+.spa-category-button{
+  border:2px solid white !important;
+}
+
 .spa-category-button:hover{
   border:2px solid darkgray !important;
 }
@@ -199,10 +202,12 @@ footer > article {
 }
 
 .spa-filters-column{
-  overflow:scroll;
-  height:650px;
+  overflow:scroll !important;
+  height:650px !important;
 
 }
+
+
 
 @media screen and (max-width: 700px) {
   section.spa-country-intro {
@@ -222,16 +227,37 @@ footer > article {
     padding:0px;
     margin:0px;
   }
-  canvas.bk, div.bk-canvas-events, .hidden-on-mobile, .ActorsInvolved, .Causes, .Targets{
+  canvas.bk, div.bk-canvas-events, .hidden-on-mobile, .ActorsInvolved, .Causes, .Targets, .Characteristics{
     display:none;
     visibility:hidden;
 
   }
+
+  .protest-results{
+    display:block !important;
+    visibility:visible !important;
+  }
+
   .heatmap-static{
     display:inline-block;
     visibility:visible;
   }
 
+  .social-links{
+    display:block;
+  }
+
+  .spa-filters-column{
+    overflow:visible !important;
+    height:97% !important;
+  }
+  .spa-overflow{
+    overflow:visible;
+    height:97%;
+    flex-wrap: wrap-reverse;
+    background-color:#eaeaea;
+    padding:20px;
+  }
 }
 
 

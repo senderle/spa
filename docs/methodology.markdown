@@ -41,9 +41,20 @@ As a means to further document school protests in Africa, glean contextual infor
 
 <h2 style="text-align:center; color:gray">{{ "Note on the interactive map" | upcase }}</h2>
 
-<p>The interactive protest map is designed to create an intuitive visual user experience for navigating a broad spatial dataset. The series of filters to the left of the map allow the user to think through what kinds of political actions they are interested in seeing, which actors, and additional characteristics. As they click through, the map updates in real time, allowing the user to begin to see geospatial patterns to the data that they are filtering. Hovering over any of the individual protest points provides more information about the protests in that location, and gives the user the option to click out for more detailed information and sources. This structure easily allows the user to hone in on particular details, while also affording the option to return to the bigger picture at any time.</p>
+<p>
+Our focus on creating preservable, sustainable, and archivable collections of data extends to the format of the project itself. While designing the dynamic components of the site, we tried to strike a balance between rich interactivity and long-term preservability. This is a particular challenge given the complexity of map visualizations, which combine heterogeneous forms of data from many sources: map tile sources, providing the textures and labels for the underlying map; visualization sources, providing the data itself, translated into visual forms; and interactivity sources, providing dynamic user interfaces that allow the data to be explored in relation to the map.
+</p>
+<p>
+It’s a challenge to preserve any digital artifact with this level of complexity. Fortunately, there are visualization tools that can embed everything necessary to reproduce almost all the interactive components of the project inside a single, self-contained file -- including the code and the data itself -- allowing static web archiving utilities to capture them in their entirety. Using the Bokeh visualization platform, we wrote a Python script containing a set of embeddable JavaScript extensions. Although writing widgets in one language from within a script in another language is an awkward mode of software development, in this case it provides us with a practical compromise between preservability, transparency, and user experience.
+</p>
+<p>
+The interactive protest map is designed to create an intuitive visual user experience for navigating a broad spatial dataset. The series of filters to the left of the map allow the user to think through what kinds of political actions they are interested in seeing, which actors, and additional characteristics. As they click through, the map updates in real time, allowing the user to begin to see geospatial patterns to the data that they are filtering. Hovering over any of the individual protest points provides more information about the protests in that location, and gives the user the option to click out for more detailed information and sources. This structure easily allows the user to hone in on particular details, while also affording the option to return to the bigger picture at any time.
+</p>
+<h2 style="text-align:center; color:gray">{{ "Note on terms of use" | upcase }}</h2>
 
-
+<p>
+The SPA site is intended for educational use only, therefore users should follow the guidelines for the usage and citation of the research site and data when using School Protest in Africa project, including (1) following the established citation format for this projects and its content, which includes the interactive maps, any research derived from the dataset, or any ideas derived from the School Protests in Africa Project; (2) the site may not be distributed for any commercial purpose; (3) misuse of the state and/or its data can result in termination of rights. Click <a>here for further terms of usage for the project site and data.</a>
+</p>
 
 
 

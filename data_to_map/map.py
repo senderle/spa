@@ -337,7 +337,7 @@ def patches(plot, div, patch_data):
             var name = properties['properties']['name'];
             var protestcount = properties['properties']['protestcount'];
             }
-
+            console.log(features);
     """
 
     callback = CustomJS(
@@ -415,7 +415,7 @@ def points(plot, div, point_source):
                 var date = features['Date'][protest];
                 var location = features['Protest Location (F2)'][protest]
                 var protestName = features['perma'][protest];
-                div.text += '<a href="' + protestName +'">'+'<section style="background-color:white; margin:10px; padding-left:5px">'
+                div.text += '<a class ="spa-protest-result" target="_blank" href="' + protestName +'">'+'<section class="spa-category-button" style="background-color:white; margin:10px; padding-left:5px">'
                 + '<p style="padding:3px; display:inline-block; color:gray; font-size:15px">' +'<i class="fa fa-globe-africa" style="padding:3px">'+'</i>'+
                           " " + uni + '</p>' + '<div style="font-weight: bold; padding:3px; display:inline-block; border-radius:4px">' + date +'</div>' + '<br>'
                  + '<div style="padding-left:5px; padding-right:5px">' + desc + '</div>' + '<div style="background-color:#F7D9FA; padding:3px; display:inline-block; border-radius:4px">' + type +'</div>'
@@ -579,7 +579,8 @@ class Map:
             + '<p class="spa-large-p">' +
             'African schools, and students in particular, have historically played a progressive role in anti-colonial, anti-imperial, and pro-democracy movements. Today, Africa is witnessing a resurgence of educational activism and youth-led popular struggles. The' + ' <b>'+' School Protests in Africa'+' </b>'+'digital project documents the incidence and causes of school-based protests in Africa since 2000, demonstrating the continued importance of schools and school actors in political participation and processes of social change in Africa.' + '</p>'
             +'<p class="spa-large-p hidden-on-mobile" style="font-size:18px; font-weight:bold; text-align:center">' + 'Click on a region to begin.' + '</p>' +'</p>'
-            + '</div>')
+            + '</div>'
+            )
 
         patches(plot, div, self.countries)
 
@@ -593,6 +594,7 @@ class Map:
                 if (data.length == 4 && data.every(x => !isNaN(x))) {
                     [x.start, x.end, y.start, y.end] = data;
                 }
+                console.log(self);
             """
         )
         hidden_button = Button(label="Reset Zoom",
@@ -609,7 +611,10 @@ class Map:
 
         div = Div(width=plot.plot_width // 2,
                   height=plot.plot_height,
-                  height_policy="fixed")
+                  height_policy="fixed",
+                  text="<div style='background-color:lightgray; height:650px; padding:10px; overflow: scroll'>" +
+                       "<h3 style='color:gray'>" + "NUMBER OF PROTESTS: " +
+                        "</h3>" + "<br>")
 
         # Create two copies of the protest data. One will be the data to be
         # displayed, and will be mutable. The other will be an unchanging
