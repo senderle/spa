@@ -569,7 +569,6 @@ class Map:
 
     def patch_plot(self, tile_url, tile_attribution='MapTiler'):
         plot = base_map(tile_url, tile_attribution)
-
         div = Div(width=plot.plot_width // 2,
                   height=plot.plot_height,
                   height_policy="fixed",

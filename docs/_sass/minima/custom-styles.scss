@@ -216,9 +216,17 @@ footer > article {
 
 }
 
-
+.country-list{
+  display:none;
+  visibility:hidden;
+}
 
 @media screen and (max-width: 700px) {
+  .country-list{
+    display:block;
+    visibility:visible;
+  }
+
   section.spa-country-intro {
     flex-wrap: wrap-reverse;
     align-items: center;
