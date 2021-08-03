@@ -391,35 +391,51 @@ def points(plot, div, point_source):
                        "height:650px; padding:10px; overflow: scroll'>" +
                        "<h3 style='color:gray'>" + "NUMBER OF PROTESTS: " +
                        indices.length + "</h3>" + "<br>"
-            var counter = 0;
+
             for (var i = 0; i < indices.length; i++) {
-                if (counter == 5) {
-                    if (indices.length == 6) {
-                        div.text = div.text + "<br>" + "<em>" +
-                                   "Additional protest not shown" +
-                                   "</em>" +  "<br>";
-                    } else {
-                        div.text = div.text + "<br>" + "<em>" +
-                                   "Additional " + (indices.length - 5) +
-                                   " protests not shown" + "</em>" +  "<br>";
-                    }
-                    break;
-                } else {
-                    counter++;
-                }
                 var protest = indices[i];
                 var desc = features['Description of Protest'][protest];
-                var uni = features['School Name'][protest].toString().toUpperCase();
+                var uni = features['School Name'][protest]
+                    .toString()
+                    .toUpperCase();
                 var type = features['Event Type (F3)'][protest];
                 var date = features['Date'][protest];
-                var protestName = features['perma'][protest];
-                div.text += '<a href="/spa/' + protestName +'">'+'<section style="background-color:white; margin:10px; padding-left:5px">'
-                + '<p style="padding:3px; display:inline-block; color:gray; font-size:15px">' +'<i class="fa fa-globe-africa" style="padding:3px">'+'</i>'+
-                          " " + uni + '</p>' + '<div style="font-weight: bold; padding:3px; display:inline-block; border-radius:4px">' + date +'</div>' + '<br>'
-                 + '<div style="padding-left:5px; padding-right:5px">' + desc + '</div>' + '<div style="background-color:#F7D9FA; padding:3px; display:inline-block; border-radius:4px">' + type +'</div>'
-                 + '<div style="background-color:#ccffff; padding:3px; display:inline-block; border-radius:4px">' + location +'</div>'
-                         + '<br>' + '</section>' + '</a>' + '<br>';
-                }
+                var locationName = features['Locality Name'][protest];
+
+                // `baseurlPrefix` will need to match whatever
+                // baseurl Jekyll's _config.yml file specifies...
+                // pretty awkward, but I see no obvious alternative.
+                var baseurlPrefix = '/spa/'
+
+                var protestName = baseurlPrefix + features['perma'][protest];
+
+                // In the following I tried to make the underlying HTML
+                // structure a little more visible. It's not perfect,
+                // but I hope it helps a bit.
+
+                div.text +=
+'<a href="' + protestName + '">' +
+  '<section style="background-color:white; margin:10px; padding-left:5px">' +
+    '<p style="padding:3px; display:inline-block; color:gray; font-size:15px">' +
+      '<i class="fa fa-globe-africa" style="padding:3px">' +
+      '</i>' + " " +
+      uni +
+    '</p>' +
+    '<div style="font-weight: bold; padding:3px; display:inline-block; border-radius:4px">' +
+      date +
+    '</div>' + '<br>' +
+    '<div style="padding-left:5px; padding-right:5px">' +
+      desc +
+    '</div>' +
+    '<div style="background-color:#F7D9FA; padding:3px; display:inline-block; border-radius:4px">' +
+      type +
+    '</div>' +
+    '<div style="background-color:#ccffff; padding:3px; display:inline-block; border-radius:4px">' +
+      locationName +
+    '</div>' + '<br>' +
+  '</section>' +
+'</a>' + '<br>';
+            }
         }
     """)
 
@@ -511,7 +527,7 @@ def one_filter(plot, filter_col, filter_vals, filters_state,
     )
 
     name = f'callback-load-hash-filter-{title}'
-    print(name)
+    # print(name)
     hidden_button.js_on_event(events.ButtonClick, CustomJS(
         name=name,
         args=dict(filter=multi_select, filterName=title),
@@ -778,9 +794,6 @@ class Map:
 
     def protest_pages(self, path):
         for i, name in enumerate(self.protests.index.values):
-            # For now, just render 10 for testing.
-            if i > 10:
-                break
 
             urlsafe = protest_name_urlsafe(name)
             perma = protest_name_perma(name)
