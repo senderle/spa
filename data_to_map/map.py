@@ -449,7 +449,7 @@ def toggle(filter_col, filter):
     class_select = title.replace(" ", "")
     title = title.upper()
     select_toggle = Toggle(
-        label=title,
+        label=title+"  ",
         width=175,
         name=class_select,
         active=True,
@@ -613,7 +613,7 @@ class Map:
                   height=plot.plot_height,
                   height_policy="fixed",
                   text="<div style='background-color:lightgray; height:650px; padding:10px; overflow: scroll'>" +
-                       "<h3 style='color:gray'>" + "NUMBER OF PROTESTS: " +
+                       "<h3 style='color:gray'>" + "Use filters to the left to display protests based on category. Hover over protests on map for more information." +
                         "</h3>" + "<br>")
 
         # Create two copies of the protest data. One will be the data to be
