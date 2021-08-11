@@ -25,7 +25,7 @@ permalink: /about/
 
 <p>Please use the following format to cite this project, which includes the contents of this website, interactive map, any research derived from the dataset, or any ideas derived from the School Protests in Africa Project: </p>
 
-<div style="max-width:40em; text-align:center; margin:auto"><h3 style="padding:20px; background-color:#edb19f; border:1px dashed black">Krystal Strong and Jimil Ataman. (2021) “School Protests in Africa.” www.schoolprotests.com, accessed  [DATE].</h3></div>
+<div style="max-width:40em; text-align:center; margin:auto"><h3 style="padding:20px; background-color:#edb19f; border:1px dashed black">Krystal Strong and Jimil Ataman. (2021) “School Protests in Africa.” www.schoolprotests.com, accessed {{ "today" | date: "%m/%d/%Y"}}.</h3></div>
 <br>
 <br>
 <h2 style="text-align:center; color:gray">{{ "Project Team" | upcase }}</h2>

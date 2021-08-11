@@ -7,8 +7,6 @@ permalink: /methodology/
 <figure style="text-align:right; font-size:12px"><img alt="Image of the Fees Must Fall protest, Pretoria South Africa. Editorial credit: paul saad / Shutterstock.com" src="{{site.baseurl}}/assets/img/team-images/shutterstock_1747054490.jpg" width="100%"><caption><i>paul saad / Shutterstock.com
 </i></caption></figure>
 
-<h2 style="text-align:center; color:gray">{{ "Research question and significance" | upcase }}</h2>
-
 <p>This research documents the significant role of educational institutions and school actors in contemporary political activism and struggles for social change in Africa. 
 Specifically, this research asks: (1) What is the incidence of protest in educational institutions in Africa, (2) what are their explicit causes as defined by participants, and (3) What patterns exist within and across countries? 
 </p>
@@ -16,6 +14,10 @@ Specifically, this research asks: (1) What is the incidence of protest in educat
 </p>
 
 <p>In addition to developing a comprehensive dataset in this area, this project utilizes an interactive mapping technology to visualize and make this data publicly accessible. This study aims to amplify and support the work of educational activists, and to provide researchers and practitioners with empirical data that will help them better understand the role of schools in contemporary political processes in Africa with the hope that further research will facilitate deeper analysis with reference to this under-studied region as well as the formulation of policies that support the potential of schools to positively affect social change.
+</p>
+<p>
+
+The SPA site is intended for educational use only, therefore users should follow the guidelines for the usage and citation of the research site and data when using School Protest in Africa project, including (1) following the established citation format for this projects and its content, which includes the interactive maps, any research derived from the dataset, or any ideas derived from the School Protests in Africa Project; (2) the site may not be distributed for any commercial purpose; (3) misuse of the state and/or its data can result in termination of rights. Click here for further <b>terms of usage</b> for the project site and data. 
 </p>
 <br><br>
 <h2 style="text-align:center; color:gray">{{ "Project design and methods" | upcase }}</h2>
@@ -52,12 +54,3 @@ It’s a challenge to preserve any digital artifact with this level of complexit
 <p>
 The interactive protest map is designed to create an intuitive visual user experience for navigating a broad spatial dataset. The series of filters to the left of the map allow the user to think through what kinds of political actions they are interested in seeing, which actors, and additional characteristics. As they click through, the map updates in real time, allowing the user to begin to see geospatial patterns to the data that they are filtering. Hovering over any of the individual protest points provides more information about the protests in that location, and gives the user the option to click out for more detailed information and sources. This structure easily allows the user to hone in on particular details, while also affording the option to return to the bigger picture at any time.
 </p>
-<br><br>
-<h2 style="text-align:center; color:gray">{{ "Note on terms of use" | upcase }}</h2>
-
-<p>
-The SPA site is intended for educational use only, therefore users should follow the guidelines for the usage and citation of the research site and data when using School Protest in Africa project, including (1) following the established citation format for this projects and its content, which includes the interactive maps, any research derived from the dataset, or any ideas derived from the School Protests in Africa Project; (2) the site may not be distributed for any commercial purpose; (3) misuse of the state and/or its data can result in termination of rights. Click <a>here for further terms of usage for the project site and data.</a>
-</p>
-
-
-

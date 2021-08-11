@@ -8,6 +8,17 @@ a.spa-protest-result, a.spa-protest-result:visited, a.spa-protest-result:hover, 
 
 }
 
+a.site-title, a.site-title:visited{
+  font-weight:bold;
+  color:darkred;
+  text-transform:uppercase;
+}
+
+.menu-icon{
+  background-color:#fee6df;
+
+}
+
 article {
   padding: 2px 5px 2px 5px;
   margin: 2px 5px 2px 5px;
@@ -182,6 +193,7 @@ footer > article {
 
 .site-nav{
   z-index:10;
+  background-color:#fee6df;
 }
 
 .site-header{
@@ -193,7 +205,7 @@ footer > article {
 }
 
 .spa-category-button:hover{
-  border:2px solid darkgray !important;
+  border:2px solid #edb19f !important;
 }
 
 .heatmap-static{
