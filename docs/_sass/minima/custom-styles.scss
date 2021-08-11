@@ -139,6 +139,7 @@ footer {
   display: flex;
   flex-flow: row;
   justify-content: space-between;
+  background-color: #edb19f
 }
 
 footer > article {
@@ -176,11 +177,15 @@ footer > article {
 
 .anim {
   opacity:0;
-  color: blue;
+  color: darkred;
 }
 
 .site-nav{
   z-index:10;
+}
+
+.site-header{
+  background-color:#edb19f;
 }
 
 .spa-category-button{
@@ -280,8 +285,8 @@ footer > article {
 
 
 @keyframes textanim {
-    0% {font-size:100%; opacity:0;color:blue}
-    25% {font-size:100%; opacity:0.25; color:blue}
+    0% {font-size:100%; opacity:0;color:darkred}
+    25% {font-size:100%; opacity:0.25; color:darkred}
     50% {font-size:100%; opacity:0.5;content:""}
     75% {font-size:100%; opacity:0.75; content: ""}
     100% {font-size:100%;opacity:1; color:gray}

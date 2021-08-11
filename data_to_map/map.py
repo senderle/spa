@@ -39,7 +39,7 @@ from bokeh.models import (
 )
 from bokeh import events
 from bokeh.layouts import column, row
-from bokeh.palettes import Blues8 as palette
+from bokeh.palettes import Reds256 as palette
 from bokeh.plotting import figure
 from bokeh.resources import JSResources
 from bokeh.io import export_png
@@ -308,13 +308,13 @@ def patches(plot, div, patch_data):
     patches = MultiPolygons(
         xs='xs', ys='ys',
         fill_color={'field': 'rank', 'transform': color_mapper},
-        fill_alpha=0.5, line_color="blue", line_alpha=0.2,
+        fill_alpha=0.5, line_color="black", line_alpha=0.2,
         line_width=2.5
     )
     hover_patches = MultiPolygons(
         xs='xs', ys='ys',
         fill_color={'field': 'rank', 'transform': color_mapper},
-        fill_alpha=0.5, line_color="blue", line_alpha=0.5,
+        fill_alpha=0.5, line_color="black", line_alpha=0.5,
         line_width=3.5
     )
     patch_source = geodf_patches_to_geods(patch_data)
@@ -577,7 +577,7 @@ class Map:
                       'Documenting'+'</span>'+'<br>'+ '<span class="anim" style="opacity: 0; animation: textanim2 10s">'+'Amplifying'+ '</span>'+'<br>'+'<span style="animation: textanim 15s">'+'Mapping'+'</span>'+'<br>'+'Contemporary School Protests' +'<br>'+'in Africa' + '</h1>'
             + '<p class="spa-large-p">' +
             'African schools, and students in particular, have historically played a progressive role in anti-colonial, anti-imperial, and pro-democracy movements. Today, Africa is witnessing a resurgence of educational activism and youth-led popular struggles. The' + ' <b>'+' School Protests in Africa'+' </b>'+'digital project documents the incidence and causes of school-based protests in Africa since 2000, demonstrating the continued importance of schools and school actors in political participation and processes of social change in Africa.' + '</p>'
-            +'<p class="spa-large-p hidden-on-mobile" style="font-size:18px; font-weight:bold; text-align:center">' + 'Click on a region to begin.' + '</p>' +'</p>'
+            +'<p class="spa-large-p hidden-on-mobile" style="font-size:18px; font-weight:bold; text-align:left">' + 'Click on a region to begin.' + '</p>' +'</p>'
             + '</div>'
             )
 
