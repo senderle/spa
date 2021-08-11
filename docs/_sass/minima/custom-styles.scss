@@ -193,7 +193,6 @@ footer > article {
 
 .site-nav{
   z-index:10;
-  background-color:#fee6df;
 }
 
 .site-header{
@@ -236,6 +235,13 @@ footer > article {
 .country-list{
   display:none;
   visibility:hidden;
+}
+
+@media screen and (max-width: 1200px) {
+  .site-nav{
+    background-color:#fee6df;
+  }
+
 }
 
 @media screen and (max-width: 700px) {
