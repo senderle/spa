@@ -169,16 +169,27 @@ def load_geojson(simplify_tol=None):
 def load_protests():
     protests = pandas.read_csv('data_to_map/data/protests.csv')
     protests_wrong_data = protests[
-        (protests.LONG == 'checked') | (protests.LONG.apply(safe_lt(-20))) |
-        (protests.LONG.isna()) | (protests.LAT.isna())
+        # protests.LONG.apply(safe_lt(-20)) |
+        protests.LONG.isna() |
+        protests.LAT.isna()
     ]
+
+    print('len(protests_wrong_data)', len(protests_wrong_data))
+    print('protests_wrong_data.LAT.head()', protests_wrong_data.LAT.head())
+    print('protests_wrong_data.LONG.head()', protests_wrong_data.LONG.head())
+
     protests = protests.drop(protests_wrong_data.index, axis='rows')
+
     protests['LAT'] = protests.LAT.apply(float)
     protests['LONG'] = protests.LONG.apply(float)
-    protests = protests[~((protests.LAT == 0) & (protests.LONG == 0))]
 
-    protests['perma'] = protests['Protest Name'].apply(protest_name_perma)
-    protests = protests.set_index('Protest Name')
+    print('len(set(protests[unique-key]))',
+          len(set(protests['unique-key'])))
+    print('len(protests)', len(protests))
+    assert len(set(protests['unique-key'])) == len(protests)
+
+    protests['perma'] = protests['unique-key'].apply(protest_name_perma)
+    protests = protests.set_index('unique-key')
 
     protests = gpd.GeoDataFrame(
         protests,
@@ -186,6 +197,7 @@ def load_protests():
         crs='epsg:4326'  # CRS code for basic lat/lon data.
     )
     protests = protests.to_crs('EPSG:3857')  # CRS code for web mercator.
+
     return protests
 
 
@@ -232,7 +244,7 @@ def base_map(tile_url, tile_attribution='MapTiler',
         y_range=(-4246229, 4715858),
         x_range=(-2054627, 5752956),
         x_axis_type="mercator", y_axis_type="mercator",
-        #sizing_mode="scale_both"
+        # sizing_mode="scale_both"
         )
 
     if zoomable:
@@ -270,7 +282,7 @@ def individual_point_map(
         y_range=y_range,
         x_range=x_range,
         x_axis_type="mercator", y_axis_type="mercator",
-        #sizing_mode="scale_width"
+        # sizing_mode="scale_width"
         )
 
     plot.toolbar_location = None
@@ -793,13 +805,20 @@ class Map:
                          f'---\n')
 
     def protest_pages(self, path):
-        for i, name in enumerate(self.protests.index.values):
+        for i, row_ix in enumerate(self.protests.index.values):
+            if i > 100:
+                break
+            row = self.protests.loc[row_ix]
 
-            urlsafe = protest_name_urlsafe(name)
-            perma = protest_name_perma(name)
-            filename = (Path(path) / Path(urlsafe)).with_suffix('.md')
-            title = name.split('-')
+            perma = row['perma']
+
+            filename = protest_name_urlsafe(row_ix)
+            filename = (Path(path) / Path(filename)).with_suffix('.md')
+
+            title = row['Protest Name']
+            title = title.split('-')
             title = f'{title[0]}, {title[1]} {title[2]}'
+
             with open(filename, 'w', encoding='utf-8') as op:
                 op.write(f'---\n'
                          f'layout: protest\n'
@@ -953,18 +972,6 @@ def save_onload_callback(open_file, callback_names):
     less than 2 and greater than 1. 1.25 would lead us to check
     about thirty times in 16 seconds. In 16 minutes, it would
     lead us to check only about fifty times.
-
-    To see how this translates to a useful strategy in real life,
-    think about nagging. Nagging is really annoying -- for you,
-    for the person you're nagging, for the people who have to
-    listen to you nag, and so on. So imagine you are waiting for
-    someone to do something, and you want to decide how often to
-    nag them. This gives a great answer! Double your wait time
-    each nag. This way, relatively speaking, you barely nag at
-    all, but you only wait, at worst, twice as long as you would
-    if you were nagging the person every thirty goddamn minutes.
-
-    Pretty great, right?
     """
 
     # NOTE: Indented code will be formatted by the markdown engine
@@ -1045,6 +1052,7 @@ def main(embed=True, export_point_pngs=False):
                         list(map.filters.keys()))
 
             # Force index and protest map to re-render.
+            # Not sure this actually works.
             Path('docs/index.markdown').touch()
             Path('docs/full-protest-map.markdown').touch()
             Path('docs/_includes/bokeh_heading.html').touch()
