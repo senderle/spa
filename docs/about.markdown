@@ -1,10 +1,10 @@
 ---
 layout: home
-title: About
+title: The Project
 permalink: /about/
 ---
 
-<figure style="text-align:right; font-size:12px"><img alt="image of the End SARS protest in Nigeria. Editorial credit: vic josh / Shutterstock.com" src="{{site.baseurl}}/assets/img/team-images/shutterstock_1838648644.jpg" width="100%"><caption><i>End SARS protest in Nigeria. Editorial credit: vic josh / Shutterstock.com</i></caption></figure>
+<figure style="text-align:right; font-size:12px"><img alt="image of the End SARS protest in Nigeria. Editorial credit: vic josh / Shutterstock.com" src="{{site.baseurl}}/assets/img/team-images/shutterstock_1838648644.jpg" width="100%"><caption><i>vic josh / Shutterstock.com</i></caption></figure>
 
 <p>Protests are radically reshaping our world. As a digital scholarship project, <b>School Protests In Africa</b> tracks the important role of schools and school-based actors like students and teachers in galvanizing struggles for social and political change in Africa.
 </p>
@@ -15,7 +15,7 @@ permalink: /about/
 
 <p><b>School Protests in Africa</b> intervenes in these conversations, which often erase Africa from analysis of contemporary activism, despite the continent similarly being in the midst of a tremendous upsurge of popular struggle and youth-led activism. This mixed methods project amplifies the importance of Africa to this era of political and educational activism, and documents the incidence and causes of school-based protest in Africa since 2000. With support from the Spencer Foundation, our School Protests in Africa database and map are publicly accessible online.
 </p> 
-<br>
+<br><br>
 <h2 style="text-align:center; color:gray">{{ "Using Our Website and Data" | upcase }}</h2>
 <p>This section offers a statement of the School Protests in Africa project’s politics of knowledge production as well as guidelines for the usage and citation of the research site and data. </p>
 
@@ -25,9 +25,9 @@ permalink: /about/
 
 <p>Please use the following format to cite this project, which includes the contents of this website, interactive map, any research derived from the dataset, or any ideas derived from the School Protests in Africa Project: </p>
 
-<div style="max-width:50em; text-align:center"><h3 style="padding:20px; background-color:lightgray">Krystal Strong and Jimil Ataman. (2021) “School Protests in Africa.” www.schoolprotests.com, accessed  [DATE].</h3></div>
+<div style="max-width:40em; text-align:center; margin:auto"><h3 style="padding:20px; background-color:#edb19f; border:1px dashed black">Krystal Strong and Jimil Ataman. (2021) “School Protests in Africa.” www.schoolprotests.com, accessed {{ "today" | date: "%m/%d/%Y"}}.</h3></div>
 <br>
-
+<br>
 <h2 style="text-align:center; color:gray">{{ "Project Team" | upcase }}</h2>
 <div class="team">
 	<div class="person" style="display:flex; flex-wrap:wrap">
@@ -59,9 +59,9 @@ permalink: /about/
 
 		</span>
 	</div>
-	<br>
-	<div style="text-align:center">
-	<h3 style="text-align:center; color:gray">{{ "Additional thanks to the following team members:" | upcase }}</h3>
+	<br><br>
+	<div style="text-align:left; margin:auto">
+	<h2 style="text-align:center; color:gray">{{ "Additional thanks to the following team members" | upcase }}</h2>
 	<p><b>Folatomi Alli-Balogun</b>, Research Assistant</p>
 <p><b>Dallas Taylor</b>, Research Assistant</p>
 <p><b>Fortunate Ekwuruke</b>, Research Assistant</p>
@@ -69,8 +69,8 @@ permalink: /about/
 <p><b>Andres Recalde</b>, Research Consultant</p>
 <p><b>Jennifer Garcon</b>, Digital Scholarship Librarian</p>
 <p><b>Scott Enderle</b>, Web Developer and Digital Scholarship Specialist</p>
-<p><b>Joel Lee</b>, Web Developer</p>
 <p><b>Cassandra Hradil</b>, Web Designer and Digital Humanities Specialist</p>
+<p><b>Joel Lee</b>, Web Developer</p>
 </div>
 	</div>
 

@@ -39,7 +39,7 @@ from bokeh.models import (
 )
 from bokeh import events
 from bokeh.layouts import column, row
-from bokeh.palettes import Blues8 as palette
+from bokeh.palettes import Reds256 as palette
 from bokeh.plotting import figure
 from bokeh.resources import JSResources
 from bokeh.io import export_png
@@ -320,13 +320,13 @@ def patches(plot, div, patch_data):
     patches = MultiPolygons(
         xs='xs', ys='ys',
         fill_color={'field': 'rank', 'transform': color_mapper},
-        fill_alpha=0.5, line_color="blue", line_alpha=0.2,
+        fill_alpha=0.5, line_color="black", line_alpha=0.2,
         line_width=2.5
     )
     hover_patches = MultiPolygons(
         xs='xs', ys='ys',
         fill_color={'field': 'rank', 'transform': color_mapper},
-        fill_alpha=0.5, line_color="blue", line_alpha=0.5,
+        fill_alpha=0.5, line_color="black", line_alpha=0.5,
         line_width=3.5
     )
     patch_source = geodf_patches_to_geods(patch_data)
@@ -374,7 +374,7 @@ if (properties != undefined) {
     var name = properties['properties']['name'];
     var protestcount = properties['properties']['protestcount'];
 }
-    """
+"""
 
     callback = CustomJS(
         args=dict(json_source=parsed_geojson, div=div),
@@ -499,7 +499,7 @@ def toggle(filter_col, filter):
     class_select = title.replace(" ", "")
     title = title.upper()
     select_toggle = Toggle(
-        label=title,
+        label=title+"  ",
         width=175,
         name=class_select,
         active=True,
@@ -619,7 +619,6 @@ class Map:
 
     def patch_plot(self, tile_url, tile_attribution='MapTiler'):
         plot = base_map(tile_url, tile_attribution)
-
         div = Div(width=plot.plot_width // 2,
                   height=plot.plot_height,
                   height_policy="fixed",
@@ -628,8 +627,9 @@ class Map:
                       'Documenting'+'</span>'+'<br>'+ '<span class="anim" style="opacity: 0; animation: textanim2 10s">'+'Amplifying'+ '</span>'+'<br>'+'<span style="animation: textanim 15s">'+'Mapping'+'</span>'+'<br>'+'Contemporary School Protests' +'<br>'+'in Africa' + '</h1>'
             + '<p class="spa-large-p">' +
             'African schools, and students in particular, have historically played a progressive role in anti-colonial, anti-imperial, and pro-democracy movements. Today, Africa is witnessing a resurgence of educational activism and youth-led popular struggles. The' + ' <b>'+' School Protests in Africa'+' </b>'+'digital project documents the incidence and causes of school-based protests in Africa since 2000, demonstrating the continued importance of schools and school actors in political participation and processes of social change in Africa.' + '</p>'
-            +'<p class="spa-large-p hidden-on-mobile" style="font-size:18px; font-weight:bold; text-align:center">' + 'Click on a region to begin.' + '</p>' +'</p>'
-            + '</div>')
+            +'<p class="spa-large-p hidden-on-mobile" style="font-size:18px; font-weight:bold; text-align:left">' + 'Click on a region to begin.' + '</p>' +'</p>'
+            + '</div>'
+            )
 
         patches(plot, div, self.countries)
 
@@ -643,6 +643,7 @@ class Map:
                 if (data.length == 4 && data.every(x => !isNaN(x))) {
                     [x.start, x.end, y.start, y.end] = data;
                 }
+                console.log(self);
             """
         )
         hidden_button = Button(label="Reset Zoom",
@@ -659,7 +660,10 @@ class Map:
 
         div = Div(width=plot.plot_width // 2,
                   height=plot.plot_height,
-                  height_policy="fixed")
+                  height_policy="fixed",
+                  text="<div style='background-color:lightgray; height:650px; padding:10px; overflow: scroll'>" +
+                       "<h3 style='color:gray'>" + "Use filters to the left to display protests based on category. Hover over protests on map for more information." +
+                        "</h3>" + "<br>")
 
         # Create two copies of the protest data. One will be the data to be
         # displayed, and will be mutable. The other will be an unchanging
@@ -784,8 +788,9 @@ class Map:
             tog = toggle(filter_name, filter)
             duo_stack.append(tog)
             duo_stack.append(filter)
-
         duo_col = column(*duo_stack)
+        duo_col.css_classes = ["spa-filters-column"]
+
         map_select = row(duo_col, plot, div)
         layout = column(hidden_button, map_select)
         return layout

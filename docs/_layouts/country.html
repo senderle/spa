@@ -69,7 +69,7 @@ layout: page
           <section class="spa-overflow">
             {% for protest in site.data.protests %}
               {% if protest['Country Name'] == page.title %}
-              <article class="spa-country-intro spa-protest-result"><a class="spa-protest-result" href="{{site.baseurl}}/protests/{{ protest['Protest Name'] }}">
+              <article class="spa-country-intro spa-protest-result"><a class="spa-protest-result" target="_blank" href="{{site.baseurl}}/protests/{{ protest['Protest Name'] }}">
                   <h4 style="padding:0px; margin:0px">{{ protest['Protest Name'] }}</h4><br> 
                   {% if protest['date'] %}
                     {{ protest['date'] }} <br>

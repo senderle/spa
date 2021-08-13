@@ -8,6 +8,17 @@ a.spa-protest-result, a.spa-protest-result:visited, a.spa-protest-result:hover, 
 
 }
 
+a.site-title, a.site-title:visited{
+  font-weight:bold;
+  color:darkred;
+  text-transform:uppercase;
+}
+
+.menu-icon{
+  background-color:#fee6df;
+
+}
+
 article {
   padding: 2px 5px 2px 5px;
   margin: 2px 5px 2px 5px;
@@ -79,13 +90,21 @@ article.spa-country-map {
 .spa-img-container{
   display:flex;
   align-items:flex-start;
-  flex-wrap:wrap;
 
+}
+
+.bk-checkbox > .bk-btn-group > .bk-btn{
+    text-align:left;
+    padding:5px;
+    background-image: url('../../assets/img/team-images/dropdown.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: right;
 }
 
 .spa-footer-logo{
   max-height:40px;
-  display:inline-block;
+  display:block;
   padding:10px;
 
 }
@@ -131,6 +150,7 @@ footer {
   display: flex;
   flex-flow: row;
   justify-content: space-between;
+  background-color: #edb19f
 }
 
 footer > article {
@@ -168,15 +188,23 @@ footer > article {
 
 .anim {
   opacity:0;
-  color: blue;
+  color: darkred;
 }
 
 .site-nav{
   z-index:10;
 }
 
+.site-header{
+  background-color:#edb19f;
+}
+
+.spa-category-button{
+  border:2px solid white !important;
+}
+
 .spa-category-button:hover{
-  border:2px solid darkgray !important;
+  border:2px solid #edb19f !important;
 }
 
 .heatmap-static{
@@ -198,7 +226,30 @@ footer > article {
   padding:20px;
 }
 
+.spa-filters-column{
+  overflow:scroll !important;
+  height:650px !important;
+
+}
+
+.country-list{
+  display:none;
+  visibility:hidden;
+}
+
+@media screen and (max-width: 1200px) {
+  .site-nav{
+    background-color:#fee6df;
+  }
+
+}
+
 @media screen and (max-width: 700px) {
+  .country-list{
+    display:block;
+    visibility:visible;
+  }
+
   section.spa-country-intro {
     flex-wrap: wrap-reverse;
     align-items: center;
@@ -216,23 +267,44 @@ footer > article {
     padding:0px;
     margin:0px;
   }
-  canvas.bk, div.bk-canvas-events, .hidden-on-mobile, .ActorsInvolved, .Causes, .Targets{
+  canvas.bk, div.bk-canvas-events, .hidden-on-mobile, .ActorsInvolved, .Causes, .Targets, .Characteristics{
     display:none;
     visibility:hidden;
 
   }
+
+  .protest-results{
+    display:block !important;
+    visibility:visible !important;
+  }
+
   .heatmap-static{
     display:inline-block;
     visibility:visible;
   }
 
+  .social-links{
+    display:block;
+  }
+
+  .spa-filters-column{
+    overflow:visible !important;
+    height:97% !important;
+  }
+  .spa-overflow{
+    overflow:visible;
+    height:97%;
+    flex-wrap: wrap-reverse;
+    background-color:#eaeaea;
+    padding:20px;
+  }
 }
 
 
 
 @keyframes textanim {
-    0% {font-size:100%; opacity:0;color:blue}
-    25% {font-size:100%; opacity:0.25; color:blue}
+    0% {font-size:100%; opacity:0;color:darkred}
+    25% {font-size:100%; opacity:0.25; color:darkred}
     50% {font-size:100%; opacity:0.5;content:""}
     75% {font-size:100%; opacity:0.75; content: ""}
     100% {font-size:100%;opacity:1; color:gray}
