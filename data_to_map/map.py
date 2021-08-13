@@ -340,16 +340,40 @@ def patches(plot, div, patch_data):
 
     # str.source.selected.indices gives you a list of things that you
     # immediately clicked on
+
+    # ##################################################################
+    #                                                                  #
+    #   NOTE: Indented code will be formatted by the markdown engine   #
+    #         into a preformatted code block for display, instead of   #
+    #         being inserted as HTML/JavaScript. So don't indent!      #
+    #                                                                  #
+    # ##################################################################
+    #
+    #         To further elaborate...
+    #
+    #         I (Scott) don't fully understand what's happening here.
+    #         However, I observed that this JavaScript code was being
+    #         escaped in the page source code -- it was appearing,
+    #         but in a non-JavaScripty way, with lots of HTML
+    #         entities.
+    #
+    #         The only explanation that readily occurs to me is that
+    #         the Jekyll markdown engine is seeing that the code is
+    #         indented, and deciding that it is supposed to be
+    #         rendered as a preformatted code block instead of as
+    #         working JavaScript. And indeed, when I removed the
+    #         indentation, the page went back to working as
+    #         expected. So... don't indent this... I guess?
+    #
+
     code = """
-
-        var features = json_source['features'];
-        var properties = features[cb_data.index.indices[0]];
-        if (properties != undefined) {
-            var rank = properties['properties']['rank'] + 1;
-            var name = properties['properties']['name'];
-            var protestcount = properties['properties']['protestcount'];
-            }
-
+var features = json_source['features'];
+var properties = features[cb_data.index.indices[0]];
+if (properties != undefined) {
+    var rank = properties['properties']['rank'] + 1;
+    var name = properties['properties']['name'];
+    var protestcount = properties['properties']['protestcount'];
+}
     """
 
     callback = CustomJS(
@@ -976,10 +1000,13 @@ def save_onload_callback(open_file, callback_names):
 
     # NOTE: Indented code will be formatted by the markdown engine
     #       into a preformatted code block for display, instead of
-    #       being inserted as HTML. So don't indent!
+    #       being inserted as HTML/JavaScript. So don't indent!
+    #
+    #       See the comments above, around line 350, for more
+    #       explanation.
 
-    # ALSO: I have realized that this might be a ridiculous way of doing
-    #       this. This should probably just be in a standalone JS file?
+    # ALSO: I (Scott) have realized that this might be a ridiculous way of
+    #       doing this. This should probably just be in a standalone JS file?
     #       Or, if not, I should do some work to understand why. Perhaps
     #       this script needs information that only map.py has when it
     #       is being run? Even then, though, we could save this to a
