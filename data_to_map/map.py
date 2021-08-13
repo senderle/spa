@@ -449,31 +449,17 @@ def points(plot, div, point_source):
                 // structure a little more visible. It's not perfect,
                 // but I hope it helps a bit.
 
-                div.text +=
-'<a href="' + protestName + '">' +
-  '<section style="background-color:white; margin:10px; padding-left:5px">' +
-    '<p style="padding:3px; display:inline-block; color:gray; font-size:15px">' +
-      '<i class="fa fa-globe-africa" style="padding:3px">' +
-      '</i>' + " " +
-      uni +
-    '</p>' +
-    '<div style="font-weight: bold; padding:3px; display:inline-block; border-radius:4px">' +
-      date +
-    '</div>' + '<br>' +
-    '<div style="padding-left:5px; padding-right:5px">' +
-      desc +
-    '</div>' +
-    '<div style="background-color:#F7D9FA; padding:3px; display:inline-block; border-radius:4px">' +
-      type +
-    '</div>' +
-    '<div style="background-color:#ccffff; padding:3px; display:inline-block; border-radius:4px">' +
-      locationName +
-    '</div>' + '<br>' +
-  '</section>' +
-'</a>' + '<br>';
-            }
-        }
-    """)
+                var location = features['Protest Location (F2)'][protest];
+
+                div.text += '<a class ="spa-protest-result" target="_blank" href="' + protestName +'">'+'<section class="spa-category-button" style="background-color:white;argin:10px; padding-left:5px">'
+                + '<p style="padding:3px; display:inline-block; color:gray; font-size:15px">' +'<i class="fa fa-globe-africa" style="padding:3px">'+'</i>'+
+                        " " + uni + '</p>' + '<div style="font-weight: bold; padding:3px; display:inline-block; border-radius:4px">' + date +'</div>' + '<br  >'
+                + '<div style="padding-left:5px; padding-right:5px">' + desc + '</div>' + '<div style="background-color:#F7D9FA; padding:3px; display:inline-  block; border-radius:4px">' + type +'</div>'
+                + '<div style="background-color:#ccffff; padding:3px; display:inline-block; border-radius:4px">' + location +'</div>'
+                         + '<br>' + '</section>' + '</a>' + '<br>';
+                }
+          }
+      """)
 
     hover = HoverTool(
         tooltips=None,
