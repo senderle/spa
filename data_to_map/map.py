@@ -420,8 +420,15 @@ def points(plot, div, point_source):
 
     hover_callback = CustomJS(args=dict(source=point_source, div=div),
                               code="""
+
+        // `features` contains *all* the points that have been identified
+        // by the filters on the left side of the map.
         var features = source['data'];
+
+        // `indices` contains the indices of those points currently
+        // being hovered over on the map.
         var indices = cb_data.index.indices;
+
         if (indices.length != 0) {
             div.text = "<div style='background-color:lightgray; " +
                        "height:650px; padding:10px; overflow: scroll'>" +
@@ -658,6 +665,9 @@ class Map:
         protests_json = self.protests.to_json()
         full_source = GeoJSONDataSource(geojson=protests_json)
         point_source = GeoJSONDataSource(geojson=protests_json)
+
+        # Here, point_source, which contains just the selected points,
+        # gets "attached" to the map and the hover div.
         points(plot, div, point_source)
 
         hash_callback = CustomJS(
